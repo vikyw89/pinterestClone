@@ -1,0 +1,112 @@
+name: Deploy to Production Environment
+
+# This workflow will trigger on any tag/release created on *any* branch
+# Make sure to create tags/releases only from the "master" branch for consistency
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  lint-client:
+    name: Lint and Export client
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_BASE_PATH: ${{ secrets.NEXT_PUBLIC_BASE_PATH }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Use NodeJS v18.14.2
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.14.2
+      - name: Install Dependencies
+        run: |
+          cd client
+          npm install
+      - name: Export static files
+        run: |
+          cd client
+          npm run export
+          mv out/404/index.html out/404.html
+      - name: Disable Jekyll
+        run: |
+          cd client
+          touch out/.nojekyll
+      - name: Archive Development Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: main-out
+          path: client/out
+          retention-days: 3
+
+  # lint-server:
+  #   name: Lint Server
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout the repository
+  #       uses: actions/checkout@v3
+  #     - name: Use NodeJS v18.14.2
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.14.2
+  #     - name: Install Dependencies and lint
+  #       run: |
+  #         cd server
+  #         npm install
+  #         npm run lint
+
+  deploy-client:
+    name: Deploy client to Github Pages
+    needs: lint-client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: main-out
+
+      - name: List files for publish
+        run: ls -l -a
+
+      - name: Deploy to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+
+  # deploy-server:
+  #   name: Deploy Server to Vercel
+  #   needs: lint-server
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID_PROD }}
+  #     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_PROD }}
+  #     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  #   steps:
+  #     - name: Checkout the repository
+  #       uses: actions/checkout@v3
+  #     - name: Use NodeJS v18.14.2
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18.14.2
+  #     - name: Install Vercel CLI
+  #       run: npm install --global vercel@28.16.7
+  #     - name: Pull Vercel Environment Information
+  #       run: |
+  #         cd server
+  #         vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Build Project Artifacts
+  #       run: |
+  #         cd server
+  #         npm install
+  #         npm run docs:vercel
+  #         vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Deploy Project Artifacts to Vercel
+  #       run: |
+  #         cd server
+  #         vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+  #     - name: Post Deployment Clean-up
+  #       run: |
+  #         cd server
+  #         rm -r -f .vercel
