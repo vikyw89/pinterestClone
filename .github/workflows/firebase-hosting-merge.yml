@@ -10,6 +10,8 @@ jobs:
   lint_build_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Node
+        uses: actions/setup-node@v3
       - name: Install Dependencies
         run: |
           cd client
