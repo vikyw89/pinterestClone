@@ -26,5 +26,3 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PINTEREST_CLONE_3BD39 }}"
           channelId: live
           projectId: pinterest-clone-3bd39
-  deploy-to-vercel:
-    runs-on: ubuntu-latest
