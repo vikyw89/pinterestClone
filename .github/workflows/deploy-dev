@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting
+name: Lint and Deploy to dev
 
 # This workflow deploys the static-generated nextjs app to Firebase Hosting
 # Triggered by push to the "dev" branch
