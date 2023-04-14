@@ -1,5 +1,16 @@
 # javaScriptFinalProject
 
+This is an attempt to clone Pinterest
+
+Prod live preview: https://vikyw89.github.io/javaScriptFinalProject/
+Dev live preview: https://pinterest-clone-3bd39.web.app/
+
+Dependencies:
+- next.js
+- tailwindcss
+- firebase
+
+## Original assignment
 <section id="assignment">
   <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
 
