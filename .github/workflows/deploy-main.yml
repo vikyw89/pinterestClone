@@ -24,7 +24,6 @@ jobs:
       - name: Export static files
         run: |
           cd client
-          
           npm run export
           mv out/404/index.html out/404.html
       - name: Disable Jekyll
@@ -56,7 +55,7 @@ jobs:
 
   deploy-client:
     name: Deploy client to Github Pages
-    needs: lint-client
+    needs: export-client
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
