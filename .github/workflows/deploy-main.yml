@@ -22,7 +22,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd client
-          npm install
+          npm ci
       - name: Export static files
         run: |
           cd client
