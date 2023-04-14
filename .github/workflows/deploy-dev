@@ -12,7 +12,7 @@ jobs:
     name: Lint and Export client
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_BASE_PATH: ''
+      NEXT_PUBLIC_BASE_PATH: ""
       NEXT_PUBLIC_BASE_API_URL: ${{ secrets.NEXT_PUBLIC_BASE_API_URL_DEV }}
       NEXT_PUBLIC_FIREBASE_WEB_API_KEY: ${{ secrets.FIREBASE_WEB_API_KEY_DEV }}
       NEXT_PUBLIC_FIREBASE_WEB_AUTHDOMAIN: ${{ secrets.FIREBASE_WEB_AUTHDOMAIN_DEV }}
