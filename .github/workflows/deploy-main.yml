@@ -1,14 +1,12 @@
 name: Deploy to Production Environment
 
-# This workflow will trigger on any tag/release created on *any* branch
-# Make sure to create tags/releases only from the "master" branch for consistency
 on:
   push:
     branches: ["main"]
 
 jobs:
-  lint-client:
-    name: Lint and Export client
+  export-client:
+    name: Export client
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_BASE_PATH: ${{ secrets.NEXT_PUBLIC_BASE_PATH }}
@@ -26,6 +24,7 @@ jobs:
       - name: Export static files
         run: |
           cd client
+          
           npm run export
           mv out/404/index.html out/404.html
       - name: Disable Jekyll
