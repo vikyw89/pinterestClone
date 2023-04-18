@@ -11,6 +11,7 @@
     "export": "npm run build && next export"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.20.0",
     "autoprefixer": "10.4.14",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
