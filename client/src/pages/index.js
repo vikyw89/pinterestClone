@@ -4,9 +4,11 @@ import { supabase } from "@/lib/supabase";
 import { Inter } from "next/font/google";
 import Image from "next/image";
 import { useEffect } from "react";
-import { updateAsyncV, useQueryV , useSyncV} from "use-sync-v";
+import { updateAsyncV, updateSyncV, useQueryV , useSyncV} from "use-sync-v";
 
 const inter = Inter({ subsets: ["latin"] });
+
+updateSyncV("show.signInComponent", true)
 
 const getAuth = async () => {
   // const response = await supabase.auth.signInWithOAuth({ provider: "google" });
@@ -22,7 +24,7 @@ const signIn = async () => {
 export default function Home() {
   const { data, error, loading } = useQueryV("auth", getAuth);
   const activeTheme = useSyncV("activeTheme")
-
+  const showSignInComponent = useSyncV("show.signInComponent")
   useEffect(()=>{
     document.querySelector('html').setAttribute('data-theme',activeTheme)
   })
@@ -32,7 +34,7 @@ export default function Home() {
 
   return (
     <Page>
-      {/* <SignInComponent/> */}
+      {showSignInComponent && <SignInComponent/>}
       {loading && <div className="text-base-content">Loading...</div>}
     </Page>
   );

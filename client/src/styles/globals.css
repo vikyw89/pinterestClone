@@ -26,6 +26,6 @@ body {
     rgb(var(--background-start-rgb));
 }
 
-*{
+/* *{
   outline: 1px solid red
-}
+} */
