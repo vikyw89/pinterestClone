@@ -28,7 +28,7 @@ export const SignInComponent = () => {
             Password
           </label>
           <input
-            type="passsword"
+            type="password"
             placeholder="Password"
             className="input input-bordered w-full max-w-xs bg-opacity-20  placeholder-neutral-content"
           />
