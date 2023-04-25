@@ -8,9 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix .",
-    "export": "npm run build && next export"
+    "export": "npm run build && next export",
+    "prettier-watch": "onchange \"./src/\" -- prettier --write --ignore-unknown {{changed}}"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.1",
     "@supabase/supabase-js": "^2.20.0",
     "daisyui": "^2.51.5",
     "eslint": "8.38.0",
@@ -18,11 +23,14 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "use-sync-v": "^2.0.1"
+    "use-sync-v": "^2.0.16"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
+    "onchange": "^7.1.0",
     "postcss": "^8.4.22",
+    "prettier": "2.8.8",
+    "prettier-plugin-organize-imports": "^3.2.2",
     "tailwindcss": "^3.3.1"
   }
 }

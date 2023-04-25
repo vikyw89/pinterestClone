@@ -1,52 +1,86 @@
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
-import { updateSyncV } from "use-sync-v";
+import { updateAsyncV, updateSyncV } from "use-sync-v";
+import { PopUpComponent } from "../popUp";
 
 export const SignInComponent = () => {
-  const closeComponent = (e) => {
-    if (e.target.id !== "blurredBackground") return;
+  const moveToSignUpPage = () => {
+    console.log("signup");
+  };
+
+  const emailSignInHandler = () => { };
+
+  const gmailSignInHandler = () => {
+    updateAsyncV("auth", async () => {
+      const response = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      return response;
+    });
     updateSyncV("show.signInComponent", false);
   };
+
   return (
-    <div
-      id="blurredBackground"
-      className="z-50 bg-base-300 text-base-content bg-opacity-20 fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center"
-      onClick={closeComponent}
-    >
-      <div className="flex flex-col items-center justify-start p-10 max-w-sm rounded-box bg-neutral text-neutral-content">
-        <Image src="./p-logo-lowres.png" width="100" height="100" />
-        <p className="font-extrabold text-center">Welcome to Pinterest</p>
-        <div className="flex flex-col gap-1">
-          <label for="email" className="pl-4">
-            Email
-          </label>
-          <input
-            type="email"
-            placeholder="Email"
-            className="input input-bordered w-full max-w-xs bg-opacity-20 placeholder-neutral-content"
+    <PopUpComponent>
+      <Image src="./p-logo-lowres.png" width="100" height="100" />
+      <p className="font-extrabold text-center">Welcome to Pinterest</p>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="email" className="pl-4">
+          Email
+        </label>
+        <input
+          type="email"
+          placeholder="Email"
+          className="input input-bordered w-full max-w-xs bg-opacity-20 placeholder-neutral-content"
+        />
+        <label for="password" className="pl-4 ">
+          Password
+        </label>
+        <input
+          type="password"
+          placeholder="Password"
+          className="input input-bordered w-full max-w-xs bg-opacity-20  placeholder-neutral-content"
+        />
+        <a className="font-bold text-sm text-center">Forgot your password?</a>
+        <button
+          className="btn w-full btn-primary text-primary-content"
+          onClick={emailSignInHandler}
+        >
+          Log in
+        </button>
+        <p className="text-center">OR</p>
+        <button
+          className="btn flex bg-transparent border-accent rounded-box items-center gap-2"
+          onClick={gmailSignInHandler}
+        >
+          <Image
+            height="30"
+            width="30"
+            src="./Google__G__Logo.svg"
+            style={{
+              aspectRatio: '1'
+            }}
           />
-          <label for="password" className="pl-4 ">
-            Password
-          </label>
-          <input
-            type="password"
-            placeholder="Password"
-            className="input input-bordered w-full max-w-xs bg-opacity-20  placeholder-neutral-content"
-          />
-          <a className="font-bold text-sm text-center">Forgot your password?</a>
-          <button className="btn w-full btn-primary text-primary-content">
-            Log in
-          </button>
-          <p className="text-center">OR</p>
-          <button className="btn flex bg-transparent border-accent rounded-box items-center gap-2">
-            <Image height="30" width="30" src="./Google__G__Logo.svg" />
-            <p className="text-neutral-content">Continue with Google</p>
-          </button>
-          <p className="text-center text-xs">
-            By continuing, you agree to Pinterest's Terms of Service and
-            acknowledge you've read our Privacy Policy Notice at collection.
+          <p className="text-neutral-content">Continue with Google</p>
+        </button>
+        <p className="text-center text-xs">
+          By continuing, you agree to Pinterest's Terms of Service and
+          acknowledge you've read our Privacy Policy Notice at collection.
+        </p>
+        <div className="divider m-0"></div>
+        <div className="text-xs text-center">
+          <p>
+            Not on Pinterest yet?{" "}
+            <a
+              className="underline cursor-pointer font-bold"
+              onClick={moveToSignUpPage}
+            >
+              Sign up!
+            </a>
           </p>
         </div>
       </div>
-    </div>
+
+    </PopUpComponent>
   );
 };
