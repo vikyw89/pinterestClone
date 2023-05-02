@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "@supabase/supabase-js": "^2.20.0",
     "daisyui": "^2.51.5",
     "eslint": "8.38.0",
@@ -23,7 +24,7 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "use-sync-v": "^2.0.16"
+    "use-sync-v": "^2.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.14",
