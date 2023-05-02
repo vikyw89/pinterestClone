@@ -2,7 +2,8 @@ name: Deploy to Production Environment
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - dev
 
 jobs:
   export-client:

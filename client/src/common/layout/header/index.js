@@ -32,7 +32,7 @@ export const Header = () => {
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer" onClick={navigateToLanding}>
         <Image
           alt="pinterest logo"
-          src="../p-logo-lowres.png"
+          src="./p-logo-lowres.png"
           width="32"
           height="32"
         />
