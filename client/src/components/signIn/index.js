@@ -1,28 +1,29 @@
-import { supabase } from "@/lib/supabase";
-import Image from "next/image";
-import { updateAsyncV, updateSyncV } from "use-sync-v";
-import { PopUpComponent } from "../popUp";
+import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
+import { updateAsyncV, updateSyncV, useSyncV } from 'use-sync-v'
+import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
+  const auth = useSyncV('auth')
+
   const moveToSignUpPage = () => {
-    console.log("signup");
-  };
+    console.log('signup')
+  }
 
-  const emailSignInHandler = () => { };
+  const emailSignInHandler = () => { }
 
-  const gmailSignInHandler = () => {
-    updateAsyncV("auth", async () => {
+  const gmailSignInHandler = (e) => {
+    updateAsyncV('signIn', async () => {
       const response = await supabase.auth.signInWithOAuth({
-        provider: "google",
-      });
-      return response;
-    });
-    updateSyncV("show.signInComponent", false);
-  };
+        provider: 'google',
+      })
+      return response
+    })
+  }
 
   return (
     <PopUpComponent>
-      <Image src="./p-logo-lowres.png" width="100" height="100" />
+      <Image alt="pinterest logo" src="./p-logo-lowres.png" width="100" height="100" />
       <p className="font-extrabold text-center">Welcome to Pinterest</p>
       <div className="flex flex-col gap-1">
         <label htmlFor="email" className="pl-4">
@@ -33,7 +34,7 @@ export const SignInComponent = () => {
           placeholder="Email"
           className="input input-bordered w-full max-w-xs bg-opacity-20 placeholder-neutral-content"
         />
-        <label for="password" className="pl-4 ">
+        <label htmlFor="password" className="pl-4 ">
           Password
         </label>
         <input
@@ -54,6 +55,7 @@ export const SignInComponent = () => {
           onClick={gmailSignInHandler}
         >
           <Image
+            alt="google logo"
             height="30"
             width="30"
             src="./Google__G__Logo.svg"
@@ -70,7 +72,7 @@ export const SignInComponent = () => {
         <div className="divider m-0"></div>
         <div className="text-xs text-center">
           <p>
-            Not on Pinterest yet?{" "}
+            Not on Pinterest yet?{' '}
             <a
               className="underline cursor-pointer font-bold"
               onClick={moveToSignUpPage}
@@ -82,5 +84,5 @@ export const SignInComponent = () => {
       </div>
 
     </PopUpComponent>
-  );
-};
+  )
+}

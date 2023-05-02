@@ -1,5 +1,7 @@
-import { supabase } from "@/lib/supabase";
-import Image from "next/image";
+import { supabase } from '@/lib/supabase'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import {
   readSyncV,
   updateAsyncV,
@@ -7,36 +9,43 @@ import {
   useAsyncV,
   useQueryV,
   useSyncV,
-} from "use-sync-v";
+} from 'use-sync-v'
 
 export const Header = () => {
-  const theme = useSyncV("theme");
-  const { data, loading, error } = useAsyncV("auth");
-
+  const theme = useSyncV('theme')
+  const auth = useSyncV('auth')
+  console.log(auth)
+  const router = useRouter()
   const showSignInComponent = () => {
-    updateSyncV("show.signInComponent", true);
-  };
+    updateSyncV('show.signInComponent', true)
+  }
 
   const signOutHandler = () => {
-    const { error } = updateAsyncV("auth", async () => {
-      const error = await supabase.auth.signOut();
-    });
-  };
+    updateAsyncV('signOut', async () => {
+      const { error } = await supabase.auth.signOut()
+      return error
+    })
+  }
+
+  const navigateToLanding = () => {
+    if (router.asPath === '/') return
+    router.push('/')
+  }
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
-            {/* {!loading && <progress className="progress w-full fixed bottom-0"></progress>} */}
-      <div className="flex-1 px-2 lg:flex-none flex items-center gap-1">
+      {/* {!loading && <progress className="progress w-full fixed bottom-0"></progress>} */}
+      <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer" onClick={navigateToLanding}>
         <Image
           alt="pinterest logo"
           src="../p-logo-lowres.png"
           width="32"
           height="32"
         />
-        <a className="text-lg font-bold">Pinterest</a>
+        <a className="text-lg font-bold" >Pinterest</a>
       </div>
       <div className="flex justify-end flex-1 px-2">
         <div className="flex items-stretch">
-          {!data ? (
+          {!auth.session ? (
             <a
               className="btn btn-ghost rounded-btn"
               onClick={showSignInComponent}
@@ -62,18 +71,18 @@ export const Header = () => {
                     <a
                       onClick={() => {
 
-                        updateSyncV("activeTheme", el);
+                        updateSyncV('activeTheme', el)
                       }}
                     >
                       {el}
                     </a>
                   </li>
-                );
+                )
               })}
             </ul>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

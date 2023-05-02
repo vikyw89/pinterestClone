@@ -1,8 +1,7 @@
-import { Loading } from "@/common/loading";
-import { Footer } from "../footer";
-import { Header } from "../header";
-import { useAsyncV } from "use-sync-v";
-import { Notif } from "@/common/notif";
+import { Loading } from '@/common/loading'
+import { Footer } from '../footer'
+import { Header } from '../header'
+import { Notif } from '@/common/notif'
 export const Page = ({ children }) => {
 
   return (
@@ -11,7 +10,6 @@ export const Page = ({ children }) => {
       <Loading/>
       <main className="flex-1">{children}</main>
       <Notif/>
-      <Footer />
     </div>
-  );
-};
+  )
+}
