@@ -1,6 +1,6 @@
 import { Page } from '@/common/layout/page'
 import { SignInComponent } from '@/components/signIn'
-import { updateAsyncV, updateSyncV, useQueryV, useSyncV } from 'use-sync-v'
+import { updateSyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV('show.signInComponent', true)
 

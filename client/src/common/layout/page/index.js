@@ -1,5 +1,4 @@
 import { Loading } from '@/common/loading'
-import { Footer } from '../footer'
 import { Header } from '../header'
 import { Notif } from '@/common/notif'
 export const Page = ({ children }) => {

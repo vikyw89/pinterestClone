@@ -1,18 +1,15 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { updateAsyncV, updateSyncV, useSyncV } from 'use-sync-v'
+import { updateAsyncV } from 'use-sync-v'
 import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
-  const auth = useSyncV('auth')
-
   const moveToSignUpPage = () => {
-    console.log('signup')
   }
 
   const emailSignInHandler = () => { }
 
-  const gmailSignInHandler = (e) => {
+  const gmailSignInHandler = () => {
     updateAsyncV('signIn', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -66,8 +63,8 @@ export const SignInComponent = () => {
           <p className="text-neutral-content">Continue with Google</p>
         </button>
         <p className="text-center text-xs">
-          By continuing, you agree to Pinterest's Terms of Service and
-          acknowledge you've read our Privacy Policy Notice at collection.
+          By continuing, you agree to Pinterest&apos;s Terms of Service and
+          acknowledge you&apos;ve read our Privacy Policy Notice at collection.
         </p>
         <div className="divider m-0"></div>
         <div className="text-xs text-center">

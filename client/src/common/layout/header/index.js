@@ -1,20 +1,15 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import {
-  readSyncV,
   updateAsyncV,
   updateSyncV,
-  useAsyncV,
-  useQueryV,
   useSyncV,
 } from 'use-sync-v'
 
 export const Header = () => {
   const theme = useSyncV('theme')
   const auth = useSyncV('auth')
-  console.log(auth)
   const router = useRouter()
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)

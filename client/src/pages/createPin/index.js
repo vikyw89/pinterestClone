@@ -1,17 +1,14 @@
 import { Page } from '@/common/layout/page'
-import { supabase } from '@/lib/supabase'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useState } from 'react'
-import { debugSyncV, useSyncV } from 'use-sync-v'
 const CreatePin = () => {
-  const [imageUrl, setImageUrl] = useState('../p-logo-lowres.png')
-  debugSyncV('')
-  const imageUploadHandler = async (e) => {
-    const new_pin = e.target.files[0]
-    const { data, error } = await supabase.storage
-      .from('pins')
-      .upload('public/avatar1.png', new_pin)
+  const [imageUrl] = useState('../p-logo-lowres.png')
+  const imageUploadHandler = async () => {
+    // const new_pin = e.target.files[0]
+  //   const { data, error } = await supabase.storage
+  //     .from('pins')
+  //     .upload('public/avatar1.png', new_pin)
   }
   return (
     <Page>

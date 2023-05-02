@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { deleteSyncV, updateAsyncV, updateSyncV, useSyncV } from 'use-sync-v'
+import { deleteSyncV, useSyncV } from 'use-sync-v'
 
 export const Notif = () => {
   const authError = useSyncV('auth.error')
