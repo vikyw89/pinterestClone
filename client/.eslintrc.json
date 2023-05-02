@@ -4,7 +4,7 @@
     "browser": true,
     "es6": true
   },
-  "extends": "next/core-web-vitals",
+  "extends": ["next/core-web-vitals","eslint:recommended"],
   "plugins": [
      "eslint-plugin-react", "eslint-plugin-react-hooks"
   ],

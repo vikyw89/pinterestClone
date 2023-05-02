@@ -33,30 +33,51 @@ Components:
 
 ## Data Model
 
-- users collection
+A user has many boards, created many pins, liked many pins, has many comments
+- users
 
-  - user_account doc
-    - doc_id from auth_uid
-    - date_created
-    - date_updated
-    - profile_picture_url
-    - boards map
-      - board name array
-        - pin_doc_id
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - username text
+  - profile_picture_url string
 
-- pins collection
-  - pin doc
-    - doc_id
-    - date_created
-    - date_updated
-    - author_uid
-    - description
-    - media_url
-    - link_url
-    - pinners array
-      - user_account_doc_id
-    - comments array
-      - author_doc_id
-      - date_created
-      - date_updated
-      - text_content
+A board has a single user, has many pins
+- boards
+
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - name text
+  - board_owner_id bigint notnull references users
+
+A pin has a single creator / user, is in many boards, has many comments
+- pins
+
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - title text
+  - description text
+  - url_link text
+  - image_url text
+  - pin_creator_id bigint notnull references users
+  - original_board_id bigint notnull references boards
+
+A like has a single pin, and a single creator, and has a single board
+- likes
+
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - pin bigint notnull references pins
+  - user bigint notnull references users
+  - saved_in bigint notnull references boards
+
+A comment has a single pin, a single creator
+- comments
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - commented_pin bigint notnull references pins
+  - comment_creator bigint notnull references users
