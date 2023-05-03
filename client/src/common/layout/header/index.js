@@ -7,12 +7,18 @@ import {
   useAsyncV,
   useSyncV,
 } from 'use-sync-v'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export const Header = () => {
   const theme = useSyncV('theme')
   const { data: auth } = useAsyncV('auth')
+  console.log(auth)
   const signInComponent = useSyncV('show.signInComponent')
   const router = useRouter()
+
+  const avatarURL = auth?.user?.user_metadata?.avatar_url
+  console.log(avatarURL)
+
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
   }
@@ -53,22 +59,22 @@ export const Header = () => {
           </a>
         }
       </div>
-      <div className="flex justify-end flex-1 px-2">
+      <div className="flex justify-end flex-1 px-2 items-center">
         <div className="flex">
           {!auth ? (
             <a
-              className="btn btn-ghost rounded-btn"
+              className="btn btn-ghost rounded-btn p-2"
               onClick={showSignInComponent}
             >
               Sign In
             </a>
           ) : (
-            <a className="btn btn-ghost rounded-btn" onClick={signOutHandler}>
+            <a className="btn btn-ghost rounded-btn p-2" onClick={signOutHandler}>
               Sign Out
             </a>
           )}
           <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost rounded-btn">
+            <label tabIndex={0} className="btn p-2 btn-ghost rounded-btn">
               Theme
             </label>
             <ul
@@ -89,6 +95,12 @@ export const Header = () => {
                 )
               })}
             </ul>
+          </div>
+        </div>
+        <div className="avatar aspect-square">
+          <div className="w-8 rounded-full flex items-center">
+            {avatarURL && <img src={avatarURL} />}
+            <AccountCircleIcon className='text-3xl'/>
           </div>
         </div>
       </div>
