@@ -3,6 +3,8 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useQueryV, useSyncV } from 'use-sync-v';
+import { supabase } from '@/lib/supabase';
 
 const initialPin = {
   title: '',
@@ -11,18 +13,34 @@ const initialPin = {
   imageURL: ''
 }
 
+const fetchBoards = async(creator_id) => {
+  const response = await supabase
+    .from('boards')
+    .select()
+    .filter('creator_id','eq',creator_id)
+  return response
+}
 
 const CreatePin = () => {
+  // get auth
+  const auth = useSyncV('auth.session')
+  // const user_id = auth.user.id
+  console.log({auth})
+  // fetch board from DB
+  // const board = useQueryV('board',fetchBoards(user_id),{cacheData:false})
+
+  // console.log(board)
+
   const [pin, setPin] = useState(initialPin)
   const pinImageHandler = (e) => {
-    console.log(URL.createObjectURL(e.target.files[0]))
+    e.stopPropagation()
     const imageURL = URL.createObjectURL(e.target.files[0])
     setPin(p => ({
       ...p,
       imageURL: imageURL
     }))
   }
-  console.log(pin)
+
   const pinHandler = (e) => {
     const PIN_KEY_MAP = {
       pinTitle: 'title',
@@ -58,7 +76,7 @@ const CreatePin = () => {
               <button className="btn btn-primary">Save</button>
             </div>
             <div className="flex flex-wrap">
-              <div className="flex flex-col max-w-lg w-full bg-red-50">
+              <div className="flex flex-col max-w-lg w-full bg-neutral text-neutral-content">
                 <div className="flex-1 h-full relative">
                   {pin.imageURL !== '' &&
                     <>
@@ -77,14 +95,14 @@ const CreatePin = () => {
                   }
                   {pin.imageURL === '' &&
                     <>
-                      <div className='aspect-square text-base-content flex flex-col border-2 border-primary-content items-center justify-center'>
+                      <div className='aspect-square flex flex-col items-center justify-center relative border-opacity-50 border-neutral-content border-4 border-dashed'>
                         <CloudUploadIcon />
                         <div>
                           click to upload
                         </div>
+                        <input className="w-full h-full absolute left-0 top-0 opacity-0 " type="file" accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp"
+                          onChange={pinImageHandler} />
                       </div>
-                      <input className="w-full h-full absolute left-0 top-0 opacity-0" type="file" accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp"
-                        onChange={pinImageHandler} />
                       <button className='btn btn-primary w-full'>Save From Site</button>
                     </>
                   }

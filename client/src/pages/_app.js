@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useEffect } from 'react'
-import { updateSyncV, useSyncV } from 'use-sync-v'
+import { updateSyncV, useQueryV, useSyncV } from 'use-sync-v'
 
 updateSyncV(
   'theme',
@@ -47,6 +47,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     document.querySelector('html').setAttribute('data-theme', activeTheme)
   })
+  useQueryV('auth',)
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       updateSyncV('auth', { event, session })
