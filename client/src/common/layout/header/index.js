@@ -4,12 +4,15 @@ import { useRouter } from 'next/router'
 import {
   updateAsyncV,
   updateSyncV,
+  useAsyncV,
   useSyncV,
 } from 'use-sync-v'
 
 export const Header = () => {
   const theme = useSyncV('theme')
-  const auth = useSyncV('auth')
+  const { data: auth } = useAsyncV('auth')
+  const signInComponent = useSyncV('show.signInComponent')
+  console.log({signInComponent})
   const router = useRouter()
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
@@ -32,7 +35,7 @@ export const Header = () => {
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer" onClick={navigateToLanding}>
         <Image
           alt="pinterest logo"
-          src="./p-logo-lowres.png"
+          src="../p-logo-lowres.png"
           width="32"
           height="32"
         />
@@ -40,18 +43,23 @@ export const Header = () => {
       </div>
       <div className="flex justify-end flex-1 px-2">
         <div className="flex items-stretch">
-          {!auth.session ? (
-            <a
-              className="btn btn-ghost rounded-btn"
-              onClick={showSignInComponent}
-            >
-              Sign In
-            </a>
-          ) : (
-            <a className="btn btn-ghost rounded-btn" onClick={signOutHandler}>
-              Sign Out
-            </a>
-          )}
+          {!signInComponent &&
+            <>
+              {!auth ? (
+                <a
+                  className="btn btn-ghost rounded-btn"
+                  onClick={showSignInComponent}
+                >
+                  Sign In
+                </a>
+              ) : (
+                <a className="btn btn-ghost rounded-btn" onClick={signOutHandler}>
+                  Sign Out
+                </a>
+              )}
+
+            </>
+          }
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost rounded-btn">
               Theme

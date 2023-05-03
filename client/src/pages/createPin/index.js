@@ -1,10 +1,11 @@
 import { Page } from '@/common/layout/page'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
-import { useState } from 'react'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { useQueryV, useSyncV } from 'use-sync-v';
-import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { supabase } from '@/lib/supabase'
+import { updateAsyncV, useAsyncV } from 'use-sync-v'
+import ProtectedRoute from '@/common/protected'
 
 const initialPin = {
   title: '',
@@ -13,23 +14,21 @@ const initialPin = {
   imageURL: ''
 }
 
-const fetchBoards = async(creator_id) => {
-  const response = await supabase
-    .from('boards')
-    .select()
-    .filter('creator_id','eq',creator_id)
-  return response
-}
-
 const CreatePin = () => {
-  // get auth
-  const auth = useSyncV('auth.session')
-  // const user_id = auth.user.id
-  console.log({auth})
-  // fetch board from DB
-  // const board = useQueryV('board',fetchBoards(user_id),{cacheData:false})
+  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const boards = useAsyncV('boards')
 
-  // console.log(board)
+  useEffect(() => {
+    if (!auth.data) return
+    const fetchBoards = async () => {
+      const response = await supabase
+        .from('boards')
+        .select()
+        .filter('creator_id', 'eq', auth.data.user.id)
+      return response
+    }
+    // updateAsyncV('boards', fetchBoards)
+  }, [auth.data])
 
   const [pin, setPin] = useState(initialPin)
   const pinImageHandler = (e) => {
@@ -121,4 +120,4 @@ const CreatePin = () => {
   )
 }
 
-export default CreatePin
+export default ProtectedRoute(CreatePin)

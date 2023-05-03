@@ -1,15 +1,20 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { updateAsyncV } from 'use-sync-v'
+import { updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
 import { PopUpComponent } from '../popUp'
+import { useEffect } from 'react'
 
 export const SignInComponent = () => {
+  const {data:auth} = useAsyncV('auth')
+
   const moveToSignUpPage = () => {
   }
 
   const emailSignInHandler = () => { }
 
-  const gmailSignInHandler = () => {
+  const gmailSignInHandler = (e) => {
+    console.log(e.target)
+    e.currentTarget.classList.add('loading')
     updateAsyncV('signIn', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',

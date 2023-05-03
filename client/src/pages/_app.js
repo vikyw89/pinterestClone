@@ -1,7 +1,9 @@
 import { supabase } from '@/lib/supabase'
+import { prepareNewAccountDatabase } from '@/lib/supabase/onNewAccount'
 import '@/styles/globals.css'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateSyncV, useQueryV, useSyncV } from 'use-sync-v'
+import { updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV(
   'theme',
@@ -37,24 +39,37 @@ updateSyncV(
     'winter',
   ].sort((a, b) => (a > b ? 1 : -1))
 )
-updateSyncV('auth', {
-  event:null,
-  session:null
-})
 
 export default function App({ Component, pageProps }) {
   const activeTheme = useSyncV('activeTheme')
+  const {data:auth} = useAsyncV('auth')
+  const router = useRouter()
+
   useEffect(() => {
     document.querySelector('html').setAttribute('data-theme', activeTheme)
   })
-  useQueryV('auth',)
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      updateSyncV('auth', { event, session })
+      const auth = updateAsyncV('auth', () => session)
+      if (!auth.data) return
+      prepareNewAccountDatabase()
     })
     return () => {
       subscription.unsubscribe()
     }
   }, [])
-  return <Component {...pageProps} />
+
+  useEffect(()=>{
+    if (auth) {
+    } else {
+      if (router.route === '/') return
+      router.push('/')
+    }
+  },[auth])
+
+  return (
+    <>
+      <Component {...pageProps} />
+    </>)
 }
