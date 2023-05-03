@@ -24,24 +24,37 @@ export const Header = () => {
     })
   }
 
-  const navigateToLanding = () => {
-    if (router.asPath === '/') return
+  const navigateToLanding = (e) => {
     router.push('/')
   }
+
+  const navigateToCreatePin = (e) => {
+    router.push('/createPin')
+  }
+
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
-      {/* {!loading && <progress className="progress w-full fixed bottom-0"></progress>} */}
-      <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer" onClick={navigateToLanding}>
-        <Image
-          alt="pinterest logo"
-          src="../p-logo-lowres.png"
-          width="32"
-          height="32"
-        />
-        <a className="text-lg font-bold" >Pinterest</a>
+      <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
+        <div onClick={navigateToLanding} className="px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
+          <Image
+            alt="pinterest logo"
+            src="../p-logo-lowres.png"
+            width="32"
+            height="32"
+          />
+          <a className="text-lg font-bold" >Pinterest</a>
+        </div>
+        {auth &&
+          <a
+            className="btn btn-ghost rounded-btn"
+            onClick={navigateToCreatePin}
+          >
+            Create
+          </a>
+        }
       </div>
       <div className="flex justify-end flex-1 px-2">
-        <div className="flex items-stretch">
+        <div className="flex">
           {!auth ? (
             <a
               className="btn btn-ghost rounded-btn"

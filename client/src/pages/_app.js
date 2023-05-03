@@ -61,7 +61,7 @@ export default function App({ Component, pageProps }) {
   }, [])
 
   useEffect(() => {
-    if (!auth && router.route === '/') {
+    if (!auth && router.route !== '/') {
       router.push('/')
     }
   }, [auth])
