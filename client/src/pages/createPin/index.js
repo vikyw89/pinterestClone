@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
 import { updateAsyncV, useAsyncV } from 'use-sync-v'
-import ProtectedRoute from '@/common/protected'
 
 const initialPin = {
   title: '',
@@ -16,7 +15,9 @@ const initialPin = {
 
 const CreatePin = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const boards = useAsyncV('boards')
+  const { data: boards } = useAsyncV('boards')
+  console.log(boards?.data)
+  const [pin, setPin] = useState(initialPin)
 
   useEffect(() => {
     if (!auth.data) return
@@ -27,10 +28,9 @@ const CreatePin = () => {
         .filter('creator_id', 'eq', auth.data.user.id)
       return response
     }
-    // updateAsyncV('boards', fetchBoards)
+    updateAsyncV('boards', fetchBoards)
   }, [auth.data])
 
-  const [pin, setPin] = useState(initialPin)
   const pinImageHandler = (e) => {
     e.stopPropagation()
     const imageURL = URL.createObjectURL(e.target.files[0])
@@ -70,7 +70,13 @@ const CreatePin = () => {
               <MoreHorizIcon className="text-4xl" />
               <div className="flex-1"></div>
               <select className="select max-w-xs bg-neutral">
-                <option>default</option>
+                {boards?.data ?
+                  boards.data.map((p, i) => {
+                    return <option key={i}>{p}</option>
+                  })
+                  :
+                  <option>default</option>
+                }
               </select>
               <button className="btn btn-primary">Save</button>
             </div>
@@ -120,4 +126,4 @@ const CreatePin = () => {
   )
 }
 
-export default ProtectedRoute(CreatePin)
+export default CreatePin

@@ -42,7 +42,7 @@ updateSyncV(
 
 export default function App({ Component, pageProps }) {
   const activeTheme = useSyncV('activeTheme')
-  const {data:auth} = useAsyncV('auth')
+  const { data: auth } = useAsyncV('auth')
   const router = useRouter()
 
   useEffect(() => {
@@ -60,13 +60,11 @@ export default function App({ Component, pageProps }) {
     }
   }, [])
 
-  useEffect(()=>{
-    if (auth) {
-    } else {
-      if (router.route === '/') return
+  useEffect(() => {
+    if (!auth && router.route === '/') {
       router.push('/')
     }
-  },[auth])
+  }, [auth])
 
   return (
     <>

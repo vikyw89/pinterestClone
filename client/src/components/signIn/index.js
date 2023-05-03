@@ -2,11 +2,8 @@ import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
 import { PopUpComponent } from '../popUp'
-import { useEffect } from 'react'
 
 export const SignInComponent = () => {
-  const {data:auth} = useAsyncV('auth')
-
   const moveToSignUpPage = () => {
   }
 

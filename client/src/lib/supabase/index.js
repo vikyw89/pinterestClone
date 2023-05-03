@@ -7,4 +7,4 @@ const KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 // Create a single supabase client for interacting with your database
 const supabase = createClient(URL, KEY)
 
-export {supabase}
+export { supabase }

@@ -12,7 +12,6 @@ export const Header = () => {
   const theme = useSyncV('theme')
   const { data: auth } = useAsyncV('auth')
   const signInComponent = useSyncV('show.signInComponent')
-  console.log({signInComponent})
   const router = useRouter()
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
@@ -43,23 +42,18 @@ export const Header = () => {
       </div>
       <div className="flex justify-end flex-1 px-2">
         <div className="flex items-stretch">
-          {!signInComponent &&
-            <>
-              {!auth ? (
-                <a
-                  className="btn btn-ghost rounded-btn"
-                  onClick={showSignInComponent}
-                >
-                  Sign In
-                </a>
-              ) : (
-                <a className="btn btn-ghost rounded-btn" onClick={signOutHandler}>
-                  Sign Out
-                </a>
-              )}
-
-            </>
-          }
+          {!auth ? (
+            <a
+              className="btn btn-ghost rounded-btn"
+              onClick={showSignInComponent}
+            >
+              Sign In
+            </a>
+          ) : (
+            <a className="btn btn-ghost rounded-btn" onClick={signOutHandler}>
+              Sign Out
+            </a>
+          )}
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost rounded-btn">
               Theme
@@ -73,7 +67,6 @@ export const Header = () => {
                   <li key={index}>
                     <a
                       onClick={() => {
-
                         updateSyncV('activeTheme', el)
                       }}
                     >

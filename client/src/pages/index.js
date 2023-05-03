@@ -1,7 +1,7 @@
 import { Page } from '@/common/layout/page'
 import { SignInComponent } from '@/components/signIn'
 import { useEffect } from 'react'
-import { updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV('show.signInComponent', true)
 
