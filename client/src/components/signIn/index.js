@@ -13,6 +13,9 @@ export const SignInComponent = () => {
     updateAsyncV('signIn', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          redirectTo: window.location.href
+        }
       })
       return response
     })
