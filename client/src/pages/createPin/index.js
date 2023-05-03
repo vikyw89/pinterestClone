@@ -61,6 +61,15 @@ const CreatePin = () => {
       imageURL: initialPin.imageURL
     }))
   }
+
+  const saveHandler = () => {
+    // TODO
+    // upload image blob into storage
+    // get storage url 
+    // construct pin data
+    // upload pin data into database
+    // error on any step will re roll data and send error message
+  }
   return (
     <Page>
       <div className="flex flex-1 items-center justify-center h-full">
@@ -78,7 +87,7 @@ const CreatePin = () => {
                   <option>default</option>
                 }
               </select>
-              <button className="btn btn-primary">Save</button>
+              <button onClick={saveHandler} className="btn btn-primary">Save</button>
             </div>
             <div className="flex flex-wrap">
               <div className="flex flex-col max-w-lg w-full bg-neutral text-neutral-content">
