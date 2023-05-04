@@ -108,11 +108,12 @@ const CreatePin = () => {
         .select()
       return response
     })
-    console.log("🚀 ~ file: index.js:110 ~ uploadPinToDatabase ~ uploadPinToDatabase:", uploadPinToDatabase)
-    // error on any step will re roll data and send error message
-    
+    setPin(initialPin)
   } catch(err) {
     // reroll upload
+    // delete image in storage
+    
+    // delete data in DB
   }
   }
   return (
