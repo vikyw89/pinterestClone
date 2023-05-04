@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
-import { readSyncV, updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 import { v4 as uuidv4 } from 'uuid';
 
 const initialPin = {
@@ -23,13 +23,13 @@ const CreatePin = () => {
 
   useEffect(() => {
     if (!auth.data) return
-    updateAsyncV('boards', async () => {
+    setAsyncV('boards', async () => {
       const response = await supabase
         .from('boards')
         .select()
         .filter('creator_id', 'eq', auth.data.user.id)
         .throwOnError()
-      // updateSyncV('boards.error', response.error.message)
+      // setSyncV('boards.error', response.error.message)
       return response.data
     })
   }, [auth.data])
@@ -72,14 +72,14 @@ const CreatePin = () => {
     const imageBlob = await response.blob()
     // upload image blob into storage
     const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
-    const uploadedPin = await updateAsyncV('pin', async () => {
+    await setAsyncV('pin', async () => {
       const response = supabase.storage
         .from('pins')
         .upload(storagePath, imageBlob)
       if (response.error) {
-        updateSyncV('pin.error', response.error)
+        setSyncV('pin.error', response.error)
         setTimeout(() => {
-          updateSyncV('pin.error', false)
+          setSyncV('pin.error', false)
         }, 5000)
       }
       return response
@@ -100,7 +100,7 @@ const CreatePin = () => {
     }
 
     // upload pin data into database
-    const uploadPinToDatabase = updateAsyncV('pin',async()=>{
+    const uploadPinToDatabase = setAsyncV('pin',async()=>{
       const response = await supabase
         .from('pins')
         .insert(pinData)
