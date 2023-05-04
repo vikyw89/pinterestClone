@@ -124,13 +124,13 @@ const CreatePin = () => {
             <div className="flex justify-between items-center">
               <MoreHorizIcon className="text-4xl" />
               <div className="flex-1"></div>
-              <select className="select max-w-xs bg-neutral">
+              <select className="select max-w-xs bg-neutral text-neutral-content">
                 {boards.data ?
                   boards.data.map((p, i) => {
-                    return <option key={i}>{p}</option>
+                    return <option  key={i}>{p.title}</option>
                   })
                   :
-                  <option>default</option>
+                  <option >default</option>
                 }
               </select>
               <button onClick={saveHandler} className="btn btn-primary">Save</button>

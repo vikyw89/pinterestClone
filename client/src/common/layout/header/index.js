@@ -96,8 +96,15 @@ export const Header = () => {
         </div>
         <div className="avatar aspect-square">
           <div className="w-8 rounded-full flex items-center">
-            {avatarURL && <img src={avatarURL} />}
-            <AccountCircleIcon className='text-3xl'/>
+            {avatarURL && <Image src={avatarURL}
+              alt="avatar"
+              width="0"
+              height="0"
+              className="w-full h-auto"
+              id="pinImageURL"
+            />}
+
+            <AccountCircleIcon className='text-3xl' />
           </div>
         </div>
       </div>
