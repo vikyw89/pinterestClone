@@ -4,13 +4,15 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
-import { updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { readSyncV, updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { v4 as uuidv4 } from 'uuid';
 
 const initialPin = {
   title: '',
   description: '',
-  link: '',
-  imageURL: ''
+  link_url: '',
+  image_url: '',
+  creator_id:''
 }
 
 const CreatePin = () => {
@@ -18,7 +20,7 @@ const CreatePin = () => {
   const boards = useAsyncV('boards')
   const uploadPin = useAsyncV('pin')
   const [pin, setPin] = useState(initialPin)
-  console.log(boards)
+
   useEffect(() => {
     if (!auth.data) return
     updateAsyncV('boards', async () => {
@@ -37,7 +39,7 @@ const CreatePin = () => {
     const imageURL = URL.createObjectURL(e.target.files[0])
     setPin(p => ({
       ...p,
-      imageURL: imageURL
+      image_url: imageURL
     }))
   }
 
@@ -45,8 +47,8 @@ const CreatePin = () => {
     const PIN_KEY_MAP = {
       pinTitle: 'title',
       pinDescription: 'description',
-      pinLink: 'link',
-      pinImageURL: 'imageURL'
+      pinLink: 'link_url',
+      pinImageURL: 'image_url'
     }
     const key = PIN_KEY_MAP[e.target.id]
     const value = e.target.value
@@ -59,26 +61,54 @@ const CreatePin = () => {
   const removeImageHandler = () => {
     setPin(p => ({
       ...p,
-      imageURL: initialPin.imageURL
+      image_url: initialPin.image_url
     }))
   }
 
   const saveHandler = async () => {
     // TODO
     // get blob from url
-    const imageBlob = await fetch(pin.imageURL)
-    console.log(imageBlob)
+    const response = await fetch(pin.image_url)
+    const imageBlob = await response.blob()
     // upload image blob into storage
-
-    updateAsyncV('pin', async () => {
+    const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
+    const uploadedPin = await updateAsyncV('pin', async () => {
       const response = supabase.storage
         .from('pins')
-        .upload(path, imageBlob)
+        .upload(storagePath, imageBlob)
+      if (response.error) {
+        updateSyncV('pin.error', response.error)
+        setTimeout(() => {
+          updateSyncV('pin.error', false)
+        }, 5000)
+      }
       return response
     })
-    // get storage url 
+
+    // get uploadedPin public URL
+    const uploadedImagePublicURL = supabase.storage
+      .from('pins')
+      .getPublicUrl(storagePath).data.publicUrl
+
     // construct pin data
+    const pinData = {
+      image_url:uploadedImagePublicURL,
+      title:pin.title,
+      description:pin.description,
+      link_url:pin.link_url,
+      creator_id:auth.data.user.id
+    }
+
     // upload pin data into database
+    const uploadPinToDatabase = updateAsyncV('pin',async()=>{
+      const response = await supabase
+        .from('pins')
+        .insert(pinData)
+        .throwOnError()
+      return response
+    })
+      console.log("🚀 ~ file: index.js:109 ~ uploadPinToDatabase ~ response:", response)
+
     // error on any step will re roll data and send error message
   }
   return (
@@ -103,9 +133,9 @@ const CreatePin = () => {
             <div className="flex flex-wrap">
               <div className="flex flex-col max-w-lg w-full bg-neutral text-neutral-content">
                 <div className="flex-1 h-full relative">
-                  {pin.imageURL !== '' &&
+                  {pin.image_url !== '' &&
                     <>
-                      <Image src={pin.imageURL}
+                      <Image src={pin.image_url}
                         alt="uploaded_image"
                         width="0"
                         height="0"
@@ -118,7 +148,7 @@ const CreatePin = () => {
                       </button>
                     </>
                   }
-                  {pin.imageURL === '' &&
+                  {pin.image_url === '' &&
                     <>
                       <div className='aspect-square flex flex-col items-center justify-center relative border-opacity-50 border-neutral-content border-4 border-dashed'>
                         <CloudUploadIcon />

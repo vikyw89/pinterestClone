@@ -9,6 +9,7 @@ export const Loading = () => {
   const signOut = useAsyncV('signOut')
   const auth = useAsyncV('auth')
   const boards = useAsyncV('boards')
+  const pin = useAsyncV('pin')
 
   useEffect(() => {
     const changeStartHandler = () => {
@@ -28,7 +29,7 @@ export const Loading = () => {
   }, [router])
   return (
     <>
-      {(route.loading || signIn.loading || signOut.loading || auth.loading || boards.loading) && <progress className="progress progress-accent"></progress>}
+      {(route.loading || signIn.loading || signOut.loading || auth.loading || boards.loading || pin.loading) && <progress className="progress progress-accent"></progress>}
     </>
   )
 }
