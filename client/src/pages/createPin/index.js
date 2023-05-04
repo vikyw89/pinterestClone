@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
-import { updateAsyncV, useAsyncV } from 'use-sync-v'
+import { updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
 
 const initialPin = {
   title: '',
@@ -15,20 +15,21 @@ const initialPin = {
 
 const CreatePin = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const { data: boards } = useAsyncV('boards')
-  console.log(boards?.data)
+  const boards = useAsyncV('boards')
+  const uploadPin = useAsyncV('pin')
   const [pin, setPin] = useState(initialPin)
-
+  console.log(boards)
   useEffect(() => {
     if (!auth.data) return
-    const fetchBoards = async () => {
+    updateAsyncV('boards', async () => {
       const response = await supabase
         .from('boards')
         .select()
         .filter('creator_id', 'eq', auth.data.user.id)
-      return response
-    }
-    updateAsyncV('boards', fetchBoards)
+        .throwOnError()
+      // updateSyncV('boards.error', response.error.message)
+      return response.data
+    })
   }, [auth.data])
 
   const pinImageHandler = (e) => {
@@ -62,9 +63,19 @@ const CreatePin = () => {
     }))
   }
 
-  const saveHandler = () => {
+  const saveHandler = async () => {
     // TODO
+    // get blob from url
+    const imageBlob = await fetch(pin.imageURL)
+    console.log(imageBlob)
     // upload image blob into storage
+
+    updateAsyncV('pin', async () => {
+      const response = supabase.storage
+        .from('pins')
+        .upload(path, imageBlob)
+      return response
+    })
     // get storage url 
     // construct pin data
     // upload pin data into database
@@ -79,7 +90,7 @@ const CreatePin = () => {
               <MoreHorizIcon className="text-4xl" />
               <div className="flex-1"></div>
               <select className="select max-w-xs bg-neutral">
-                {boards?.data ?
+                {boards.data ?
                   boards.data.map((p, i) => {
                     return <option key={i}>{p}</option>
                   })

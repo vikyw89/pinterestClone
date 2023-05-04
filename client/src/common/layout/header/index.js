@@ -12,12 +12,9 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 export const Header = () => {
   const theme = useSyncV('theme')
   const { data: auth } = useAsyncV('auth')
-  console.log(auth)
-  const signInComponent = useSyncV('show.signInComponent')
   const router = useRouter()
 
   const avatarURL = auth?.user?.user_metadata?.avatar_url
-  console.log(avatarURL)
 
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)

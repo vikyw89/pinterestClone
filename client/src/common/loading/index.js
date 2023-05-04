@@ -4,20 +4,11 @@ import { updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 export const Loading = () => {
   const router = useRouter()
-  const showLoading = useSyncV('show.loading')
-  const routeLoading = useSyncV('route.loading')
-  const { loading: signInLoading } = useAsyncV('signIn')
-  const { loading: signOutLoading } = useAsyncV('signOut')
-  const { loading: authLoading } = useAsyncV('auth')
-  const { loading: boardsLoading } = useAsyncV('boards')
-
-  useEffect(() => {
-    if (routeLoading || signInLoading || signOutLoading || authLoading || boardsLoading) {
-      updateSyncV('show.loading', true)
-    } else {
-      updateSyncV('show.loading', false)
-    }
-  }, [signInLoading, routeLoading, signOutLoading, authLoading, boardsLoading])
+  const route = useAsyncV('route')
+  const signIn = useAsyncV('signIn')
+  const signOut = useAsyncV('signOut')
+  const auth = useAsyncV('auth')
+  const boards = useAsyncV('boards')
 
   useEffect(() => {
     const changeStartHandler = () => {
@@ -37,7 +28,7 @@ export const Loading = () => {
   }, [router])
   return (
     <>
-      {showLoading && <progress className="progress progress-accent"></progress>}
+      {(route.loading || signIn.loading || signOut.loading || auth.loading || boards.loading) && <progress className="progress progress-accent"></progress>}
     </>
   )
 }

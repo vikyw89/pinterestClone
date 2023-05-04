@@ -42,7 +42,7 @@ updateSyncV(
 
 export default function App({ Component, pageProps }) {
   const activeTheme = useSyncV('activeTheme')
-  const { data: auth } = useAsyncV('auth')
+  const auth = useAsyncV('auth', { initialState: { loading: true } })
   const router = useRouter()
 
   useEffect(() => {
@@ -51,9 +51,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const auth = updateAsyncV('auth', () => session)
-      if (!auth.data) return
-      prepareNewAccountDatabase()
+      updateAsyncV('auth', () => session)
     })
     return () => {
       subscription.unsubscribe()
@@ -61,10 +59,11 @@ export default function App({ Component, pageProps }) {
   }, [])
 
   useEffect(() => {
-    if (!auth && router.route !== '/') {
+    if (auth.loading) return
+    if (!auth.data && router.route !== '/') {
       router.push('/')
     }
-  }, [auth])
+  }, [auth.data])
 
   return (
     <>
