@@ -29,7 +29,6 @@ const CreatePin = () => {
         .select()
         .filter('creator_id', 'eq', auth.data.user.id)
         .throwOnError()
-      // setSyncV('boards.error', response.error.message)
       return response.data
     })
   }, [auth.data])
@@ -66,6 +65,7 @@ const CreatePin = () => {
   }
 
   const saveHandler = async () => {
+    try {
     // TODO
     // get blob from url
     const response = await fetch(pin.image_url)
@@ -100,16 +100,20 @@ const CreatePin = () => {
     }
 
     // upload pin data into database
-    const uploadPinToDatabase = setAsyncV('pin',async()=>{
+    const uploadPinToDatabase = await setAsyncV('pin',async()=>{
       const response = await supabase
         .from('pins')
         .insert(pinData)
         .throwOnError()
+        .select()
       return response
     })
-      console.log("🚀 ~ file: index.js:109 ~ uploadPinToDatabase ~ response:", response)
-
+    console.log("🚀 ~ file: index.js:110 ~ uploadPinToDatabase ~ uploadPinToDatabase:", uploadPinToDatabase)
     // error on any step will re roll data and send error message
+    
+  } catch(err) {
+    // reroll upload
+  }
   }
   return (
     <Page>
