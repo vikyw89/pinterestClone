@@ -7,7 +7,7 @@ import {
   useAsyncV,
   useSyncV,
 } from 'use-sync-v'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
 export const Header = () => {
   const theme = useSyncV('theme')

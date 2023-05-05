@@ -7,27 +7,27 @@ import { Page } from '../layout/page'
 
 
 const Protected = (Component) => {
-    const AuthChecker = () => {
-        const { data, loading, error } = useAsyncV('auth')
-        const router = useRouter()
+  const AuthChecker = () => {
+    const { data, loading, error } = useAsyncV('auth')
+    const router = useRouter()
 
-        if (loading) {
-            return (
-                <Page>
-                </Page>
-            )
-        } else if (data) {
-            return <Component />
-        } else {
-            router.push('/')
-            return (
-                <Page>
-                </Page>
-            )
-        }
-        return props
+    if (loading) {
+      return (
+        <Page>
+        </Page>
+      )
+    } else if (data) {
+      return <Component />
+    } else {
+      router.push('/')
+      return (
+        <Page>
+        </Page>
+      )
     }
-    return AuthChecker
+    return props
+  }
+  return AuthChecker
 }
 
 export default Protected

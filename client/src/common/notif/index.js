@@ -6,7 +6,7 @@ export const Notif = () => {
   const boards = useAsyncV('boards')
   const pin = useAsyncV('pin')
   const initialize = useAsyncV('initialize')
-  console.log("🚀 ~ file: index.js:9 ~ Notif ~ initialize:", initialize)
+  console.log('🚀 ~ file: index.js:9 ~ Notif ~ initialize:', initialize)
 
   return (
     <div className='fixed bottom-0 left-0'>

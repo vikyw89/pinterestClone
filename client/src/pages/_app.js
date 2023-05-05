@@ -60,7 +60,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (!auth.data || auth.loading) return
-    // check if there's user_id in DB 
+    // check if there's user_id in DB
     const prepareNewUserDB = async () => {
       if (!await isNewUser(auth.data.user.id)) return
       setAsyncV('initialize', async () => {

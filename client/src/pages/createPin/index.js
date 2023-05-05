@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
 import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 const initialPin = {
   title: '',
@@ -18,7 +18,6 @@ const initialPin = {
 const CreatePin = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const boards = useAsyncV('boards')
-  const uploadPin = useAsyncV('pin')
   const [pin, setPin] = useState(initialPin)
 
   useEffect(() => {
@@ -66,55 +65,54 @@ const CreatePin = () => {
 
   const saveHandler = async () => {
     try {
-    // TODO
     // get blob from url
-    const response = await fetch(pin.image_url)
-    const imageBlob = await response.blob()
-    // upload image blob into storage
-    const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
-    await setAsyncV('pin', async () => {
-      const response = supabase.storage
+      const response = await fetch(pin.image_url)
+      const imageBlob = await response.blob()
+      // upload image blob into storage
+      const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
+      await setAsyncV('pin', async () => {
+        const response = supabase.storage
+          .from('pins')
+          .upload(storagePath, imageBlob)
+        if (response.error) {
+          setSyncV('pin.error', response.error)
+          setTimeout(() => {
+            setSyncV('pin.error', false)
+          }, 5000)
+        }
+        return response
+      })
+
+      // get uploadedPin public URL
+      const uploadedImagePublicURL = supabase.storage
         .from('pins')
-        .upload(storagePath, imageBlob)
-      if (response.error) {
-        setSyncV('pin.error', response.error)
-        setTimeout(() => {
-          setSyncV('pin.error', false)
-        }, 5000)
+        .getPublicUrl(storagePath).data.publicUrl
+
+      // construct pin data
+      const pinData = {
+        image_url:uploadedImagePublicURL,
+        title:pin.title,
+        description:pin.description,
+        link_url:pin.link_url,
+        creator_id:auth.data.user.id
       }
-      return response
-    })
 
-    // get uploadedPin public URL
-    const uploadedImagePublicURL = supabase.storage
-      .from('pins')
-      .getPublicUrl(storagePath).data.publicUrl
-
-    // construct pin data
-    const pinData = {
-      image_url:uploadedImagePublicURL,
-      title:pin.title,
-      description:pin.description,
-      link_url:pin.link_url,
-      creator_id:auth.data.user.id
-    }
-
-    // upload pin data into database
-    const uploadPinToDatabase = await setAsyncV('pin',async()=>{
-      const response = await supabase
-        .from('pins')
-        .insert(pinData)
-        .throwOnError()
-        .select()
-      return response
-    })
-    setPin(initialPin)
-  } catch(err) {
+      // upload pin data into database
+      await setAsyncV('pin',async()=>{
+        const response = await supabase
+          .from('pins')
+          .insert(pinData)
+          .throwOnError()
+          .select()
+        return response
+      })
+      setPin(initialPin)
+    } catch(err) {
     // reroll upload
     // delete image in storage
-    
+
     // delete data in DB
-  }
+    }
   }
   return (
     <Page>
