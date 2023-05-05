@@ -1,7 +1,8 @@
 import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateSyncV, useSyncV } from 'use-sync-v'
+import { updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV(
   'theme',
@@ -37,23 +38,34 @@ updateSyncV(
     'winter',
   ].sort((a, b) => (a > b ? 1 : -1))
 )
-updateSyncV('auth', {
-  event:null,
-  session:null
-})
 
 export default function App({ Component, pageProps }) {
   const activeTheme = useSyncV('activeTheme')
+  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const router = useRouter()
+
   useEffect(() => {
     document.querySelector('html').setAttribute('data-theme', activeTheme)
   })
+
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      updateSyncV('auth', { event, session })
+      updateAsyncV('auth', () => session)
     })
     return () => {
       subscription.unsubscribe()
     }
   }, [])
-  return <Component {...pageProps} />
+
+  useEffect(() => {
+    if (auth.loading) return
+    if (!auth.data && router.route !== '/') {
+      router.push('/')
+    }
+  }, [auth.data, auth.loading, router])
+
+  return (
+    <>
+      <Component {...pageProps} />
+    </>)
 }

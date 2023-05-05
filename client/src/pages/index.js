@@ -1,16 +1,24 @@
 import { Page } from '@/common/layout/page'
 import { SignInComponent } from '@/components/signIn'
-import { updateSyncV, useSyncV } from 'use-sync-v'
+import { useEffect } from 'react'
+import { updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV('show.signInComponent', true)
 
 export default function Home() {
-  const auth = useSyncV('auth')
   const showSignInComponent = useSyncV('show.signInComponent')
+  const {data:auth} = useAsyncV('auth')
 
+  useEffect(()=>{
+    if (auth) {
+      updateSyncV('show.signInComponent', false)
+    } else {
+      updateSyncV('show.signInComponent', true)
+    }
+  },[auth])
   return (
     <Page>
-      {showSignInComponent && !auth.session && <SignInComponent />}
+      {showSignInComponent && <SignInComponent />}
     </Page>
   )
 }

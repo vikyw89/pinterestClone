@@ -1,19 +1,23 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { updateSyncV, useAsyncV } from 'use-sync-v'
 
 export const Loading = () => {
-  const loading = useSyncV('show.loading')
-  const { loading: signInLoading } = useAsyncV('signIn')
-  const { loading: signOutLoading } = useAsyncV('signOut')
   const router = useRouter()
+  const route = useAsyncV('route')
+  const signIn = useAsyncV('signIn')
+  const signOut = useAsyncV('signOut')
+  const auth = useAsyncV('auth')
+  const boards = useAsyncV('boards')
+  const pin = useAsyncV('pin')
+  const initialize = useAsyncV('initialize')
 
   useEffect(() => {
     const changeStartHandler = () => {
-      updateSyncV('show.loading', true)
+      updateSyncV('route.loading', true)
     }
     const changeCompleteHandler = () => {
-      updateSyncV('show.loading', false)
+      updateSyncV('route.loading', false)
     }
     router.events.on('routeChangeStart', changeStartHandler)
     router.events.on('routeChangeComplete', changeCompleteHandler)
@@ -26,7 +30,7 @@ export const Loading = () => {
   }, [router])
   return (
     <>
-      {(loading || signInLoading ||  signOutLoading) && <progress className="progress progress-accent"></progress>}
+      {(route.loading || signIn.loading || signOut.loading || auth.loading || boards.loading || pin.loading || initialize.loading) && <progress className="progress progress-accent"></progress>}
     </>
   )
 }
