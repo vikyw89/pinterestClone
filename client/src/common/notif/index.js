@@ -1,13 +1,10 @@
-import { useEffect } from 'react'
-import { deleteSyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { useAsyncV } from 'use-sync-v'
 
 export const Notif = () => {
   const auth = useAsyncV('auth')
   const boards = useAsyncV('boards')
   const pin = useAsyncV('pin')
   const initialize = useAsyncV('initialize')
-  console.log('🚀 ~ file: index.js:9 ~ Notif ~ initialize:', initialize)
-
   return (
     <div className='fixed bottom-0 left-0'>
       {auth.error && <div className="alert alert-error shadow-lg">

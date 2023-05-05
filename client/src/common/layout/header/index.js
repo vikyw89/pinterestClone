@@ -27,11 +27,11 @@ export const Header = () => {
     })
   }
 
-  const navigateToLanding = (e) => {
+  const navigateToLanding = () => {
     router.push('/')
   }
 
-  const navigateToCreatePin = (e) => {
+  const navigateToCreatePin = () => {
     router.push('/createPin')
   }
 

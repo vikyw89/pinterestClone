@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { supabase } from '@/lib/supabase'
-import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
 import { v4 as uuidv4 } from 'uuid'
 
 const initialPin = {
@@ -12,13 +12,14 @@ const initialPin = {
   description: '',
   link_url: '',
   image_url: '',
-  creator_id:''
+  creator_uuid: ''
 }
 
 const CreatePin = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const boards = useAsyncV('boards')
   const [pin, setPin] = useState(initialPin)
+  const [selectedBoard, setSelectedBoard] = useState('')
 
   useEffect(() => {
     if (!auth.data) return
@@ -26,11 +27,16 @@ const CreatePin = () => {
       const response = await supabase
         .from('boards')
         .select()
-        .filter('creator_id', 'eq', auth.data.user.id)
+        .filter('creator_uuid', 'eq', auth.data.user.id)
         .throwOnError()
       return response.data
     })
   }, [auth.data])
+
+  useEffect(() => {
+    if (!boards.data) return
+    setSelectedBoard(boards?.data?.[0])
+  }, [boards.data])
 
   const pinImageHandler = (e) => {
     e.stopPropagation()
@@ -63,57 +69,41 @@ const CreatePin = () => {
     }))
   }
 
-  const saveHandler = async () => {
-    try {
-    // get blob from url
-      const response = await fetch(pin.image_url)
-      const imageBlob = await response.blob()
-      // upload image blob into storage
-      const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
-      await setAsyncV('pin', async () => {
-        const response = supabase.storage
-          .from('pins')
-          .upload(storagePath, imageBlob)
-        if (response.error) {
-          setSyncV('pin.error', response.error)
-          setTimeout(() => {
-            setSyncV('pin.error', false)
-          }, 5000)
-        }
-        return response
-      })
+  const boardSelectHandler = (e) => {
+    setSelectedBoard(JSON.parse(e.target.value))
+  }
 
-      // get uploadedPin public URL
-      const uploadedImagePublicURL = supabase.storage
+  const saveHandler = async () => {
+    await updateAsyncV('pin', async () => {
+      const fetchedImage = await fetch(pin.image_url)
+      const imageBlob = await fetchedImage.blob()
+      const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
+      const storageResponse = await supabase.storage
+        .from('pins')
+        .upload(storagePath, imageBlob)
+      if (storageResponse.error) {
+        setSyncV('pin.error', storageResponse.error)
+        setTimeout(() => {
+          setSyncV('pin.error', false)
+        }, 10000)
+      }
+      const imagePublicURL = supabase.storage
         .from('pins')
         .getPublicUrl(storagePath).data.publicUrl
-
-      // construct pin data
-      const pinData = {
-        image_url:uploadedImagePublicURL,
-        title:pin.title,
-        description:pin.description,
-        link_url:pin.link_url,
-        creator_id:auth.data.user.id
+      const pinToUpload = {
+        title: pin.title,
+        description: pin.description,
+        link_url: pin.link_url,
+        creator_uuid: auth.data.user.id,
+        board_uuid: selectedBoard.uuid,
+        image_url: imagePublicURL
       }
-
-      // upload pin data into database
-      await setAsyncV('pin',async()=>{
-        const response = await supabase
-          .from('pins')
-          .insert(pinData)
-          .throwOnError()
-          .select()
-        return response
-      })
-      setPin(initialPin)
-    } catch(err) {
-    // reroll upload
-    // delete image in storage
-
-    // delete data in DB
-    }
+      const response = await supabase.rpc('create_pin', pinToUpload)
+      return response
+    })
+    setPin(initialPin)
   }
+
   return (
     <Page>
       <div className="flex flex-1 items-center justify-center h-full">
@@ -122,13 +112,11 @@ const CreatePin = () => {
             <div className="flex justify-between items-center">
               <MoreHorizIcon className="text-4xl" />
               <div className="flex-1"></div>
-              <select className="select max-w-xs bg-neutral text-neutral-content">
-                {boards.data ?
+              <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
+                {boards.data &&
                   boards.data.map((p, i) => {
-                    return <option  key={i}>{p.title}</option>
+                    return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
                   })
-                  :
-                  <option >default</option>
                 }
               </select>
               <button onClick={saveHandler} className="btn btn-primary">Save</button>

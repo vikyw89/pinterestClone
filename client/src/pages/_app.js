@@ -1,9 +1,8 @@
 import { supabase } from '@/lib/supabase'
-import { prepareNewAccountDatabase } from '@/lib/supabase/onNewAccount'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setAsyncV, updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 updateSyncV(
   'theme',
@@ -63,7 +62,7 @@ export default function App({ Component, pageProps }) {
     if (!auth.data && router.route !== '/') {
       router.push('/')
     }
-  }, [auth.data])
+  }, [auth.data, auth.loading, router])
 
   return (
     <>
