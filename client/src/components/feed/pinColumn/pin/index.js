@@ -63,7 +63,7 @@ export const PinComponent = ({ props }) => {
               height={0}
               sizes="10vw"
               placeholder='blur'
-              blurDataURL='../p-logo-lowres.png'
+              blurDataURL='/p-logo-lowres.png'
               className="w-auto h-auto rounded-3xl bg-neutral"
             />
             <div className='pl-3 pr-3 font-bold overflow-clip'>
