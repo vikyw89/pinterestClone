@@ -4,7 +4,7 @@ import { setAsyncV, setSyncV, useSyncV } from 'use-sync-v'
 import { supabase } from '@/lib/supabase'
 import { PinColumnComponent } from './pinColumn'
 
-const FETCH_AMOUNT = 10
+const FETCH_AMOUNT = 20
 const QUEUE_LOWER_LIMIT = 10
 setSyncV('queue', [])
 setSyncV('index', 0)
@@ -71,7 +71,7 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      <div className="flex justify-center max-w-full overflow-y-scroll max-h-screen gap-5">
+      <div className="flex justify-center max-w-full overflow-y-scroll h-screen gap-5 p-5">
         {fetchedPins.length !== 0 && column &&
                     column.map((e) => {
                       return e

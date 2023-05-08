@@ -65,11 +65,11 @@ export default function App({ Component, pageProps }) {
     }
     if (auth.data) {
       setAsyncV('users', async () => {
-        await supabase
+        const response = await supabase
           .from('users')
           .select()
           .eq('uuid', auth.data.user.id)
-        return supabase
+        return response.data[0]
       })
     }
   }, [auth.data, auth.loading, router])

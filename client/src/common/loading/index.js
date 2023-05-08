@@ -12,6 +12,7 @@ export const Loading = () => {
   const pin = useAsyncV('pin')
   const initialize = useAsyncV('initialize')
   const downloadPins = useAsyncV('downloadPins')
+  const users = useAsyncV('users')
 
   useEffect(() => {
     const changeStartHandler = () => {
@@ -30,7 +31,7 @@ export const Loading = () => {
     }
   }, [router])
   return (
-    <>
+    <div className='z-50 -translate-y-3'>
       {(route.loading ||
         signIn.loading ||
         signOut.loading ||
@@ -38,7 +39,8 @@ export const Loading = () => {
         boards.loading ||
         pin.loading ||
         initialize.loading ||
-        downloadPins.loading) && <progress className="progress progress-accent"></progress>}
-    </>
+        downloadPins.loading ||
+        users.loading) && <progress className="progress progress-accent"></progress>}
+    </div>
   )
 }

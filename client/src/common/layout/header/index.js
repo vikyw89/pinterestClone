@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import {
   setAsyncV,
+  setSyncV,
   updateAsyncV,
   updateSyncV,
   useAsyncV,
@@ -12,10 +13,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 
 export const Header = () => {
   const theme = useSyncV('theme')
-  const { data: auth } = useAsyncV('auth')
+  const auth = useAsyncV('auth')
   const router = useRouter()
 
-  const avatarURL = auth?.user?.user_metadata?.avatar_url
+  const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
 
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
@@ -41,24 +42,28 @@ export const Header = () => {
     await setAsyncV('users', async () => {
       const response = await supabase
         .from('users')
-        .update('theme', updatedValue)
+        .update({ 'theme': updatedValue })
         .eq('uuid', auth.data.user.id)
         .select()
-      return response.data
+      setSyncV('users.data.theme', updatedValue)
+      return response.data[0]
     })
-    updateSyncV('activeTheme', updatedValue)
   }
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
         <div onClick={navigateToLanding} className="px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
-          <Image
-            alt="pinterest logo"
-            src="../p-logo-lowres.png"
-            width="32"
-            height="32"
-            loading='lazy'
-          />
+          <div className='w-12'>
+            <Image
+              alt="pinterest logo"
+              src="../p-logo-lowres.png"
+              width="0"
+              height="0"
+              loading='lazy'
+              sizes="100vw"
+              className='w-auto h-auto'
+            />
+          </div>
           <a className="text-lg font-bold" >Pinterest</a>
         </div>
         {auth &&
