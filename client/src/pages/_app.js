@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateAsyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { setAsyncV, updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
 
 updateSyncV(
   'theme',
@@ -40,16 +40,17 @@ updateSyncV(
 )
 
 export default function App({ Component, pageProps }) {
-  const activeTheme = useSyncV('activeTheme')
+  const users = useAsyncV('users')
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const router = useRouter()
 
   useEffect(() => {
-    document.querySelector('html').setAttribute('data-theme', activeTheme)
+    if (!users.data) return
+    document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
   })
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       updateAsyncV('auth', () => session)
     })
     return () => {
@@ -61,6 +62,15 @@ export default function App({ Component, pageProps }) {
     if (auth.loading) return
     if (!auth.data && router.route !== '/') {
       router.push('/')
+    }
+    if (auth.data) {
+      setAsyncV('users', async () => {
+        await supabase
+          .from('users')
+          .select()
+          .eq('uuid', auth.data.user.id)
+        return supabase
+      })
     }
   }, [auth.data, auth.loading, router])
 

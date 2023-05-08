@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import {
+  setAsyncV,
   updateAsyncV,
   updateSyncV,
   useAsyncV,
@@ -35,6 +36,18 @@ export const Header = () => {
     router.push('/createPin')
   }
 
+  const themeHandler = async (e) => {
+    const updatedValue = e.target.textContent
+    await setAsyncV('users', async () => {
+      const response = await supabase
+        .from('users')
+        .update('theme', updatedValue)
+        .eq('uuid', auth.data.user.id)
+        .select()
+      return response.data
+    })
+    updateSyncV('activeTheme', updatedValue)
+  }
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
@@ -44,6 +57,7 @@ export const Header = () => {
             src="../p-logo-lowres.png"
             width="32"
             height="32"
+            loading='lazy'
           />
           <a className="text-lg font-bold" >Pinterest</a>
         </div>
@@ -82,9 +96,7 @@ export const Header = () => {
                 return (
                   <li key={index}>
                     <a
-                      onClick={() => {
-                        updateSyncV('activeTheme', el)
-                      }}
+                      onClick={themeHandler}
                     >
                       {el}
                     </a>

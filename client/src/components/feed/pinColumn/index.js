@@ -1,6 +1,5 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PinComponent } from './pin'
-import { setSyncV, useSyncV } from 'use-sync-v'
 
 export const PinColumnComponent = () => {
   const [pinsToDisplay, setPinsToDisplay] = useState([])
