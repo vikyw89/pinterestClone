@@ -2,9 +2,7 @@
 
 ## This is an attempt to clone Pinterest, with a slight twist
 
-Prod live preview: https://vikyw89.github.io/javaScriptFinalProject/
-
-Dev live preview: https://pinterest-clone-3bd39.web.app/
+Dev live preview: https://vikyw89.github.io/pinterestClone
 
 ## Dependencies:
 - supabase (for BAAS)
