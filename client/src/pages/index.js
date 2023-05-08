@@ -1,24 +1,15 @@
 import { Page } from '@/common/layout/page'
+import { FeedsComponent } from '@/components/feed'
 import { SignInComponent } from '@/components/signIn'
-import { useEffect } from 'react'
-import { updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
-
-updateSyncV('show.signInComponent', true)
+import { useAsyncV } from 'use-sync-v'
 
 export default function Home() {
-  const showSignInComponent = useSyncV('show.signInComponent')
-  const {data:auth} = useAsyncV('auth')
+  const { data: auth } = useAsyncV('auth')
 
-  useEffect(()=>{
-    if (auth) {
-      updateSyncV('show.signInComponent', false)
-    } else {
-      updateSyncV('show.signInComponent', true)
-    }
-  },[auth])
   return (
     <Page>
-      {showSignInComponent && <SignInComponent />}
+      {!auth && <SignInComponent />}
+      {auth && <FeedsComponent />}
     </Page>
   )
 }
