@@ -31,7 +31,7 @@ export const Loading = () => {
     }
   }, [router])
   return (
-    <div className='z-50 -translate-y-3'>
+    <div className='fixed z-50 top-12 w-full flex'>
       {(route.loading ||
         signIn.loading ||
         signOut.loading ||

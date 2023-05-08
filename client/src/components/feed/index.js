@@ -4,8 +4,8 @@ import { setAsyncV, setSyncV, useSyncV } from 'use-sync-v'
 import { supabase } from '@/lib/supabase'
 import { PinColumnComponent } from './pinColumn'
 
-const FETCH_AMOUNT = 20
-const QUEUE_LOWER_LIMIT = 10
+const FETCH_AMOUNT = 50
+const QUEUE_LOWER_LIMIT = 50
 setSyncV('queue', [])
 setSyncV('index', 0)
 setSyncV('fetchedPins', [])

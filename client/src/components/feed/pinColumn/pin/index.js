@@ -40,7 +40,11 @@ export const PinComponent = ({ props }) => {
         })
         observer.unobserve(pin)
       })
-    },{threshold:0.1})
+    }, {
+      root:null,
+      rootMargin: '1000px',
+      threshold:0
+    })
     observer.observe(pin)
     return () => {
       observer.unobserve(pin)
@@ -55,11 +59,11 @@ export const PinComponent = ({ props }) => {
             <Image
               src={pin.image_url}
               alt="pinImage"
-              placeholder='blur'
-              blurDataURL='../p-logo-lowres.png'
               width={0}
               height={0}
-              sizes="100vw"
+              sizes="10vw"
+              placeholder='blur'
+              blurDataURL='../p-logo-lowres.png'
               className="w-auto h-auto rounded-3xl bg-neutral"
             />
             <div className='pl-3 pr-3 font-bold overflow-clip'>
