@@ -24,6 +24,7 @@ export const FeedsComponent = () => {
     const queue = useRef([])
     const fetchedIndex = useRef(0)
     const [flexChildren, setFlexChildren] = useState([])
+    
     useEffect(() => {
         const resizeScreenHandler = (e) => {            
             let temp = []
