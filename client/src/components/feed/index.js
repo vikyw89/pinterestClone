@@ -64,7 +64,7 @@ export const FeedsComponent = () => {
 
     return (
         <Page>
-            <div className="flex justify-evenly w-full">
+            <div className="flex justify-evenly w-full overflow-y-scroll h-screen" style={{border:'5px solid purple'}}>
                 {flexChildren}
             </div>
         </Page >
