@@ -66,7 +66,7 @@ export const Header = () => {
           </div>
           <a className="text-lg font-bold" >Pinterest</a>
         </div>
-        {auth &&
+        {auth.data &&
           <a
             className="btn btn-ghost rounded-btn"
             onClick={navigateToCreatePin}
@@ -77,7 +77,7 @@ export const Header = () => {
       </div>
       <div className="flex justify-end flex-1 px-2 items-center">
         <div className="flex">
-          {!auth ? (
+          {!auth.data ? (
             <a
               className="btn btn-ghost rounded-btn p-2"
               onClick={showSignInComponent}

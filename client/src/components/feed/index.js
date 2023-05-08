@@ -55,7 +55,8 @@ export const FeedsComponent = () => {
       const endIndex = startIndex + FETCH_AMOUNT
       const response = await supabase
         .from('pins')
-        .select()
+        .select(`*,
+        users(*)`)
         .order('inserted_at', { ascending: false })
         .range(startIndex, endIndex)
       if (response.data.length === 0) {
@@ -73,9 +74,9 @@ export const FeedsComponent = () => {
     <Page>
       <div className="flex justify-center max-w-full overflow-y-scroll h-screen gap-5 p-5">
         {fetchedPins.length !== 0 && column &&
-                    column.map((e) => {
-                      return e
-                    })
+          column.map((e) => {
+            return e
+          })
         }
       </div>
     </Page >

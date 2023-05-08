@@ -1,15 +1,17 @@
 import { Page } from '@/common/layout/page'
 import { FeedsComponent } from '@/components/feed'
 import { SignInComponent } from '@/components/signIn'
-import { useAsyncV } from 'use-sync-v'
+import { setSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+
+setSyncV('show.signInComponent', true)
 
 export default function Home() {
-  const { data: auth } = useAsyncV('auth')
-
+  const auth = useAsyncV('auth')
+  const showSignInComponent = useSyncV('show.signInComponent')
   return (
     <Page>
-      {!auth && <SignInComponent />}
-      {auth && <FeedsComponent />}
+      {!auth.data && showSignInComponent && <SignInComponent />}
+      <FeedsComponent />
     </Page>
   )
 }

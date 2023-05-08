@@ -1,12 +1,9 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
-import { setSyncV, useAsyncV, useSyncV } from 'use-sync-v'
+import { setSyncV, useSyncV } from 'use-sync-v'
 
 export const PinComponent = ({ props }) => {
-  const { data: auth } = useAsyncV('auth')
-  const username = auth?.user?.user_metadata?.email
-  const avatarURL = auth?.user?.user_metadata?.avatar_url
   const id = useId()
   const [pin, setPin] = useState()
   const fetchedPins = useSyncV('fetchedPins')
@@ -41,9 +38,9 @@ export const PinComponent = ({ props }) => {
         observer.unobserve(pin)
       })
     }, {
-      root:null,
+      root: null,
       rootMargin: '1000px',
-      threshold:0
+      threshold: 0
     })
     observer.observe(pin)
     return () => {
@@ -72,18 +69,21 @@ export const PinComponent = ({ props }) => {
             <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
               <div className="avatar aspect-square">
                 <div className="w-8 rounded-full flex items-center">
-                  {avatarURL && <Image src={avatarURL}
-                    alt="avatar"
-                    width="0"
-                    height="0"
-                    className="w-full h-auto"
-                    id="pinImageURL"
-                  />}
-                  <AccountCircleIcon className='text-3xl' />
+                  {pin?.users?.profile_picture_url
+                    ? <Image src={pin?.users?.profile_picture_url}
+                      alt="avatar"
+                      width="0"
+                      height="0"
+                      className="w-full aspect-square"
+                      id="profilePicture"
+                    />
+                    :
+                    <AccountCircleIcon className='w-full aspect-square' />
+                  }
                 </div>
               </div>
               <div>
-                {username}
+                {pin.users.username}
               </div>
             </div>
           </>
