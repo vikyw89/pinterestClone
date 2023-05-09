@@ -73,7 +73,7 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      <div className='flex gap-5 justify-center p-5 overflow-y-scroll h-screen'>
+      <div className='flex gap-5 justify-center p-5'>
         {fetchedPins.length !== 0 && column &&
           column.map((e) => {
             return e
