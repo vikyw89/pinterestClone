@@ -120,20 +120,20 @@ export const Header = () => {
           </button>
         )}
         <button className='btn btn-ghost rounded-btn'>
-        <div className="avatar aspect-square">
-          <div className="w-8 rounded-full flex items-center">
-            {avatarURL ? <Image src={avatarURL}
-              alt="avatar"
-              width="0"
-              height="0"
-              className="w-auto h-auto"
-              id="pinImageURL"
-            />
-              :
-              <AccountCircleIcon className='text-3xl' />
-            }
+          <div className="avatar aspect-square">
+            <div className="w-8 rounded-full flex items-center">
+              {avatarURL ? <Image src={avatarURL}
+                alt="avatar"
+                width="0"
+                height="0"
+                className="w-auto h-auto"
+                id="pinImageURL"
+              />
+                :
+                <AccountCircleIcon className='text-3xl' />
+              }
+            </div>
           </div>
-        </div>
 
         </button>
       </div>
