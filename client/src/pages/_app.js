@@ -65,10 +65,14 @@ export default function App({ Component, pageProps }) {
     }
     if (auth.data) {
       setAsyncV('users', async () => {
+        const avatarURL = auth.data.user.user_metadata.avatar_url
         const response = await supabase
           .from('users')
-          .select()
+          .update({
+            'profile_picture_url':avatarURL
+          })
           .eq('uuid', auth.data.user.id)
+          .select()
         return response.data[0]
       })
     }
