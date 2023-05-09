@@ -73,16 +73,7 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      <div style={{
-        display:'grid',
-        maxWidth:'100%',
-        gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))',
-        justifyItems:'center',
-        justifyContent:'center',
-        overflowY:'scroll',
-        height:'100vh',
-        gap:'10px'
-      }}>
+      <div className='flex gap-5 justify-center p-5 overflow-y-scroll h-screen'>
         {fetchedPins.length !== 0 && column &&
           column.map((e) => {
             return e
