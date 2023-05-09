@@ -112,13 +112,7 @@ export const DetailCardComponent = () => {
     }
 
     return (
-        <div className="bg-neutral rounded-3xl text-neutral-content justify-center" style={{
-            display:'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gridAutoRows:'1fr',
-            border:'1px solid blue',
-            maxHeight:'50vh'
-        }}>
+        <div className="bg-neutral rounded-3xl flex flex-wrap text-neutral-content justify-center h-fit">
             <div className="max-w-[500px]">
                 <Image
                     src={pinDetail.data.image_url}
@@ -126,10 +120,10 @@ export const DetailCardComponent = () => {
                     height={0}
                     width={0}
                     sizes="100vw"
-                    className="w-screen aspect-auto rounded-l-3xl bg-neutral-focus flex"
+                    className="w-[500px] aspect-auto rounded-l-3xl bg-neutral-focus flex"
                 />
             </div>
-            <div className="flex max-w-[500px] flex-col rounded-r-3xl bg-neutral p-5 gap-1 justify-between">
+            <div className="flex max-w-[500px] flex-col rounded-r-3xl bg-neutral p-5 gap-1 justify-between relative">
                 <div className="flex items-center justify-end">
                     <button className="btn btn-ghost" >
                         <MoreHorizIcon />
@@ -153,7 +147,7 @@ export const DetailCardComponent = () => {
                 <div>
                     {pinDetail.data.description}
                 </div>
-                <div className="flex">
+                <div className="flex gap-2">
                     <Image
                         src={pinDetail.data.users.profile_picture_url}
                         alt="pfp"
@@ -163,7 +157,7 @@ export const DetailCardComponent = () => {
                         className="w-12 aspect-square rounded-full"
                     />
                     <div>
-                        <div>
+                        <div className="font-bold">
                             {pinDetail.data.users.username}
                         </div>
                         <div>
@@ -183,12 +177,12 @@ export const DetailCardComponent = () => {
                         }
                     </div>
                 </div>
-                <div className="flex-1 overflow-y-scroll">
+                <div className="flex-1">
                     <div className="font-bold">
                         Comments
                     </div>
                     {pin_comments &&
-                        <div className=" min-h-min flex flex-col">
+                        <div>
                             {pin_comments.map((e, i) => {
                                 return (
                                     <div key={i} className="flex max-h-full gap-2 p-2">
@@ -202,7 +196,7 @@ export const DetailCardComponent = () => {
                                         />
                                         {/* </div> */}
                                         <div className="flex flex-wrap w-full">
-                                            <span className="font-bold">{e.users.username} : </span>
+                                            <span className="font-bold">{e.users.username} :&nbsp;&nbsp;</span>
                                             <p className="break-all">{e.comment}</p>
                                         </div>
                                     </div>
@@ -216,7 +210,7 @@ export const DetailCardComponent = () => {
                     </div>}
                 </div>
                 <Divider />
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full justify-between">
                     {avatarURL && <Image src={avatarURL}
                         alt="avatar"
                         height={0}
@@ -226,7 +220,7 @@ export const DetailCardComponent = () => {
                     />}
                     <input type="text"
                         placeholder="Add a comment"
-                        className="input input-bordered input-primary w-full max-w-xs rounded-full bg-neutral-focus"
+                        className="input input-bordered input-primary rounded-full bg-neutral-focus flex-1"
                         onChange={commentInputHandler}
                         value={commentInput} />
                     <button className="btn btn-primary rounded-full" onClick={sendCommentHandler}>
