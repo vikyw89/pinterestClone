@@ -4,10 +4,10 @@ import { updateAsyncV } from 'use-sync-v'
 import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
-  const moveToSignUpPage = () => {
-  }
+  // const moveToSignUpPage = () => {
+  // }
 
-  const emailSignInHandler = () => { }
+  // const emailSignInHandler = () => { }
 
   const gmailSignInHandler = (e) => {
     e.currentTarget.classList.add('loading')
@@ -28,7 +28,7 @@ export const SignInComponent = () => {
       <Image alt="pinterest logo" src="./p-logo-lowres.png" width="100" height="100" />
       <p className="font-extrabold text-center">Welcome to Pinterest</p>
       <div className="flex flex-col gap-1">
-        <label htmlFor="email" className="pl-4">
+        {/* <label htmlFor="email" className="pl-4">
           Email
         </label>
         <input
@@ -51,7 +51,7 @@ export const SignInComponent = () => {
         >
           Log in
         </button>
-        <p className="text-center">OR</p>
+        <p className="text-center">OR</p> */}
         <button
           className="btn flex bg-transparent border-accent rounded-box items-center gap-2"
           onClick={gmailSignInHandler}
@@ -71,7 +71,7 @@ export const SignInComponent = () => {
           By continuing, you agree to Pinterest&apos;s Terms of Service and
           acknowledge you&apos;ve read our Privacy Policy Notice at collection.
         </p>
-        <div className="divider m-0"></div>
+        {/* <div className="divider m-0"></div>
         <div className="text-xs text-center">
           <p>
             Not on Pinterest yet?{' '}
@@ -82,7 +82,7 @@ export const SignInComponent = () => {
               Sign up!
             </a>
           </p>
-        </div>
+        </div> */}
       </div>
 
     </PopUpComponent>
