@@ -10,6 +10,11 @@ import {
   useSyncV,
 } from 'use-sync-v'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AddIcon from '@mui/icons-material/Add'
+import LogoutIcon from '@mui/icons-material/Logout'
+import LoginIcon from '@mui/icons-material/Login'
+import ColorLensIcon from '@mui/icons-material/ColorLens'
+
 
 export const Header = () => {
   const theme = useSyncV('theme')
@@ -51,7 +56,7 @@ export const Header = () => {
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
-        <div onClick={navigateToLanding} className="px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
+        <div onClick={navigateToLanding} className="lg:flex-none flex items-center gap-1 cursor-pointer">
           <div className='w-12'>
             <Image
               alt="pinterest logo"
@@ -60,56 +65,60 @@ export const Header = () => {
               height="0"
               loading='lazy'
               sizes="100vw"
-              className='w-auto h-auto'
+              className='w-auto'
             />
           </div>
-          <a className="text-lg font-bold" >Pinterest</a>
+          <a className="text-lg font-bold hidden sm:block" >Pinterest</a>
         </div>
-        {auth.data &&
-          <a
-            className="btn btn-ghost rounded-btn"
-            onClick={navigateToCreatePin}
-          >
-            Create
-          </a>
-        }
       </div>
       <div className="flex justify-end flex-1 px-2 items-center">
-        <div className="flex">
-          {!auth.data ? (
-            <a
-              className="btn btn-ghost rounded-btn p-2"
-              onClick={showSignInComponent}
-            >
-              Sign In
+        {auth.data &&
+          <button className="btn btn-ghost rounded-btn p-2" onClick={navigateToCreatePin}>
+            <a className='hidden sm:block'>
+              Create
             </a>
-          ) : (
-            <a className="btn btn-ghost rounded-btn p-2" onClick={signOutHandler}>
-              Sign Out
-            </a>
-          )}
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn p-2 btn-ghost rounded-btn">
+            <AddIcon className=' sm:hidden' />
+          </button>
+        }
+        <div className="dropdown dropdown-end">
+          <button tabIndex={0} className="btn p-2 btn-ghost rounded-btn">
+            <label className='hidden sm:block'>
               Theme
             </label>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-base-200 text-base-content"
-            >
-              {theme.map((el, index) => {
-                return (
-                  <li key={index}>
-                    <a
-                      onClick={themeHandler}
-                    >
-                      {el}
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+            <ColorLensIcon className='sm:hidden' />
+          </button>
+          <ul
+            tabIndex={0}
+            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-base-200 text-base-content"
+          >
+            {theme.map((el, index) => {
+              return (
+                <li key={index}>
+                  <a
+                    onClick={themeHandler}
+                  >
+                    {el}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
         </div>
+        {!auth.data ? (
+          <button className="btn btn-ghost rounded-btn p-2" onClick={showSignInComponent}>
+            <a className='hidden sm:block' >
+              Sign In
+            </a>
+            <LoginIcon className='sm:hidden' />
+          </button>
+        ) : (
+          <button className='btn btn-ghost rounded-btn p-2' onClick={signOutHandler}>
+            <a className="hidden sm:block" >
+              Sign Out
+            </a>
+            <LogoutIcon className='sm:hidden' />
+          </button>
+        )}
         <div className="avatar aspect-square">
           <div className="w-8 rounded-full flex items-center">
             {avatarURL ? <Image src={avatarURL}
