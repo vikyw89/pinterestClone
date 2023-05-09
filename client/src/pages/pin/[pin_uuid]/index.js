@@ -16,9 +16,10 @@ const PinDetail = () => {
                 .select(`
                 *,
                 pins_comments(*),
-                users(*)
+                users(*,users_followers!users_followers_user_uuid_fkey(count))
                 `)
                 .eq('uuid', pin_uuid)
+            console.log("🚀 ~ file: index.js:23 ~ setAsyncV ~ response:", response)
             const pinData = response.data[0]
             return pinData
         })
