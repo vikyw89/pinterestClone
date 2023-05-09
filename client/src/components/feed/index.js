@@ -21,7 +21,7 @@ export const FeedsComponent = () => {
     const screenWidth = window.screen.width
     const columnQty = Math.floor(screenWidth / PIN_WIDTH)
     let temp = []
-    for (let i = 1; i < columnQty; i++) {
+    for (let i = 0; i < columnQty; i++) {
       temp.push(<PinColumnComponent key={i} className="max-w-xs"/>)
     }
     setColumn(temp)

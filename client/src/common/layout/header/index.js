@@ -17,8 +17,6 @@ export const Header = () => {
   const router = useRouter()
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
-  console.log("🚀 ~ file: index.js:20 ~ Header ~ avatarURL:", avatarURL)
-
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
   }
