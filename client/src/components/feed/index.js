@@ -6,6 +6,7 @@ import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
 const QUEUE_LOWER_LIMIT = 50
+const PIN_WIDTH = 300
 setSyncV('queue', [])
 setSyncV('index', 0)
 setSyncV('fetchedPins', [])
@@ -18,17 +19,17 @@ export const FeedsComponent = () => {
 
   useEffect(() => {
     const screenWidth = window.screen.width
-    const columnQty = Math.floor(screenWidth / 300)
+    const columnQty = Math.floor(screenWidth / PIN_WIDTH)
     let temp = []
     for (let i = 1; i < columnQty; i++) {
-      temp.push(<PinColumnComponent key={i} />)
+      temp.push(<PinColumnComponent key={i} className="max-w-xs"/>)
     }
     setColumn(temp)
 
     const resizeScreenHandler = (e) => {
       let temp = []
       const screenWidth = e ? e.target.innerWidth : window.screen.width
-      const columnQty = Math.floor(screenWidth / 300)
+      const columnQty = Math.floor(screenWidth / PIN_WIDTH)
       for (let i = 0; i < columnQty; i++) {
         temp.push(<PinColumnComponent key={i} />)
       }
@@ -72,7 +73,16 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      <div className="flex justify-center max-w-full overflow-y-scroll h-screen gap-5 p-5">
+      <div style={{
+        display:'grid',
+        maxWidth:'100%',
+        gridTemplateColumns:'repeat(auto-fill, minmax(300px, 1fr))',
+        justifyItems:'center',
+        justifyContent:'center',
+        overflowY:'scroll',
+        height:'100vh',
+        gap:'10px'
+      }}>
         {fetchedPins.length !== 0 && column &&
           column.map((e) => {
             return e
