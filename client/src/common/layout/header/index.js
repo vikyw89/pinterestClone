@@ -63,7 +63,6 @@ export const Header = () => {
               src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
               width="0"
               height="0"
-              loading='lazy'
               sizes="100vw"
               className='w-auto'
             />
@@ -77,7 +76,9 @@ export const Header = () => {
             <a className='hidden sm:block'>
               Create
             </a>
-            <AddIcon className=' sm:hidden' />
+            <div className=' sm:hidden' >
+              <AddIcon />
+            </div>
           </button>
         }
         <div className="dropdown dropdown-end">
@@ -85,7 +86,9 @@ export const Header = () => {
             <label className='hidden sm:block'>
               Theme
             </label>
-            <ColorLensIcon className='sm:hidden' />
+            <div className='sm:hidden'>
+              <ColorLensIcon />
+            </div>
           </button>
           <ul
             tabIndex={0}
@@ -109,14 +112,18 @@ export const Header = () => {
             <a className='hidden sm:block' >
               Sign In
             </a>
-            <LoginIcon className='sm:hidden' />
+            <div className='sm:hidden' >
+              <LoginIcon />
+            </div>
           </button>
         ) : (
           <button className='btn btn-ghost rounded-btn p-2' onClick={signOutHandler}>
             <a className="hidden sm:block" >
               Sign Out
             </a>
-            <LogoutIcon className='sm:hidden' />
+            <div className='sm:hidden'>
+              <LogoutIcon />
+            </div>
           </button>
         )}
         <button className='btn btn-ghost rounded-btn'>
