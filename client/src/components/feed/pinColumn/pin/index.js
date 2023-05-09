@@ -1,5 +1,6 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useEffect, useId, useState } from 'react'
 import { setSyncV, useSyncV } from 'use-sync-v'
 
@@ -8,6 +9,7 @@ export const PinComponent = ({ props }) => {
   const [pin, setPin] = useState()
   const fetchedPins = useSyncV('fetchedPins')
   const [displayIndex, setDisplayIndex] = useState()
+  const router = useRouter()
 
   // freeze the index
   useEffect(() => {
@@ -48,9 +50,12 @@ export const PinComponent = ({ props }) => {
     }
   }, [id, props])
 
+  const pinClickHandler = () => {
+    router.push(`/pin/${pin.uuid}`)
+  }
   return (
     <>
-      <div id={id} className="flex flex-col relative gap-1">
+      <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler}>
         {pin &&
           <>
             <Image
