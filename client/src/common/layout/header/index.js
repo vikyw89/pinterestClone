@@ -49,9 +49,9 @@ export const Header = () => {
         .update({ 'theme': updatedValue })
         .eq('uuid', auth.data.user.id)
         .select()
-      setSyncV('users.data.theme', updatedValue)
       return response.data[0]
     })
+    setSyncV('users.data.theme', updatedValue)
   }
   return (
     <div className="flex bg-base-300 z-20 items-center text-base-content">
@@ -119,6 +119,7 @@ export const Header = () => {
             <LogoutIcon className='sm:hidden' />
           </button>
         )}
+        <button className='btn btn-ghost rounded-btn'>
         <div className="avatar aspect-square">
           <div className="w-8 rounded-full flex items-center">
             {avatarURL ? <Image src={avatarURL}
@@ -131,9 +132,10 @@ export const Header = () => {
               :
               <AccountCircleIcon className='text-3xl' />
             }
-
           </div>
         </div>
+
+        </button>
       </div>
     </div>
   )
