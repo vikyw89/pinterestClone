@@ -60,7 +60,7 @@ export const Header = () => {
           <div className='w-12'>
             <Image
               alt="pinterest logo"
-              src="/p-logo-lowres.png"
+              src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
               width="0"
               height="0"
               loading='lazy'
