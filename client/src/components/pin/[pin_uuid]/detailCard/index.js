@@ -8,13 +8,14 @@ import SendIcon from '@mui/icons-material/Send';
 
 export const DetailCardComponent = () => {
     const auth = useAsyncV('auth', { initialState: { loading: true } })
-    const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
+    const avatarURL = auth.data.user.user_metadata.avatar_url
     const pinDetail = useAsyncV('pinDetail')
     const boards = useAsyncV('boards')
     const isFollower = useAsyncV('isFollower')
     const creator_uuid = pinDetail.data.users.uuid
     const user_uuid = auth.data.user.id
     const pin_uuid = pinDetail.data.uuid
+    const pin_comments = pinDetail.data.pins_comments
     const [commentInput, setCommentInput] = useState('')
 
     const boardSelectHandler = (e) => {
@@ -52,9 +53,6 @@ export const DetailCardComponent = () => {
         })
     }, [])
 
-    useEffect(()=>{
-        
-    })
     const followHandler = () => {
         if (!auth.data) return
         setAsyncV('followUser', async () => {
@@ -99,29 +97,39 @@ export const DetailCardComponent = () => {
             const response = await supabase
                 .from('pins_comments')
                 .insert({
-                    'comment':commentInput,
-                    'creator_uuid':user_uuid,
-                    'pin_uuid':pin_uuid
+                    'comment': commentInput,
+                    'creator_uuid': user_uuid,
+                    'pin_uuid': pin_uuid
                 })
                 .select()
-            console.log("🚀 ~ file: index.js:104 ~ setAsyncV ~ response:", response)
             const data = response.data[0]
             // TODO: sync client comments model
+            // setSyncV('pinDetail.data.pins_comments', p => {
+            //     return [...p, { comment: commentInput }]
+            // })
             return data
         })
     }
 
     return (
-        <div className="bg-neutral rounded-3xl flex flex-wrap h-fit">
-            <Image
-                src={pinDetail.data.image_url}
-                alt="pinImage"
-                height={0}
-                width={0}
-                sizes="100vw"
-                className="w-96 aspect-auto rounded-l-3xl bg-neutral-focus"
-            />
-            <div className="flex flex-col w-96 rounded-r-3xl bg-neutral p-5 gap-3 justify-between">
+        <div className="bg-neutral rounded-3xl text-neutral-content justify-center" style={{
+            display:'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gridAutoRows:'1fr',
+            border:'1px solid blue',
+            maxHeight:'50vh'
+        }}>
+            <div className="max-w-[500px]">
+                <Image
+                    src={pinDetail.data.image_url}
+                    alt="pinImage"
+                    height={0}
+                    width={0}
+                    sizes="100vw"
+                    className="w-screen aspect-auto rounded-l-3xl bg-neutral-focus flex"
+                />
+            </div>
+            <div className="flex max-w-[500px] flex-col rounded-r-3xl bg-neutral p-5 gap-1 justify-between">
                 <div className="flex items-center justify-end">
                     <button className="btn btn-ghost" >
                         <MoreHorizIcon />
@@ -134,12 +142,12 @@ export const DetailCardComponent = () => {
                             })
                         }
                     </select>
-                    <button onClick={saveHandler} className="btn btn-primary">Save</button>
+                    <button onClick={saveHandler} className="btn btn-primary rounded-full">Save</button>
                 </div>
                 <div>
                     <p>{pinDetail.data.link_url}</p>
                 </div>
-                <div>
+                <div className="font-bold">
                     {pinDetail.data.title}
                 </div>
                 <div>
@@ -148,6 +156,7 @@ export const DetailCardComponent = () => {
                 <div className="flex">
                     <Image
                         src={pinDetail.data.users.profile_picture_url}
+                        alt="pfp"
                         height={0}
                         width={0}
                         sizes="100vw"
@@ -164,23 +173,47 @@ export const DetailCardComponent = () => {
                     <div className="flex-1 text-right">
                         {isFollower.data
                             ?
-                            <button className="btn btn-primary text-primary-content" onClick={unfollowHandler}>
+                            <button className="btn btn-primary text-primary-content rounded-full" onClick={unfollowHandler}>
                                 Following
                             </button>
                             :
-                            <button className="btn btn-primary text-primary-content" onClick={followHandler}>
+                            <button className="btn btn-primary text-primary-content rounded-full" onClick={followHandler}>
                                 Follow
                             </button>
                         }
                     </div>
                 </div>
-                <div>
+                <div className="flex-1 overflow-y-scroll">
                     <div className="font-bold">
                         Comments
                     </div>
-                    <div>
+                    {pin_comments &&
+                        <div className=" min-h-min flex flex-col">
+                            {pin_comments.map((e, i) => {
+                                return (
+                                    <div key={i} className="flex max-h-full gap-2 p-2">
+                                        {/* <div className="w-7"> */}
+                                        <Image
+                                            src={e.users.profile_picture_url}
+                                            height={0}
+                                            width={0}
+                                            sizes="100vw"
+                                            className="w-8 h-8 aspect-square rounded-full"
+                                        />
+                                        {/* </div> */}
+                                        <div className="flex flex-wrap w-full">
+                                            <span className="font-bold">{e.users.username} : </span>
+                                            <p className="break-all">{e.comment}</p>
+                                        </div>
+                                    </div>
+
+                                )
+                            })}
+                        </div>
+                    }
+                    {!pin_comments && <div>
                         No comments yet! Add one to start the conversation.
-                    </div>
+                    </div>}
                 </div>
                 <Divider />
                 <div className="flex gap-2">
@@ -191,8 +224,9 @@ export const DetailCardComponent = () => {
                         sizes="100vw"
                         className="w-12 aspect-square rounded-full"
                     />}
-                    <input type="text" placeholder="Add a comment"
-                        className="input input-bordered input-primary w-full max-w-xs rounded-full"
+                    <input type="text"
+                        placeholder="Add a comment"
+                        className="input input-bordered input-primary w-full max-w-xs rounded-full bg-neutral-focus"
                         onChange={commentInputHandler}
                         value={commentInput} />
                     <button className="btn btn-primary rounded-full" onClick={sendCommentHandler}>
