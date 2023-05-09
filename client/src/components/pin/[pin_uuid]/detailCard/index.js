@@ -1,16 +1,17 @@
-import { setAsyncV, useAsyncV } from "use-sync-v"
+import { setAsyncV, setSyncV, useAsyncV } from "use-sync-v"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Image from "next/image";
 import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { Divider } from "@mui/material";
 
 export const DetailCardComponent = () => {
     const auth = useAsyncV('auth', { initialState: { loading: true } })
     const pinDetail = useAsyncV('pinDetail')
     const boards = useAsyncV('boards')
     const isFollower = useAsyncV('isFollower')
-    console.log("🚀 ~ file: index.js:12 ~ DetailCardComponent ~ isFollower:", isFollower)
-
+    const creator_uuid = pinDetail.data.users.uuid
+    const user_uuid = auth.data.user.id
     const boardSelectHandler = (e) => {
         setSelectedBoard(JSON.parse(e.target.value))
     }
@@ -35,18 +36,50 @@ export const DetailCardComponent = () => {
     useEffect(() => {
         if (!auth.data) return
         setAsyncV('isFollower', async () => {
-            const creator_uuid = pinDetail.data.users.uuid
-            const user_uuid = auth.data.user.id
             const response = await supabase
                 .from('users_followers')
                 .select(`count`)
                 .eq('user_uuid', creator_uuid)
                 .eq('follower_uuid', user_uuid)
+                .throwOnError()
             const data = response.data[0].count === 0 ? false : true
             return data
         })
     }, [])
 
+    const followHandler = () => {
+        if (!auth.data) return
+        setAsyncV('followUser', async () => {
+            const response = await supabase
+                .from('users_followers')
+                .upsert({
+                    'user_uuid': creator_uuid,
+                    'follower_uuid': user_uuid
+                })
+                .select()
+                .throwOnError()
+            const data = response.data[0]
+            setSyncV('isFollower.data', true)
+            setSyncV('pinDetail.data.users.users_followers[0].count', p => p + 1)
+            return data
+        })
+    }
+
+    const unfollowHandler = () => {
+        if (!auth.data) return
+        setAsyncV('unfollowUser', async () => {
+            const response = await supabase
+                .from('users_followers')
+                .delete()
+                .eq('user_uuid', creator_uuid)
+                .eq('follower_uuid', user_uuid)
+                .select()
+            const data = response
+            setSyncV('isFollower.data', false)
+            setSyncV('pinDetail.data.users.users_followers[0].count', p => p - 1)
+            return data
+        })
+    }
     return (
         <div className="bg-neutral rounded-3xl flex flex-wrap h-fit">
             <Image
@@ -57,9 +90,11 @@ export const DetailCardComponent = () => {
                 sizes="100vw"
                 className="w-96 aspect-auto rounded-l-3xl bg-neutral-focus"
             />
-            <div className="flex flex-col w-96 rounded-r-3xl bg-neutral p-5">
-                <div className="flex items-center justify-between">
-                    <MoreHorizIcon />
+            <div className="flex flex-col w-96 rounded-r-3xl bg-neutral p-5 gap-3">
+                <div className="flex items-center justify-end">
+                    <button className="btn btn-ghost" >
+                        <MoreHorizIcon />
+                    </button>
                     <div className="flex-1"></div>
                     <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                         {boards.data &&
@@ -79,7 +114,7 @@ export const DetailCardComponent = () => {
                 <div>
                     {pinDetail.data.description}
                 </div>
-                <div className="flex justify-between">
+                <div className="flex">
                     <Image
                         src={pinDetail.data.users.profile_picture_url}
                         height={0}
@@ -95,18 +130,30 @@ export const DetailCardComponent = () => {
                             {pinDetail.data.users.users_followers[0].count} followers
                         </div>
                     </div>
-                    <div>
-                        {isFollower
+                    <div className="flex-1 text-right">
+                        {isFollower.data
                             ?
-                            <button className="btn btn-primary">
-                                Follow
+                            <button className="btn btn-primary text-primary-content" onClick={unfollowHandler}>
+                                Following
                             </button>
                             :
-                            <button className="btn btn-primary">
-                                Following
+                            <button className="btn btn-primary text-primary-content" onClick={followHandler}>
+                                Follow
                             </button>
                         }
                     </div>
+                </div>
+                <div>
+                    <div className="font-bold">
+                        Comments
+                    </div>
+                    <div>
+                        No comments yet! Add one to start the conversation.
+                    </div>
+                </div>
+                <Divider/>
+                <div>
+                    
                 </div>
             </div>
         </div>
