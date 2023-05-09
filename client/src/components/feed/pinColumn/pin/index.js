@@ -50,7 +50,7 @@ export const PinComponent = ({ props }) => {
 
   return (
     <>
-      <div id={id} className="flex flex-col relative min-h-16 gap-1">
+      <div id={id} className="flex flex-col relative gap-1">
         {pin &&
           <>
             <Image
@@ -58,7 +58,7 @@ export const PinComponent = ({ props }) => {
               alt="pinImage"
               width={0}
               height={0}
-              sizes="10vw"
+              sizes="100vw"
               placeholder='blur'
               blurDataURL='p-logo-lowres.png'
               className="w-auto h-auto rounded-3xl bg-neutral"
@@ -69,8 +69,8 @@ export const PinComponent = ({ props }) => {
             <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
               <div className="avatar aspect-square">
                 <div className="w-8 rounded-full flex items-center">
-                  {pin?.users?.profile_picture_url
-                    ? <Image src={pin?.users?.profile_picture_url}
+                  {pin.users.profile_picture_url
+                    ? <Image src={pin.users.profile_picture_url}
                       alt="avatar"
                       width="0"
                       height="0"

@@ -10,7 +10,7 @@ export const PinColumnComponent = () => {
     }} />])
   }, [])
   return (
-    <div className="w-72 h-max flex flex-col gap-5">
+    <div className="h-max flex flex-col gap-5 w-72">
       {pinsToDisplay}
     </div>
   )

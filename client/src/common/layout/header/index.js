@@ -17,7 +17,6 @@ export const Header = () => {
   const router = useRouter()
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
-
   const showSignInComponent = () => {
     updateSyncV('show.signInComponent', true)
   }
@@ -56,7 +55,7 @@ export const Header = () => {
           <div className='w-12'>
             <Image
               alt="pinterest logo"
-              src="p-logo-lowres.png"
+              src="/p-logo-lowres.png"
               width="0"
               height="0"
               loading='lazy'
@@ -113,15 +112,17 @@ export const Header = () => {
         </div>
         <div className="avatar aspect-square">
           <div className="w-8 rounded-full flex items-center">
-            {avatarURL && <Image src={avatarURL}
+            {avatarURL ? <Image src={avatarURL}
               alt="avatar"
               width="0"
               height="0"
-              className="w-full h-auto"
+              className="w-auto h-auto"
               id="pinImageURL"
-            />}
+            />
+              :
+              <AccountCircleIcon className='text-3xl' />
+            }
 
-            <AccountCircleIcon className='text-3xl' />
           </div>
         </div>
       </div>
