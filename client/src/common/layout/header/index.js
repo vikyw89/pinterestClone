@@ -127,7 +127,7 @@ export const Header = () => {
                 width="0"
                 height="0"
                 className="w-auto h-auto"
-                id="pinImageURL"
+                id="user_avatar"
               />
                 :
                 <AccountCircleIcon className='text-3xl' />

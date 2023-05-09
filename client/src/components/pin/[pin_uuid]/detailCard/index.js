@@ -1,17 +1,22 @@
 import { setAsyncV, setSyncV, useAsyncV } from "use-sync-v"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Divider } from "@mui/material";
+import SendIcon from '@mui/icons-material/Send';
 
 export const DetailCardComponent = () => {
     const auth = useAsyncV('auth', { initialState: { loading: true } })
+    const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
     const pinDetail = useAsyncV('pinDetail')
     const boards = useAsyncV('boards')
     const isFollower = useAsyncV('isFollower')
     const creator_uuid = pinDetail.data.users.uuid
     const user_uuid = auth.data.user.id
+    const pin_uuid = pinDetail.data.uuid
+    const [commentInput, setCommentInput] = useState('')
+
     const boardSelectHandler = (e) => {
         setSelectedBoard(JSON.parse(e.target.value))
     }
@@ -47,6 +52,9 @@ export const DetailCardComponent = () => {
         })
     }, [])
 
+    useEffect(()=>{
+        
+    })
     const followHandler = () => {
         if (!auth.data) return
         setAsyncV('followUser', async () => {
@@ -80,6 +88,29 @@ export const DetailCardComponent = () => {
             return data
         })
     }
+
+    const commentInputHandler = (e) => {
+        setCommentInput(e.target.value)
+    }
+
+    const sendCommentHandler = () => {
+        if (!auth.data) return
+        setAsyncV('sendComment', async () => {
+            const response = await supabase
+                .from('pins_comments')
+                .insert({
+                    'comment':commentInput,
+                    'creator_uuid':user_uuid,
+                    'pin_uuid':pin_uuid
+                })
+                .select()
+            console.log("🚀 ~ file: index.js:104 ~ setAsyncV ~ response:", response)
+            const data = response.data[0]
+            // TODO: sync client comments model
+            return data
+        })
+    }
+
     return (
         <div className="bg-neutral rounded-3xl flex flex-wrap h-fit">
             <Image
@@ -90,7 +121,7 @@ export const DetailCardComponent = () => {
                 sizes="100vw"
                 className="w-96 aspect-auto rounded-l-3xl bg-neutral-focus"
             />
-            <div className="flex flex-col w-96 rounded-r-3xl bg-neutral p-5 gap-3">
+            <div className="flex flex-col w-96 rounded-r-3xl bg-neutral p-5 gap-3 justify-between">
                 <div className="flex items-center justify-end">
                     <button className="btn btn-ghost" >
                         <MoreHorizIcon />
@@ -151,9 +182,22 @@ export const DetailCardComponent = () => {
                         No comments yet! Add one to start the conversation.
                     </div>
                 </div>
-                <Divider/>
-                <div>
-                    
+                <Divider />
+                <div className="flex gap-2">
+                    {avatarURL && <Image src={avatarURL}
+                        alt="avatar"
+                        height={0}
+                        width={0}
+                        sizes="100vw"
+                        className="w-12 aspect-square rounded-full"
+                    />}
+                    <input type="text" placeholder="Add a comment"
+                        className="input input-bordered input-primary w-full max-w-xs rounded-full"
+                        onChange={commentInputHandler}
+                        value={commentInput} />
+                    <button className="btn btn-primary rounded-full" onClick={sendCommentHandler}>
+                        <SendIcon />
+                    </button>
                 </div>
             </div>
         </div>
