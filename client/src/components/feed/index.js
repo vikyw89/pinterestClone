@@ -18,17 +18,16 @@ export const FeedsComponent = () => {
   const [nothingToFetch, setNothingToFetch] = useState(false)
 
   useEffect(() => {
-    const screenWidth = window.screen.width
+    const screenWidth = window.innerWidth
     const columnQty = Math.floor(screenWidth / PIN_WIDTH)
     let temp = []
     for (let i = 0; i < columnQty; i++) {
-      temp.push(<PinColumnComponent key={i} className="max-w-xs"/>)
+      temp.push(<PinColumnComponent key={i} className="max-w-xs" />)
     }
     setColumn(temp)
-
     const resizeScreenHandler = (e) => {
       let temp = []
-      const screenWidth = e ? e.target.innerWidth : window.screen.width
+      const screenWidth = e ? e.target.innerWidth : window.innerWidth
       const columnQty = Math.floor(screenWidth / PIN_WIDTH)
       for (let i = 0; i < columnQty; i++) {
         temp.push(<PinColumnComponent key={i} />)
@@ -73,7 +72,7 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      <div className='flex gap-5 justify-center p-5 overflow-y-scroll h-screen'>
+      <div className='flex gap-5 justify-center p-5'>
         {fetchedPins.length !== 0 && column &&
           column.map((e) => {
             return e
