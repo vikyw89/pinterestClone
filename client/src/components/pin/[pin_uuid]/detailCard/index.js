@@ -136,7 +136,7 @@ export const DetailCardComponent = () => {
   }
 
   return (
-    <div className="bg-neutral rounded-3xl flex flex-wrap text-neutral-content justify-center h-fit">
+    <div className="bg-neutral flex flex-wrap text-neutral-content justify-center h-fit rounded-box">
       <div className="max-w-[500px]">
         <Image
           src={pinDetail.data.image_url}
@@ -147,20 +147,20 @@ export const DetailCardComponent = () => {
           className="w-[500px] aspect-auto rounded-l-3xl bg-neutral-focus flex"
         />
       </div>
-      <div className="flex max-w-[500px] flex-col rounded-r-3xl bg-neutral p-5 gap-1 justify-between relative">
+      <div className="flex max-w-[500px] flex-col rounded-box bg-neutral p-5 gap-1 justify-between relative">
         <div className="flex items-center justify-end">
-          <button className="btn btn-ghost" >
+          <button className="btn btn-ghost p-0 btn-circle" >
             <MoreHorizIcon />
           </button>
           <div className="flex-1"></div>
           {selectedBoard &&
-                        <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
-                          {boards.data.map((p, i) => {
-                            return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
-                          })}
-                        </select>
+            <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
+              {boards.data.map((p, i) => {
+                return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
+              })}
+            </select>
           }
-          <button onClick={saveHandler} className="btn btn-primary rounded-full">Save</button>
+          <button onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
         </div>
         <div>
           <p>{pinDetail.data.link_url}</p>
@@ -171,7 +171,7 @@ export const DetailCardComponent = () => {
         <div>
           {pinDetail.data.description}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-3 w-full flex-wrap">
           <Image
             src={pinDetail.data.users.profile_picture_url}
             alt="pfp"
@@ -191,64 +191,64 @@ export const DetailCardComponent = () => {
           <div className="flex-1 text-right">
             {isFollower.data
               ?
-              <button className="btn btn-primary text-primary-content rounded-full" onClick={unfollowHandler}>
-                                Following
+              <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
+                Following
               </button>
               :
-              <button className="btn btn-primary text-primary-content rounded-full" onClick={followHandler}>
-                                Follow
+              <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
+                Follow
               </button>
             }
           </div>
         </div>
         <div className="flex-1">
           <div className="font-bold">
-                        Comments
+            Comments
           </div>
           {pin_comments &&
-                        <div>
-                          {pin_comments.map((e, i) => {
-                            return (
-                              <div key={i} className="flex max-h-full gap-2 p-2">
-                                {/* <div className="w-7"> */}
-                                <Image
-                                  src={e.users.profile_picture_url}
-                                  alt="profile_picture"
-                                  height={0}
-                                  width={0}
-                                  sizes="100vw"
-                                  className="w-8 h-8 aspect-square rounded-full"
-                                />
-                                {/* </div> */}
-                                <div className="flex flex-wrap w-full">
-                                  <span className="font-bold">{e.users.username} :&nbsp;&nbsp;</span>
-                                  <p className="break-all">{e.comment}</p>
-                                </div>
-                              </div>
+            <div>
+              {pin_comments.map((e, i) => {
+                return (
+                  <div key={i} className="flex max-h-full gap-2 p-2">
+                    {/* <div className="w-7"> */}
+                    <Image
+                      src={e.users.profile_picture_url}
+                      alt="profile_picture"
+                      height={0}
+                      width={0}
+                      sizes="100vw"
+                      className="w-8 h-8 aspect-square rounded-full"
+                    />
+                    {/* </div> */}
+                    <div className="flex flex-wrap w-full">
+                      <span className="font-bold">{e.users.username} :&nbsp;&nbsp;</span>
+                      <p className="break-all">{e.comment}</p>
+                    </div>
+                  </div>
 
-                            )
-                          })}
-                        </div>
+                )
+              })}
+            </div>
           }
           {!pin_comments && <div>
-                        No comments yet! Add one to start the conversation.
+            No comments yet! Add one to start the conversation.
           </div>}
         </div>
         <Divider />
-        <div className="flex gap-2 w-full justify-between">
+        <div className="flex gap-2 justify-between">
           {avatarURL && <Image src={avatarURL}
             alt="avatar"
             height={0}
             width={0}
             sizes="100vw"
-            className="w-12 aspect-square rounded-full"
+            className="w-12 aspect-square rounded-box"
           />}
           <input type="text"
             placeholder="Add a comment"
-            className="input input-bordered input-primary rounded-full bg-neutral-focus flex-1"
+            className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
             onChange={commentInputHandler}
             value={commentInput} />
-          <button className="btn btn-primary rounded-full" onClick={sendCommentHandler}>
+          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler}>
             <SendIcon />
           </button>
         </div>
