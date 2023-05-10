@@ -1,12 +1,11 @@
 import { Page } from '@/common/layout/page'
+import { supabase } from '@/lib/supabase'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { supabase } from '@/lib/supabase'
 import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
 import { v4 as uuidv4 } from 'uuid'
-import { Divider } from '@mui/material'
 
 const initialPin = {
   title: '',
