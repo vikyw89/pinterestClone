@@ -44,7 +44,6 @@ export const DetailCardComponent = () => {
           <Image
             src={pinDetail.data.image_url}
             alt="pinImage"
-            loading='lazy'
             height={0}
             width={0}
             sizes="100vw"

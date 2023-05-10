@@ -61,7 +61,6 @@ export const PinComponent = ({ props }) => {
             <Image
               src={pin.image_url}
               alt="pinImage"
-              loading='lazy'
               width={0}
               height={0}
               sizes="100vw"
