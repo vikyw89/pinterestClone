@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
-import Skeleton from 'react-loading-skeleton'
 
 export const DetailCardComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })

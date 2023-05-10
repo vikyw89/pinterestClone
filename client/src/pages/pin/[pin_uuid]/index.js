@@ -9,7 +9,7 @@ const PinDetail = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const router = useRouter()
   const { pin_uuid } = router.query
-  
+
   useEffect(() => {
     if (!auth.data || !pin_uuid) return
     setAsyncV('pinDetail', async () => {
@@ -22,7 +22,6 @@ const PinDetail = () => {
                 `)
         .eq('uuid', pin_uuid)
         .eq('pins_comments.pin_uuid', pin_uuid)
-      console.log("🚀 ~ file: index.js:25 ~ setAsyncV ~ response:", response)
       const pinData = response.data[0]
       return pinData
     })
