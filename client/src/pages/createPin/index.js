@@ -41,8 +41,8 @@ const CreatePin = () => {
     } else {
       saveButton.classList.remove('btn-disabled')
     }
-  },[pin.image_url])
-  
+  },[pin.image_url, id])
+
   useEffect(() => {
     if (!boards.data) return
     setSelectedBoard(boards?.data?.[0])
