@@ -54,7 +54,7 @@ export const Header = () => {
     setSyncV('users.data.theme', updatedValue)
   }
   return (
-    <div className="flex bg-base-300 z-20 items-center text-base-content">
+    <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
         <div onClick={navigateToLanding} className="lg:flex-none flex items-center gap-1 cursor-pointer">
           <div className='w-12'>
@@ -92,7 +92,7 @@ export const Header = () => {
           </button>
           <ul
             tabIndex={0}
-            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-base-200 text-base-content"
+            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral-200 text-neutral-content"
           >
             {theme.map((el, index) => {
               return (
