@@ -5,7 +5,7 @@ import { setSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 setSyncV('show.signInComponent', true)
 
-export default function Home() {
+const Home = () => {
   const auth = useAsyncV('auth')
   const showSignInComponent = useSyncV('show.signInComponent')
   return (
@@ -15,3 +15,5 @@ export default function Home() {
     </Page>
   )
 }
+
+export default Home
