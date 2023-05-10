@@ -2,23 +2,26 @@ import { supabase } from '@/lib/supabase'
 import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {
     const auth = useAsyncV('auth', { initialState: { loading: true } })
-    const avatarURL = auth.data.user.user_metadata.avatar_url
     const pinDetail = useAsyncV('pinDetail')
-    const pin_comments = pinDetail.data.pins_comments
+    const sendComment = useAsyncV('sendComment')
     const [commentInput, setCommentInput] = useState('')
+    const pin_comments = pinDetail?.data?.pins_comments
+    const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
+    const user_uuid = auth?.data?.user.id
+    const pin_uuid = pinDetail?.data?.uuid
 
     const commentInputHandler = (e) => {
         setCommentInput(e.target.value)
     }
 
     const sendCommentHandler = () => {
-        if (!auth.data) return
+        if (!commentInput || !user_uuid || !pin_uuid) return
         setAsyncV('sendComment', async () => {
             const response = await supabase
                 .from('pins_comments')
@@ -31,24 +34,28 @@ export const PinCommentsComponent = () => {
                 .throwOnError()
             const data = response.data[0]
             // TODO: sync client comments model
-            await setAsyncV('pinDetail', async () => {
-                const response = await supabase
-                    .from('pins')
-                    .select(`
-                        *,
-                        users(*,users_followers!users_followers_user_uuid_fkey(count)),
-                        pins_comments(*,users(*))
-                        `)
-                    .eq('uuid', pin_uuid)
-                    .eq('pins_comments.pin_uuid', pin_uuid)
-                    .throwOnError()
-                const pinData = response.data[0]
-                return pinData
-            })
+            setCommentInput('')
             return data
         })
-        setCommentInput('')
     }
+
+    useEffect(() => {
+        if (!sendComment.data || !pin_uuid) return
+        setAsyncV('pinDetail', async () => {
+            const response = await supabase
+                .from('pins')
+                .select(`
+                    *,
+                    users(*,users_followers!users_followers_user_uuid_fkey(count)),
+                    pins_comments(*,users(*))
+                    `)
+                .eq('uuid', pin_uuid)
+                .eq('pins_comments.pin_uuid', pin_uuid)
+                .throwOnError()
+            const pinData = response.data[0]
+            return pinData
+        }, { deleteExistingData: false })
+    }, [sendComment.data])
     return (
         <>
             <div className="flex-1">
@@ -59,7 +66,7 @@ export const PinCommentsComponent = () => {
                     <div>
                         {pin_comments.map((e, i) => {
                             return (
-                                <div key={i} className="flex max-h-full gap-2 p-2">
+                                <div key={i} className="flex gap-2 p-2 w-full max-w-lg">
                                     <Image
                                         src={e.users.profile_picture_url}
                                         alt="profile_picture"
@@ -68,7 +75,7 @@ export const PinCommentsComponent = () => {
                                         sizes="100vw"
                                         className="w-8 h-8 aspect-square rounded-full"
                                     />
-                                    <div className="flex flex-wrap w-full">
+                                    <div className="flex w-full max-w-lg flex-wrap">
                                         <span className="font-bold">{e.users.username} :&nbsp;&nbsp;</span>
                                         <p className="break-all">{e.comment}</p>
                                     </div>

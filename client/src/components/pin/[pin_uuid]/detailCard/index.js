@@ -1,121 +1,61 @@
-import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
+import { supabase } from '@/lib/supabase'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
-import { Divider } from '@mui/material'
-import SendIcon from '@mui/icons-material/Send'
+import { setAsyncV, useAsyncV } from 'use-sync-v'
 import { PinCommentsComponent } from './pinComments'
+import { PinCreatorComponent } from './pinCreator'
+import Skeleton from 'react-loading-skeleton'
 
 export const DetailCardComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const avatarURL = auth.data.user.user_metadata.avatar_url
+  const userId = auth?.data?.user?.id
   const pinDetail = useAsyncV('pinDetail')
   const boards = useAsyncV('boards')
-  const isFollower = useAsyncV('isFollower')
-  const creator_uuid = pinDetail.data.users.uuid
-  const user_uuid = auth.data.user.id
-  const pin_uuid = pinDetail.data.uuid
-
   const [selectedBoard, setSelectedBoard] = useState()
+
+
   const boardSelectHandler = (e) => {
     setSelectedBoard(JSON.parse(e.target.value))
   }
 
   useEffect(() => {
-    if (boards.data) return
+    if (boards.data || !userId) return
     setAsyncV('boards', async () => {
       const response = await supabase
         .from('boards')
         .select()
-        .filter('creator_uuid', 'eq', auth.data.user.id)
+        .eq('creator_uuid', userId)
         .throwOnError()
       const data = response.data
       setSelectedBoard(data)
       return data
     })
-  }, [auth.data.user.id, boards.data])
+  }, [userId, boards.data])
 
   const saveHandler = () => {
 
   }
 
-  useEffect(() => {
-    if (!auth.data) return
-    setAsyncV('boards', async () => {
-      const response = await supabase
-        .from('boards')
-        .select()
-        .filter('creator_uuid', 'eq', auth.data.user.id)
-        .throwOnError()
-      return response.data
-    })
-  }, [auth.data])
-
-  useEffect(() => {
-    if (!auth.data) return
-    setAsyncV('isFollower', async () => {
-      const response = await supabase
-        .from('users_followers')
-        .select('count')
-        .eq('user_uuid', creator_uuid)
-        .eq('follower_uuid', user_uuid)
-        .throwOnError()
-      const data = response.data[0].count === 0 ? false : true
-      return data
-    })
-  }, [auth.data, creator_uuid, user_uuid])
-
-  const followHandler = () => {
-    if (!auth.data) return
-    setAsyncV('followUser', async () => {
-      const response = await supabase
-        .from('users_followers')
-        .upsert({
-          'user_uuid': creator_uuid,
-          'follower_uuid': user_uuid
-        })
-        .select()
-        .throwOnError()
-      const data = response.data[0]
-      setSyncV('isFollower.data', true)
-      setSyncV('pinDetail.data.users.users_followers[0].count', p => p + 1)
-      return data
-    })
-  }
-
-  const unfollowHandler = () => {
-    if (!auth.data) return
-    setAsyncV('unfollowUser', async () => {
-      const response = await supabase
-        .from('users_followers')
-        .delete()
-        .eq('user_uuid', creator_uuid)
-        .eq('follower_uuid', user_uuid)
-        .select()
-      const data = response
-      setSyncV('isFollower.data', false)
-      setSyncV('pinDetail.data.users.users_followers[0].count', p => p - 1)
-      return data
-    })
-  }
-
- 
-
   return (
-    <div className="bg-neutral flex flex-wrap text-neutral-content justify-center h-fit rounded-box">
-      <div className="max-w-[500px]">
-        <Image
-          src={pinDetail.data.image_url}
-          alt="pinImage"
-          height={0}
-          width={0}
-          sizes="100vw"
-          className="w-[500px] aspect-auto rounded-l-3xl bg-neutral-focus flex"
-        />
+    <div className="bg-neutral flex flex-wrap text-neutral-content rounded-box items-start">
+      {/* left half */}
+      <div className="max-w-lg relative">
+        {pinDetail.data &&
+          <Image
+            src={pinDetail.data.image_url}
+            alt="pinImage"
+            loading='lazy'
+            height={0}
+            width={0}
+            sizes="100vw"
+            className="w-screen aspect-auto rounded-l-3xl bg-neutral-focus "
+          />
+        }
       </div>
-      <div className="flex max-w-[500px] flex-col rounded-box bg-neutral p-5 gap-1 justify-between relative">
-        <div className="flex items-center justify-end">
+      {/* right half */}
+      <div className="flex max-w-lg flex-col rounded-r-3xl bg-neutral p-5 gap-1 relative">
+        <div className="flex items-center justify-end w-full">
           <button className="btn btn-ghost p-0 btn-circle" >
             <MoreHorizIcon />
           </button>
@@ -129,46 +69,21 @@ export const DetailCardComponent = () => {
           }
           <button onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
         </div>
-        <div>
-          <p>{pinDetail.data.link_url}</p>
-        </div>
-        <div className="font-bold">
-          {pinDetail.data.title}
-        </div>
-        <div>
-          {pinDetail.data.description}
-        </div>
-        <div className="flex gap-3 w-full flex-wrap">
-          <Image
-            src={pinDetail.data.users.profile_picture_url}
-            alt="pfp"
-            height={0}
-            width={0}
-            sizes="100vw"
-            className="w-12 aspect-square rounded-full"
-          />
-          <div>
+        {pinDetail.data &&
+          <div className='w-full'>
+            <div className='underline'>
+              <a href={pinDetail.data.link_url}>{pinDetail.data.link_url}</a>
+            </div>
             <div className="font-bold">
-              {pinDetail.data.users.username}
+              {pinDetail.data.title}
             </div>
             <div>
-              {pinDetail.data.users.users_followers[0].count} followers
+              {pinDetail.data.description}
             </div>
           </div>
-          <div className="flex-1 text-right">
-            {isFollower.data
-              ?
-              <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
-                Following
-              </button>
-              :
-              <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
-                Follow
-              </button>
-            }
-          </div>
-        </div>
-        <PinCommentsComponent/>
+        }
+        <PinCreatorComponent />
+        <PinCommentsComponent />
       </div>
     </div>
   )
