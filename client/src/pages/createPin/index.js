@@ -140,10 +140,10 @@ const CreatePin = () => {
                   </div>
                 }
                 {pin.image_url === '' &&
-                  <>
+                  <div className='flex flex-col gap-2'>
                     <div
-                      className='aspect-square flex flex-col items-center justify-center relative border-opacity-50 border-neutral-content border-4 border-dashed rounded-box'>
-                      <CloudUploadIcon className='animate-bounce text-6xl'/>
+                      className=' aspect-square flex flex-col items-center justify-center relative border-opacity-50 border-neutral-content border-4 border-dashed rounded-box'>
+                      <CloudUploadIcon className='animate-bounce text-6xl' />
                       <div className='text-lg'>
                         click to upload
                       </div>
@@ -157,7 +157,7 @@ const CreatePin = () => {
                       className='btn btn-primary w-full rounded-btn'>
                       Save From Site
                     </button>
-                  </>
+                  </div>
                 }
               </div>
               <div
