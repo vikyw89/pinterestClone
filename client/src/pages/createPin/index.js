@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,6 +20,7 @@ const CreatePin = () => {
   const boards = useAsyncV('boards')
   const [pin, setPin] = useState(initialPin)
   const [selectedBoard, setSelectedBoard] = useState('')
+  const id = useId()
 
   useEffect(() => {
     if (!auth.data) return
@@ -33,6 +34,15 @@ const CreatePin = () => {
     })
   }, [auth.data])
 
+  useEffect(()=>{
+    const saveButton = document.querySelector( `#${CSS.escape(id)}`)
+    if (pin.image_url === '') {
+      saveButton.classList.add('btn-disabled')
+    } else {
+      saveButton.classList.remove('btn-disabled')
+    }
+  },[pin.image_url])
+  
   useEffect(() => {
     if (!boards.data) return
     setSelectedBoard(boards?.data?.[0])
@@ -74,8 +84,10 @@ const CreatePin = () => {
   }
 
   const saveHandler = async () => {
+    if (pin.image_url === '') return
     await updateAsyncV('pin', async () => {
       const fetchedImage = await fetch(pin.image_url)
+      // validate input
       const imageBlob = await fetchedImage.blob()
       const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
       const storageResponse = await supabase.storage
@@ -119,7 +131,7 @@ const CreatePin = () => {
                   })
                 }
               </select>
-              <button onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
+              <button id={id} onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
               <div className="flex-1 flex flex-col bg-neutral text-neutral-content min-w-[300px]">
