@@ -24,7 +24,8 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "use-sync-v": "^2.5.3",
+    "react-loading-skeleton": "^3.3.1",
+    "use-sync-v": "^2.5.4",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

@@ -9,10 +9,9 @@ const PinDetail = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const router = useRouter()
   const { pin_uuid } = router.query
-  const pinDetail = useAsyncV('pinDetail')
-
+  
   useEffect(() => {
-    if (!auth.data) return
+    if (!auth.data || !pin_uuid) return
     setAsyncV('pinDetail', async () => {
       const response = await supabase
         .from('pins')
@@ -23,20 +22,18 @@ const PinDetail = () => {
                 `)
         .eq('uuid', pin_uuid)
         .eq('pins_comments.pin_uuid', pin_uuid)
+      console.log("🚀 ~ file: index.js:25 ~ setAsyncV ~ response:", response)
       const pinData = response.data[0]
       return pinData
     })
   }, [pin_uuid, auth.data])
+
   return (
     <Page>
       {auth.data &&
-                <div className="flex justify-center h-screen p-5">
-                  {pinDetail.data && <DetailCardComponent />}
-                  {pinDetail.loading && <div className="w-96 ">
-                    <div className="animate-pulse w-96 h-96 rounded-3xl bg-neutral-focus">
-                    </div>
-                  </div>}
-                </div>
+        <div className="flex justify-center p-5">
+          <DetailCardComponent />
+        </div>
       }
     </Page>
   )
