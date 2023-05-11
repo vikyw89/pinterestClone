@@ -9,7 +9,7 @@ export const PinCreatorComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const router = useRouter()
   const { pin_uuid } = router.query
-  const pinDetail = useAsyncV(`pin.${pin_uuid}`)
+  const pinDetail = useAsyncV(`pin${pin_uuid}`)
   const isFollower = useAsyncV('isFollower')
   const creator_uuid = pinDetail?.data?.users?.uuid
   const user_uuid = auth?.data?.user?.id
@@ -25,7 +25,7 @@ export const PinCreatorComponent = () => {
         .throwOnError()
       const data = response.data[0].count === 0 ? false : true
       return data
-    })
+    }, { deleteExistingData: false })
   }, [pinDetail.data, creator_uuid, user_uuid])
 
   const followHandler = () => {
@@ -40,10 +40,10 @@ export const PinCreatorComponent = () => {
         .select()
         .throwOnError()
       const data = response.data[0]
-      setSyncV('isFollower.data', true)
-      setSyncV('pinDetail.data.users.users_followers[0].count', p => p + 1)
       return data
     })
+    setSyncV('isFollower.data', true)
+    setSyncV(`pin${pin_uuid}.data.users.users_followers[0].count`, p => p + 1)
   }
 
   const unfollowHandler = () => {
@@ -57,25 +57,23 @@ export const PinCreatorComponent = () => {
         .select()
         .throwOnError()
       const data = response
-      setSyncV('isFollower.data', false)
-      setSyncV('pinDetail.data.users.users_followers[0].count', p => p - 1)
       return data
     })
+    setSyncV('isFollower.data', false)
+    setSyncV(`pin${pin_uuid}.data.users.users_followers[0].count`, p => p - 1)
   }
 
   return (
     <div className="flex gap-3 w-full flex-wrap">
-      {pinDetail.data && <Image
-        src={pinDetail.data.users.profile_picture_url}
-        alt="pfp"
-        height={0}
-        width={0}
-        sizes="100vw"
-        className="w-12 aspect-square rounded-full"
-      />}
-      {pinDetail.loading &&
-        <Skeleton />
-      }
+      {pinDetail.data &&
+        <Image
+          src={pinDetail.data.users.profile_picture_url}
+          alt="pfp"
+          height={0}
+          width={0}
+          sizes="100vw"
+          className="w-12 aspect-square rounded-full"
+        />}
       {pinDetail.data &&
         <div>
           <div className="font-bold">

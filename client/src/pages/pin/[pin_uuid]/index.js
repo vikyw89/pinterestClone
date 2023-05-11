@@ -12,7 +12,7 @@ const PinDetail = () => {
 
   useEffect(() => {
     if (!auth.data || !pin_uuid) return
-    setAsyncV(`pin.${pin_uuid}`, async () => {
+    setAsyncV(`pin${pin_uuid}`, async () => {
       const response = await supabase
         .from('pins')
         .select(`
@@ -30,9 +30,7 @@ const PinDetail = () => {
   return (
     <Page>
       {auth.data && pin_uuid &&
-        <div className="flex justify-center p-5">
-          <DetailCardComponent />
-        </div>
+        <DetailCardComponent />
       }
     </Page>
   )
