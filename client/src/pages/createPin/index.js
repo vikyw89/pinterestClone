@@ -61,10 +61,13 @@ const CreatePin = () => {
       maxIteration: 20
     }
 
-    console.log(await imageCompression(file, options))
-    const image_url = (file.type !== "image/gif")
-    ? URL.createObjectURL(await imageCompression(file, options))
-    : URL.createObjectURL(file)
+    const image_url = (file.type !== 'image/gif')
+      ? URL.createObjectURL(await imageCompression(file, options))
+      : (file.size <= 1000000)
+        ? URL.createObjectURL(file)
+        : false
+
+    if (!image_url) return
 
     // preparing base64 loading thumbnail
     const blur_options = {
@@ -74,6 +77,7 @@ const CreatePin = () => {
       fileType:'image/webp',
       maxIteration: 20
     }
+
     const compressedBlurFile = await imageCompression(file, blur_options)
     const image_blur_url = await imageCompression.getDataUrlFromFile(compressedBlurFile)
     setPin(p => ({
