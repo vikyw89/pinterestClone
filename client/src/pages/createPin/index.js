@@ -6,13 +6,15 @@ import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
 import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
 import { v4 as uuidv4 } from 'uuid'
+import imageCompression from 'browser-image-compression'
 
 const initialPin = {
   title: '',
   description: '',
   link_url: '',
   image_url: '',
-  creator_uuid: ''
+  creator_uuid: '',
+  loading_image_url: ''
 }
 
 const CreatePin = () => {
@@ -34,26 +36,37 @@ const CreatePin = () => {
     })
   }, [auth.data])
 
-  useEffect(()=>{
-    const saveButton = document.querySelector( `#${CSS.escape(id)}`)
+  useEffect(() => {
+    const saveButton = document.querySelector(`#${CSS.escape(id)}`)
     if (pin.image_url === '') {
       saveButton.classList.add('btn-disabled')
     } else {
       saveButton.classList.remove('btn-disabled')
     }
-  },[pin.image_url, id])
+  }, [pin.image_url, id])
 
   useEffect(() => {
     if (!boards.data) return
     setSelectedBoard(boards?.data?.[0])
   }, [boards.data])
 
-  const pinImageHandler = (e) => {
+  const pinImageHandler = async (e) => {
     e.stopPropagation()
-    const imageURL = URL.createObjectURL(e.target.files[0])
+    const file = e.target.files[0]
+
+    const image_url = URL.createObjectURL(file)
+    const blur_options = {
+      maxSizeMB: 0.001,
+      maxWidthOrHeight: 100,
+      useWebWorker: true,
+    }
+
+    const compressedBlurFile = await imageCompression(file, blur_options)
+    const image_blur_url = URL.createObjectURL(compressedBlurFile)
     setPin(p => ({
       ...p,
-      image_url: imageURL
+      image_url: image_url,
+      loading_image_url: image_blur_url
     }))
   }
 
@@ -62,7 +75,8 @@ const CreatePin = () => {
       pinTitle: 'title',
       pinDescription: 'description',
       pinLink: 'link_url',
-      pinImageURL: 'image_url'
+      pinImageURL: 'image_url',
+      pinLoadingURL: 'loading_image_url'
     }
     const key = PIN_KEY_MAP[e.target.id]
     const value = e.target.value
@@ -75,7 +89,8 @@ const CreatePin = () => {
   const removeImageHandler = () => {
     setPin(p => ({
       ...p,
-      image_url: initialPin.image_url
+      image_url: initialPin.image_url,
+      loading_image_url: initialPin.loading_image_url
     }))
   }
 
@@ -87,29 +102,47 @@ const CreatePin = () => {
     if (pin.image_url === '') return
     await updateAsyncV('pin', async () => {
       const fetchedImage = await fetch(pin.image_url)
+      const fetchedLoadingImage = await fetch(pin.loading_image_url)
       // validate input
       const imageBlob = await fetchedImage.blob()
+      const loadingImageBlob = await fetchedLoadingImage.blob()
+
       const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
+      const loadingStoragePath = `pins/${auth.data.user.id}/${uuidv4()}loading`
+
       const storageResponse = await supabase.storage
         .from('pins')
         .upload(storagePath, imageBlob)
-      if (storageResponse.error) {
-        setSyncV('pin.error', storageResponse.error)
+
+      const loadingStorageResponse = await supabase.storage
+        .from('pins')
+        .upload(loadingStoragePath, loadingImageBlob)
+
+      if (storageResponse.error || loadingStorageResponse.error) {
+        setSyncV('pin.error', storageResponse.error || loadingStorageResponse.error)
         setTimeout(() => {
           setSyncV('pin.error', false)
         }, 10000)
       }
+
       const imagePublicURL = supabase.storage
         .from('pins')
         .getPublicUrl(storagePath).data.publicUrl
+
+      const loadingImagePublicURL = supabase.storage
+        .from('pins')
+        .getPublicUrl(loadingStoragePath).data.publicUrl
+
       const pinToUpload = {
         title: pin.title,
         description: pin.description,
         link_url: pin.link_url,
         creator_uuid: auth.data.user.id,
         board_uuid: selectedBoard.uuid,
-        image_url: imagePublicURL
+        image_url: imagePublicURL,
+        loading_image_url: loadingImagePublicURL
       }
+
       const response = await supabase.rpc('create_pin', pinToUpload)
       return response
     })

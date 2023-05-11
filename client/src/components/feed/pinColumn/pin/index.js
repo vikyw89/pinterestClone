@@ -64,6 +64,9 @@ export const PinComponent = ({ props }) => {
               width={0}
               height={0}
               sizes="100vw"
+              loading='lazy'
+              placeholder='blur'
+              blurDataURL={pin?.loading_image_url}
               className="w-auto h-auto rounded-3xl bg-neutral"
             />
             <div className='pl-3 pr-3 font-bold overflow-clip'>
