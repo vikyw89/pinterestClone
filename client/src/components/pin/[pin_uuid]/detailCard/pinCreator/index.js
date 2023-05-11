@@ -1,12 +1,15 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
 export const PinCreatorComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const pinDetail = useAsyncV('pinDetail')
+  const router = useRouter()
+  const { pin_uuid } = router.query
+  const pinDetail = useAsyncV(`pin.${pin_uuid}`)
   const isFollower = useAsyncV('isFollower')
   const creator_uuid = pinDetail?.data?.users?.uuid
   const user_uuid = auth?.data?.user?.id
@@ -71,27 +74,27 @@ export const PinCreatorComponent = () => {
         className="w-12 aspect-square rounded-full"
       />}
       {pinDetail.loading &&
-                <Skeleton />
+        <Skeleton />
       }
       {pinDetail.data &&
-                <div>
-                  <div className="font-bold">
-                    {pinDetail.data.users.username}
-                  </div>
-                  <div>
-                    {pinDetail.data.users.users_followers[0].count} followers
-                  </div>
-                </div>
+        <div>
+          <div className="font-bold">
+            {pinDetail.data.users.username}
+          </div>
+          <div>
+            {pinDetail.data.users.users_followers[0].count} followers
+          </div>
+        </div>
       }
       <div className="flex-1 text-right">
         {isFollower.data
           ?
           <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
-                        Following
+            Following
           </button>
           :
           <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
-                        Follow
+            Follow
           </button>
         }
       </div>

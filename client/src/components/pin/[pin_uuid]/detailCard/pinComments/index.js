@@ -2,19 +2,21 @@ import { supabase } from '@/lib/supabase'
 import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const pinDetail = useAsyncV('pinDetail')
+  const router = useRouter()
+  const { pin_uuid } = router.query
+  const pinDetail = useAsyncV(`pin.${pin_uuid}`)
   const sendComment = useAsyncV('sendComment')
   const [commentInput, setCommentInput] = useState('')
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
   const user_uuid = auth?.data?.user.id
-  const pin_uuid = pinDetail?.data?.uuid
 
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
@@ -41,7 +43,7 @@ export const PinCommentsComponent = () => {
 
   useEffect(() => {
     if (!sendComment.data || !pin_uuid) return
-    setAsyncV('pinDetail', async () => {
+    setAsyncV(`pin.${pin_uuid}`, async () => {
       const response = await supabase
         .from('pins')
         .select(`

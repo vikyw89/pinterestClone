@@ -198,10 +198,10 @@ const CreatePin = () => {
                         accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp"
                         onChange={pinImageHandler} />
                     </div>
-                    <button
+                    {/* <button
                       className='btn btn-primary w-full rounded-btn'>
                       Save From Site
-                    </button>
+                    </button> */}
                   </div>
                 }
               </div>

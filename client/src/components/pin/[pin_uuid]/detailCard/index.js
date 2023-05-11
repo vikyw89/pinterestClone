@@ -5,14 +5,16 @@ import { useEffect, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
+import { useRouter } from 'next/router'
 
 export const DetailCardComponent = () => {
   const auth = useAsyncV('auth', { initialState: { loading: true } })
   const userId = auth?.data?.user?.id
-  const pinDetail = useAsyncV('pinDetail')
+  const router = useRouter()
+  const { pin_uuid } = router.query
+  const pinDetail = useAsyncV(`pin.${pin_uuid}`)
   const boards = useAsyncV('boards')
   const [selectedBoard, setSelectedBoard] = useState()
-
 
   const boardSelectHandler = (e) => {
     setSelectedBoard(JSON.parse(e.target.value))
