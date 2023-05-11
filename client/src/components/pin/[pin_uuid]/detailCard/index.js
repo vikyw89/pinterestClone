@@ -46,6 +46,8 @@ export const DetailCardComponent = () => {
             alt="pinImage"
             height={0}
             width={0}
+            placeholder='blur'
+            blurDataURL={pinDetail?.data?.loading_image_url}
             sizes="100vw"
             className="w-screen aspect-auto rounded-l-3xl bg-neutral-focus "
           />
