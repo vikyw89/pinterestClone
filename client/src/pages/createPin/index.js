@@ -57,12 +57,12 @@ const CreatePin = () => {
     const image_url = URL.createObjectURL(file)
     const blur_options = {
       maxSizeMB: 0.001,
-      maxWidthOrHeight: 100,
+      maxWidthOrHeight: 10,
       useWebWorker: true,
     }
 
     const compressedBlurFile = await imageCompression(file, blur_options)
-    const image_blur_url = URL.createObjectURL(compressedBlurFile)
+    const image_blur_url = await imageCompression.getDataUrlFromFile(compressedBlurFile)
     setPin(p => ({
       ...p,
       image_url: image_url,

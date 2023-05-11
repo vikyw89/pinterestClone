@@ -61,13 +61,11 @@ export const PinComponent = ({ props }) => {
             <Image
               src={pin.image_url}
               alt="pinImage"
-              width={0}
-              height={0}
-              sizes="100vw"
-              loading='lazy'
+              width={500}
+              height={500}
               placeholder='blur'
-              blurDataURL={pin?.loading_image_url}
-              className="w-auto h-auto rounded-3xl bg-neutral"
+              blurDataURL={pin.loading_image_url}
+              className="h-auto w-full rounded-3xl bg-neutral"
             />
             <div className='pl-3 pr-3 font-bold overflow-clip'>
               {pin.title}
