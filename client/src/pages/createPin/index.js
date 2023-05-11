@@ -5,7 +5,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
 import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
-import { v4 as uuidv4 } from 'uuid'
+import { v4 } from 'uuid'
 import imageCompression from 'browser-image-compression'
 
 const initialPin = {
@@ -53,16 +53,17 @@ const CreatePin = () => {
   const pinImageHandler = async (e) => {
     e.stopPropagation()
     const file = e.target.files[0]
-
     const image_url = URL.createObjectURL(file)
+
+    // preparing base64 loading thumbnail
     const blur_options = {
       maxSizeMB: 0.001,
-      maxWidthOrHeight: 100,
+      maxWidthOrHeight: 10,
       useWebWorker: true,
     }
-
     const compressedBlurFile = await imageCompression(file, blur_options)
-    const image_blur_url = URL.createObjectURL(compressedBlurFile)
+    const image_blur_url = await imageCompression.getDataUrlFromFile(compressedBlurFile)
+
     setPin(p => ({
       ...p,
       image_url: image_url,
@@ -102,24 +103,15 @@ const CreatePin = () => {
     if (pin.image_url === '') return
     await updateAsyncV('pin', async () => {
       const fetchedImage = await fetch(pin.image_url)
-      const fetchedLoadingImage = await fetch(pin.loading_image_url)
-      // validate input
+
       const imageBlob = await fetchedImage.blob()
-      const loadingImageBlob = await fetchedLoadingImage.blob()
-
-      const storagePath = `pins/${auth.data.user.id}/${uuidv4()}`
-      const loadingStoragePath = `pins/${auth.data.user.id}/${uuidv4()}loading`
-
+      const storagePath = `pins/${auth.data.user.id}/${v4()}`
       const storageResponse = await supabase.storage
         .from('pins')
         .upload(storagePath, imageBlob)
 
-      const loadingStorageResponse = await supabase.storage
-        .from('pins')
-        .upload(loadingStoragePath, loadingImageBlob)
-
-      if (storageResponse.error || loadingStorageResponse.error) {
-        setSyncV('pin.error', storageResponse.error || loadingStorageResponse.error)
+      if (storageResponse.error) {
+        setSyncV('pin.error', storageResponse.error)
         setTimeout(() => {
           setSyncV('pin.error', false)
         }, 10000)
@@ -129,10 +121,6 @@ const CreatePin = () => {
         .from('pins')
         .getPublicUrl(storagePath).data.publicUrl
 
-      const loadingImagePublicURL = supabase.storage
-        .from('pins')
-        .getPublicUrl(loadingStoragePath).data.publicUrl
-
       const pinToUpload = {
         title: pin.title,
         description: pin.description,
@@ -140,9 +128,8 @@ const CreatePin = () => {
         creator_uuid: auth.data.user.id,
         board_uuid: selectedBoard.uuid,
         image_url: imagePublicURL,
-        loading_image_url: loadingImagePublicURL
+        loading_image_url: pin.loading_image_url
       }
-
       const response = await supabase.rpc('create_pin', pinToUpload)
       return response
     })
@@ -197,10 +184,10 @@ const CreatePin = () => {
                         accept="image/bmp,image/gif,image/jpeg,image/png,image/tiff,image/webp"
                         onChange={pinImageHandler} />
                     </div>
-                    <button
+                    {/* <button
                       className='btn btn-primary w-full rounded-btn'>
                       Save From Site
-                    </button>
+                    </button> */}
                   </div>
                 }
               </div>
