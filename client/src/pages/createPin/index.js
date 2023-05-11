@@ -66,7 +66,7 @@ const CreatePin = () => {
     const image_blur_url = await imageCompression.getDataUrlFromFile(compressedBlurFile)
     setPin(p => ({
       ...p,
-      image_url: image_blur_url,
+      image_url: image_url,
       loading_image_url: image_blur_url
     }))
   }
