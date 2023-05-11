@@ -53,7 +53,19 @@ const CreatePin = () => {
   const pinImageHandler = async (e) => {
     e.stopPropagation()
     const file = e.target.files[0]
-    const image_url = URL.createObjectURL(file)
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 2048,
+      useWebWorker: true,
+      fileType:'image/webp',
+      maxIteration: 20
+    }
+
+    console.log(await imageCompression(file, options))
+    const image_url = (file.type !== "image/gif")
+    ? URL.createObjectURL(await imageCompression(file, options))
+    : URL.createObjectURL(file)
+
     // preparing base64 loading thumbnail
     const blur_options = {
       maxSizeMB: 0.00025,
