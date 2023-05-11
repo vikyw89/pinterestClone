@@ -138,6 +138,7 @@ const CreatePin = () => {
 
   return (
     <Page>
+      <div className="flex flex-1 items-center justify-center">
         <div className="flex items-center justify-center p-10 max-w-5xl rounded-box bg-neutral text-neutral-content w-full">
           <div className="flex flex-col flex-1 gap-1">
             <div className="flex justify-between items-center">
@@ -218,6 +219,7 @@ const CreatePin = () => {
             </div>
           </div>
         </div>
+      </div>
     </Page >
   )
 }
