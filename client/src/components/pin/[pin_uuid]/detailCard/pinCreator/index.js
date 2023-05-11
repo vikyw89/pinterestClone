@@ -2,7 +2,6 @@ import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import Skeleton from 'react-loading-skeleton'
 import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
 export const PinCreatorComponent = () => {
