@@ -54,19 +54,19 @@ const CreatePin = () => {
     e.stopPropagation()
     const file = e.target.files[0]
     const image_url = URL.createObjectURL(file)
-
     // preparing base64 loading thumbnail
     const blur_options = {
-      maxSizeMB: 0.001,
-      maxWidthOrHeight: 10,
+      maxSizeMB: 0.00025,
+      maxWidthOrHeight: 100,
       useWebWorker: true,
+      fileType:'image/webp',
+      maxIteration: 20
     }
     const compressedBlurFile = await imageCompression(file, blur_options)
     const image_blur_url = await imageCompression.getDataUrlFromFile(compressedBlurFile)
-
     setPin(p => ({
       ...p,
-      image_url: image_url,
+      image_url: image_blur_url,
       loading_image_url: image_blur_url
     }))
   }
