@@ -7,6 +7,7 @@ import { useEffect, useId, useState } from 'react'
 import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
 import { v4 } from 'uuid'
 import imageCompression from 'browser-image-compression'
+import { Cloudinary } from '@/lib/cloudinary'
 
 const initialPin = {
   title: '',
@@ -57,7 +58,7 @@ const CreatePin = () => {
       maxSizeMB: 1,
       maxWidthOrHeight: 2048,
       useWebWorker: true,
-      fileType:'image/webp',
+      fileType: 'image/webp',
       maxIteration: 20
     }
 
@@ -74,7 +75,7 @@ const CreatePin = () => {
       maxSizeMB: 0.00025,
       maxWidthOrHeight: 100,
       useWebWorker: true,
-      fileType:'image/webp',
+      fileType: 'image/webp',
       maxIteration: 20
     }
 
@@ -117,26 +118,13 @@ const CreatePin = () => {
 
   const saveHandler = async () => {
     if (pin.image_url === '') return
+
     await updateAsyncV('pin', async () => {
       const fetchedImage = await fetch(pin.image_url)
-
       const imageBlob = await fetchedImage.blob()
-      const storagePath = `pins/${auth.data.user.id}/${v4()}`
-      const storageResponse = await supabase.storage
-        .from('pins')
-        .upload(storagePath, imageBlob)
+      const base64 = await imageCompression.getDataUrlFromFile(imageBlob)
 
-      if (storageResponse.error) {
-        setSyncV('pin.error', storageResponse.error)
-        setTimeout(() => {
-          setSyncV('pin.error', false)
-        }, 10000)
-      }
-
-      const imagePublicURL = supabase.storage
-        .from('pins')
-        .getPublicUrl(storagePath).data.publicUrl
-
+      const imagePublicURL = await Cloudinary.setStorage(base64)
       const pinToUpload = {
         title: pin.title,
         description: pin.description,
