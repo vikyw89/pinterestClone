@@ -12,12 +12,15 @@
     "prettier-watch": "onchange \"./src/\" -- prettier --write --ignore-unknown {{changed}}"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.11.2",
+    "@cloudinary/url-gen": "^1.10.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@supabase/supabase-js": "^2.20.0",
+    "axios": "^1.4.0",
     "browser-image-compression": "^2.0.2",
     "daisyui": "^2.51.5",
     "eslint": "8.38.0",
