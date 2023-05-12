@@ -53,6 +53,10 @@ export const Header = () => {
     })
     setSyncV('users.data.theme', updatedValue)
   }
+
+  const navigateToProfile = () => {
+    router.push('/profile')
+  }
   return (
     <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
@@ -126,7 +130,8 @@ export const Header = () => {
             </div>
           </button>
         )}
-        <button className='btn btn-ghost rounded-btn'>
+        <button className='btn btn-ghost rounded-btn'
+          onClick={navigateToProfile}>
           <div className="avatar aspect-square">
             <div className="w-8 rounded-full flex items-center">
               {avatarURL ? <Image src={avatarURL}
