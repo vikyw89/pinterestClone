@@ -2,9 +2,9 @@ import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setAsyncV, updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
-updateSyncV(
+setSyncV(
   'theme',
   [
     'light',
@@ -41,7 +41,7 @@ updateSyncV(
 
 export default function App({ Component, pageProps }) {
   const users = useAsyncV('users')
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAsyncV('auth')
   const router = useRouter()
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      updateAsyncV('auth', () => session)
+      setAsyncV('auth', ()=>session)
     })
     return () => {
       subscription.unsubscribe()
@@ -62,19 +62,6 @@ export default function App({ Component, pageProps }) {
     if (auth.loading) return
     if (!auth.data && router.route !== '/') {
       router.push('/')
-    }
-    if (auth.data) {
-      setAsyncV('users', async () => {
-        const avatarURL = auth.data.user.user_metadata.avatar_url
-        const response = await supabase
-          .from('users')
-          .update({
-            'profile_picture_url':avatarURL
-          })
-          .eq('uuid', auth.data.user.id)
-          .select()
-        return response.data[0]
-      })
     }
   }, [auth.data, auth.loading, router])
 

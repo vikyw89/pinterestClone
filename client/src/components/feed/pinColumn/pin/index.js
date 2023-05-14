@@ -21,7 +21,7 @@ export const PinComponent = ({ props }) => {
 
   // update pindata based on index
   useEffect(() => {
-    if (fetchedPins.length < displayIndex) return
+    if (fetchedPins.length <= displayIndex) return
     if (pin) return
     setPin(fetchedPins[displayIndex])
   }, [fetchedPins, displayIndex, pin])

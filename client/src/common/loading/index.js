@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateSyncV, useAsyncV } from 'use-sync-v'
+import { setSyncV, updateSyncV, useAsyncV, useSyncV } from 'use-sync-v'
 
 export const Loading = () => {
   const router = useRouter()
-  const route = useAsyncV('route')
+  const route = useSyncV('routeLoading')
   const signIn = useAsyncV('signIn')
   const signOut = useAsyncV('signOut')
   const auth = useAsyncV('auth')
@@ -16,10 +16,10 @@ export const Loading = () => {
 
   useEffect(() => {
     const changeStartHandler = () => {
-      updateSyncV('route.loading', true)
+      setSyncV('routeLoading', true)
     }
     const changeCompleteHandler = () => {
-      updateSyncV('route.loading', false)
+      setSyncV('routeLoading', false)
     }
     router.events.on('routeChangeStart', changeStartHandler)
     router.events.on('routeChangeComplete', changeCompleteHandler)
@@ -32,7 +32,7 @@ export const Loading = () => {
   }, [router])
   return (
     <div className='fixed z-50 top-12 w-full flex'>
-      {(route.loading ||
+      {(route ||
         signIn.loading ||
         signOut.loading ||
         auth.loading ||

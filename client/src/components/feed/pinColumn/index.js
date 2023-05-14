@@ -3,7 +3,6 @@ import { PinComponent } from './pin'
 
 export const PinColumnComponent = () => {
   const [pinsToDisplay, setPinsToDisplay] = useState([])
-
   useEffect(() => {
     setPinsToDisplay([<PinComponent key={0} props={{
       setPinsToDisplay: setPinsToDisplay,

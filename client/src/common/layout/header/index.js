@@ -1,19 +1,18 @@
 import { supabase } from '@/lib/supabase'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AddIcon from '@mui/icons-material/Add'
+import ColorLensIcon from '@mui/icons-material/ColorLens'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import {
+  asyncRefetchV,
   setAsyncV,
   setSyncV,
-  updateAsyncV,
-  updateSyncV,
   useAsyncV,
-  useSyncV,
+  useSyncV
 } from 'use-sync-v'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import AddIcon from '@mui/icons-material/Add'
-import LogoutIcon from '@mui/icons-material/Logout'
-import LoginIcon from '@mui/icons-material/Login'
-import ColorLensIcon from '@mui/icons-material/ColorLens'
 
 
 export const Header = () => {
@@ -23,11 +22,11 @@ export const Header = () => {
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
   const showSignInComponent = () => {
-    updateSyncV('show.signInComponent', true)
+    setSyncV('show.signInComponent', true)
   }
 
   const signOutHandler = () => {
-    updateAsyncV('signOut', async () => {
+    asyncRefetchV('auth', async()=>{
       const { error } = await supabase.auth.signOut()
       return error
     })
