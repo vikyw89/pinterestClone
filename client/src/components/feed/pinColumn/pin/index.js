@@ -12,7 +12,7 @@ export const PinComponent = ({ props }) => {
   const selector = `displayIndex.${id}`
   const displayIndex = useSyncV(selector)
   const router = useRouter()
-  
+
   // freeze the index
   useEffect(() => {
     setSyncV('index', p => {
@@ -20,7 +20,7 @@ export const PinComponent = ({ props }) => {
       return +p + 1
     })
   }, [])
-  
+
   // update pindata based on index
   useEffect(() => {
     if (fetchedPins.length < displayIndex) return
@@ -93,6 +93,9 @@ export const PinComponent = ({ props }) => {
               </div>
             </div>
           </>
+        }
+        {!pin &&
+          <div className='aspect-square w-full'></div>
         }
       </div>
     </>
