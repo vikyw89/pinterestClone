@@ -2,9 +2,9 @@ import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setAsyncV, updateAsyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { asyncRefetchV, setAsyncV, setSyncV, updateAsyncV, updateSyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
 
-updateSyncV(
+setSyncV(
   'theme',
   [
     'light',
@@ -40,23 +40,19 @@ updateSyncV(
 )
 
 export default function App({ Component, pageProps }) {
-  const users = useAsyncV('users')
   const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!users.data) return
-    document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
+  const users = useAsyncSubV('users', async () => {
+    const avatarURL = auth.data.user.user_metadata.avatar_url
+    const response = await supabase
+      .from('users')
+      .update({
+        'profile_picture_url': avatarURL
+      })
+      .eq('uuid', auth.data.user.id)
+      .select()
+    return response.data[0]
   })
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      updateAsyncV('auth', () => session)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const router = useRouter()
 
   useEffect(() => {
     if (auth.loading) return
@@ -64,19 +60,23 @@ export default function App({ Component, pageProps }) {
       router.push('/')
     }
     if (auth.data) {
-      setAsyncV('users', async () => {
-        const avatarURL = auth.data.user.user_metadata.avatar_url
-        const response = await supabase
-          .from('users')
-          .update({
-            'profile_picture_url':avatarURL
-          })
-          .eq('uuid', auth.data.user.id)
-          .select()
-        return response.data[0]
-      })
+      asyncRefetchV('users')
     }
   }, [auth.data, auth.loading, router])
+
+  useEffect(() => {
+    if (!users.data) return
+    document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
+  },[users])
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAsyncV('auth', () => session)
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   return (
     <>

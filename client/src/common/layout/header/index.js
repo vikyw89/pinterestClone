@@ -4,8 +4,6 @@ import { useRouter } from 'next/router'
 import {
   setAsyncV,
   setSyncV,
-  updateAsyncV,
-  updateSyncV,
   useAsyncV,
   useSyncV,
 } from 'use-sync-v'

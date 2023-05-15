@@ -3,22 +3,24 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useState } from 'react'
 import { setSyncV, useSyncV } from 'use-sync-v'
+import { v4 } from 'uuid'
 
 export const PinComponent = ({ props }) => {
   const id = useId()
   const [pin, setPin] = useState()
   const fetchedPins = useSyncV('fetchedPins')
-  const [displayIndex, setDisplayIndex] = useState()
+  const selector = `displayIndex.${id}`
+  const displayIndex = useSyncV(selector)
   const router = useRouter()
-
+  
   // freeze the index
   useEffect(() => {
     setSyncV('index', p => {
-      setDisplayIndex(+p)
+      setSyncV(selector, p)
       return +p + 1
     })
   }, [])
-
+  
   // update pindata based on index
   useEffect(() => {
     if (fetchedPins.length < displayIndex) return
@@ -33,7 +35,7 @@ export const PinComponent = ({ props }) => {
         const intersecting = entry.isIntersecting
         if (!intersecting) return
         props.setPinsToDisplay(p => {
-          return [...p, <PinComponent key={p.length} props={{
+          return [...p, <PinComponent key={v4()} props={{
             setPinsToDisplay: props.setPinsToDisplay
           }} />]
         })

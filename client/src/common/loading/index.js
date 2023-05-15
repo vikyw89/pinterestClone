@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { updateSyncV, useAsyncV } from 'use-sync-v'
+import { setSyncV, updateSyncV, useAsyncV } from 'use-sync-v'
 
 export const Loading = () => {
   const router = useRouter()
@@ -16,10 +16,10 @@ export const Loading = () => {
 
   useEffect(() => {
     const changeStartHandler = () => {
-      updateSyncV('route.loading', true)
+      setSyncV('route.loading', true)
     }
     const changeCompleteHandler = () => {
-      updateSyncV('route.loading', false)
+      setSyncV('route.loading', false)
     }
     router.events.on('routeChangeStart', changeStartHandler)
     router.events.on('routeChangeComplete', changeCompleteHandler)

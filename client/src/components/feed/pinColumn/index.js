@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { PinComponent } from './pin'
+import { v4 } from 'uuid'
 
 export const PinColumnComponent = () => {
   const [pinsToDisplay, setPinsToDisplay] = useState([])
 
   useEffect(() => {
-    setPinsToDisplay([<PinComponent key={0} props={{
+    setPinsToDisplay([<PinComponent key={v4()} props={{
       setPinsToDisplay: setPinsToDisplay,
     }} />])
   }, [])
