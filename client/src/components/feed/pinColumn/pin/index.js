@@ -1,7 +1,7 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { setSyncV, useSyncV } from 'use-sync-v'
 import { v4 } from 'uuid'
 
@@ -12,13 +12,20 @@ export const PinComponent = ({ props }) => {
   const selector = `displayIndex.${id}`
   const displayIndex = useSyncV(selector)
   const router = useRouter()
+  const element = useRef(null)
 
   // freeze the index
   useEffect(() => {
     setSyncV('index', p => {
       setSyncV(selector, p)
-      return +p + 1
+      return p + 1
     })
+    return () => {
+      setSyncV('index', p => {
+        setSyncV(selector)
+        return p - 1
+      })
+    }
   }, [])
 
   // update pindata based on index
@@ -29,7 +36,7 @@ export const PinComponent = ({ props }) => {
   }, [fetchedPins, displayIndex, pin])
 
   useEffect(() => {
-    const pin = document.querySelector(`#${CSS.escape(id)}`)
+    const pin = element.current
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const intersecting = entry.isIntersecting
@@ -43,8 +50,7 @@ export const PinComponent = ({ props }) => {
       })
     }, {
       root: null,
-      rootMargin: '1000px',
-      threshold: 0
+      rootMargin: '1000px'
     })
     observer.observe(pin)
     return () => {
@@ -57,18 +63,20 @@ export const PinComponent = ({ props }) => {
   }
   return (
     <>
-      <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler}>
+      <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
         {pin &&
           <>
-            <Image
-              src={pin.image_url}
-              alt="pinImage"
-              width={500}
-              height={500}
-              placeholder='blur'
-              blurDataURL={pin.loading_image_url}
-              className="h-auto w-full rounded-3xl bg-neutral"
-            />
+            <div>
+              <Image
+                src={pin.image_url}
+                alt="pinImage"
+                width={500}
+                height={500}
+                placeholder='blur'
+                blurDataURL={pin.loading_image_url}
+                className="h-auto w-full rounded-3xl bg-neutral"
+              />
+            </div>
             <div className='pl-3 pr-3 font-bold overflow-clip'>
               {pin.title}
             </div>

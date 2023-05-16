@@ -12,24 +12,21 @@ setSyncV('index', 0)
 
 export const FeedsComponent = () => {
   const [column, setColumn] = useState()
-  const fetchedPins = useAsyncSubV('fetchedPins', async (p) => {
-    const previous = p ? [] : p
+  const { data: fetchedPins } = useAsyncSubV('fetchedPins', async (p) => {
+    const previous = p ? p : []
     const startIndex = previous.length
     const endIndex = startIndex + FETCH_AMOUNT
-    console.log("🚀 ~ file: index.js:19 ~ fetchedPins ~ endIndex:", endIndex)
-    // const response = await supabase
-    //   .from('pins')
-    //   .select(`*,
-    //     users(*)`)
-    //   .order('inserted_at', { ascending: false })
-    //   .range(startIndex, endIndex)
-    // console.log("🚀 ~ file: index.js:25 ~ fetchedPins ~ response:", response)
-    // return []
-    // if (response.data[0].length === 0) {
-    //   setNothingToFetch(true)
-    //   return [...previous, ...previous]
-    // }
-    // return [...previous, ...(response.data[0])]
+    const response = await supabase
+      .from('pins')
+      .select(`*,
+        users(*)`)
+      .order('inserted_at', { ascending: false })
+      .range(startIndex, endIndex)
+    if (response.data.length === 0) {
+      setNothingToFetch(true)
+      return [...previous, ...previous]
+    }
+    return [...previous, ...(response.data)]
   })
   const displayIndex = useSyncV('index')
   const [nothingToFetch, setNothingToFetch] = useState(false)
@@ -59,31 +56,31 @@ export const FeedsComponent = () => {
 
 
   // refetch when main queue is running low
-  // useEffect(() => {
-  //   if (!fetchedPins.data) return
-  //   const needRefetch = fetchedPins.length <= (displayIndex + QUEUE_LOWER_LIMIT)
-  //   if (!needRefetch) return
-  //   if (nothingToFetch) {
-  //     setSyncV('fetchedPins', p => {
-  //       return [...p, ...p]
-  //     })
-  //   } else {
-  //     // asyncRefetchV('fetchedPins')
-  //   }
-  // },[fetchedPins])
+  useEffect(() => {
+    if (!fetchedPins) return
+    const needRefetch = fetchedPins.length <= (displayIndex + QUEUE_LOWER_LIMIT)
+    if (!needRefetch) return
+    if (nothingToFetch) {
+      setSyncV('fetchedPins', p => {
+        return [...p, ...p]
+      })
+    } else {
+      console.log('refetching')
+      asyncRefetchV('fetchedPins')
+    }
+  }, [fetchedPins])
 
   return (
     <Page>
-      <div></div>
-      {/* {fetchedPins.data &&
+      {fetchedPins &&
         <div className='flex gap-5 justify-center p-5'>
-          {fetchedPins.data.length !== 0 && column &&
+          {fetchedPins.length !== 0 && column &&
             column.map((e) => {
               return e
             })
           }
         </div>
-      } */}
+      }
     </Page >
   )
 }
