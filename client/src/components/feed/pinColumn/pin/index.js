@@ -17,7 +17,6 @@ export const PinComponent = ({ props }) => {
 
   // freeze the index
   useEffect(() => {
-    asyncRefetchV('pins')
     setSyncV('index', p => {
       setDisplayIndex(p)
       return p + 1
@@ -36,7 +35,7 @@ export const PinComponent = ({ props }) => {
   }, [displayIndex, fetchedPinsQty])
 
   useEffect(() => {
-    const pin = element.current
+    const thisPin = element.current
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         const intersecting = entry.isIntersecting
@@ -46,12 +45,12 @@ export const PinComponent = ({ props }) => {
             setPinsToDisplay: props.setPinsToDisplay
           }} />]
         })
-        observer.unobserve(pin)
+        observer.unobserve(thisPin)
       })
     })
-    observer.observe(pin)
+    observer.observe(thisPin)
     return () => {
-      observer.unobserve(pin)
+      observer.unobserve(thisPin)
     }
   }, [props])
 
@@ -100,7 +99,7 @@ export const PinComponent = ({ props }) => {
           </>
         }
         {!pin &&
-          <div className='aspect-square w-full'></div>
+          <div className='aspect-square w-full animate-ping'></div>
         }
       </div>
     </>
