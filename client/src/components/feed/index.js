@@ -12,7 +12,11 @@ setSyncV('index', 0)
 
 export const FeedsComponent = () => {
   const [column, setColumn] = useState()
-  const { data: fetchedPins } = useAsyncSubV('fetchedPins', async (p) => {
+  const [nothingToFetch, setNothingToFetch] = useState(false)
+  const { data: fetchedPins } = useAsyncSubV('pins', async (p) => {
+    if (nothingToFetch) {
+      return [...p, ...p]
+    }
     const previous = p ? p : []
     const startIndex = previous.length
     const endIndex = startIndex + FETCH_AMOUNT
@@ -22,14 +26,11 @@ export const FeedsComponent = () => {
         users(*)`)
       .order('inserted_at', { ascending: false })
       .range(startIndex, endIndex)
-    if (response.data.length === 0) {
+    if (response.data.length < FETCH_AMOUNT) {
       setNothingToFetch(true)
-      return [...previous, ...previous]
     }
     return [...previous, ...(response.data)]
   })
-  const displayIndex = useSyncV('index')
-  const [nothingToFetch, setNothingToFetch] = useState(false)
 
   useEffect(() => {
     const screenWidth = window.innerWidth
@@ -53,22 +54,6 @@ export const FeedsComponent = () => {
       window.removeEventListener('resize', resizeScreenHandler)
     }
   }, [])
-
-
-  // refetch when main queue is running low
-  useEffect(() => {
-    if (!fetchedPins) return
-    const needRefetch = fetchedPins.length <= (displayIndex + QUEUE_LOWER_LIMIT)
-    if (!needRefetch) return
-    if (nothingToFetch) {
-      setSyncV('fetchedPins', p => {
-        return [...p, ...p]
-      })
-    } else {
-      console.log('refetching')
-      asyncRefetchV('fetchedPins')
-    }
-  }, [fetchedPins])
 
   return (
     <Page>

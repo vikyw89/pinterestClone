@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { asyncRefetchV, setAsyncV, setSyncV, updateAsyncV, updateSyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
 
 setSyncV(

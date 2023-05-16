@@ -2,21 +2,25 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
-import { setSyncV, useSyncV } from 'use-sync-v'
+import { asyncRefetchV, setSyncV, useSyncV } from 'use-sync-v'
 import { v4 } from 'uuid'
 
 export const PinComponent = ({ props }) => {
   const id = useId()
-  const [pin, setPin] = useState()
-  const fetchedPins = useSyncV('fetchedPins')
   const selector = `displayIndex.${id}`
   const displayIndex = useSyncV(selector)
+  const pin = useSyncV(`pins[${displayIndex ?? 0}]`)
+  const fetchedPins = useSyncV('pins')
+  const fetchedPinsQty = fetchedPins.length
   const router = useRouter()
   const element = useRef(null)
 
   // freeze the index
   useEffect(() => {
     setSyncV('index', p => {
+      if (fetchedPinsQty <= p) {
+        asyncRefetchV('pins')
+      }
       setSyncV(selector, p)
       return p + 1
     })
@@ -27,13 +31,6 @@ export const PinComponent = ({ props }) => {
       })
     }
   }, [])
-
-  // update pindata based on index
-  useEffect(() => {
-    if (fetchedPins.length < displayIndex) return
-    if (pin) return
-    setPin(fetchedPins[displayIndex])
-  }, [fetchedPins, displayIndex, pin])
 
   useEffect(() => {
     const pin = element.current
@@ -48,9 +45,6 @@ export const PinComponent = ({ props }) => {
         })
         observer.unobserve(pin)
       })
-    }, {
-      root: null,
-      rootMargin: '1000px'
     })
     observer.observe(pin)
     return () => {
