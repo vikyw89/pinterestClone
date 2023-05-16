@@ -75,6 +75,7 @@ export const PinComponent = ({ props }) => {
               alt="pinImage"
               width={500}
               height={500}
+              priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
               className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
