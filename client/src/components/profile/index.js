@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { useEffect } from 'react'
-import { setAsyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
+import { useAsyncSubV, useAsyncV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
   const auth = useAsyncV('auth')

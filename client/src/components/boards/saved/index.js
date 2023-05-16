@@ -8,7 +8,7 @@ export const SavedComponent = () => {
   const boards = user?.data?.boards
   // const boards = useAsyncSubV('')
   return (
-    <div className='flex flex-wrap gap-2'>
+    <div className='flex flex-wrap gap-2 justify-center flex-1 p-2' >
       {boards && boards.map(el=>{
         return (
           <BoardThumbnailComponent key={el.uuid} props={el}/>
