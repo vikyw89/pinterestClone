@@ -51,8 +51,6 @@ export const PinComponent = ({ props }) => {
         })
         observer.unobserve(thisPin)
       })
-    }, {
-      threshold: 1
     })
     observer.observe(thisPin)
     return () => {
@@ -62,6 +60,10 @@ export const PinComponent = ({ props }) => {
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
+  }
+  const loadingCompleteHandler = (e) => {
+    e.classList.remove('animate-pulse')
+    e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
   return (
     <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
@@ -75,7 +77,8 @@ export const PinComponent = ({ props }) => {
               height={500}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
-              className="h-auto w-full rounded-3xl bg-neutral"
+              className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
+              onLoadingComplete={loadingCompleteHandler}
             />
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
