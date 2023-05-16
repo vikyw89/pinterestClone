@@ -6,8 +6,8 @@ export const BoardThumbnailComponent = ({ props }) => {
     const boardPins = props.boards_pins
     const thumbnails = [...boardPins.slice(-4)]
     return (
-        <div className="flex flex-col justify-center gap-2 text-base-content hover:animate-pulse hover:cursor-pointer ">
-            <div className="w-72 aspect-square bg-secondary rounded-box border-2 border-primary" style={{
+        <div className="flex flex-col justify-center gap-2 text-base-content hover:animate-pulse hover:cursor-pointer">
+            <div className="w-72 aspect-square bg-neutral-focus rounded-box" style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
                 gridAutoRows: '1fr'

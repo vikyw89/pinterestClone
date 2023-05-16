@@ -33,9 +33,9 @@ export const ProfileComponent = () => {
           <Image
             src={avatarURL}
             alt={avatarURL}
-            width={500}
-            height={500}
-            className="rounded-full aspect-square w-screen"
+            width={300}
+            height={300}
+            className="rounded-full aspect-square w-screen border-4 border-dotted border-secondary"
           />
         </div>
         {username &&
