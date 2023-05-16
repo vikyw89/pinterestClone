@@ -37,7 +37,7 @@ export const BoardsComponent = () => {
           }
         })}
       </div>
-      <div className="flex flex-1 w-full border-t-2">
+      <div className="flex flex-1 w-full">
         {tabs.map((el) => {
           if (el.key === activeTab) {
             return el.content

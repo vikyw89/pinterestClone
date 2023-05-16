@@ -10,7 +10,11 @@ export const ProfileComponent = () => {
     const response = await supabase
       .from('users')
       .select(`*,
-                	users_followers!users_followers_follower_uuid_fkey(*)
+                	users_followers!users_followers_follower_uuid_fkey(*),
+                  boards!boards_creator_uuid_fkey(*, 
+                    boards_pins!boards_pins_board_uuid_fkey(*, 
+                      pins(*))
+                  )
             	`)
       .eq('uuid', userUUID)
       .throwOnError()
