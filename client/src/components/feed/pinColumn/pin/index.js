@@ -41,12 +41,17 @@ export const PinComponent = ({ props }) => {
         const intersecting = entry.isIntersecting
         if (!intersecting) return
         props.setPinsToDisplay(p => {
-          return [...p, <PinComponent key={p.length} props={{
-            setPinsToDisplay: props.setPinsToDisplay
-          }} />]
+          return [
+            ...p,
+            <PinComponent key={p.length} props={{
+              setPinsToDisplay: props.setPinsToDisplay
+            }} />,
+          ]
         })
         observer.unobserve(thisPin)
       })
+    }, {
+      threshold: 1
     })
     observer.observe(thisPin)
     return () => {
@@ -58,50 +63,49 @@ export const PinComponent = ({ props }) => {
     router.push(`/pin/${pin.uuid}`)
   }
   return (
-    <>
-      <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
-        {pin &&
-          <>
+    <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
+      {pin &&
+        <>
+          <div>
+            <Image
+              src={pin.image_url}
+              alt="pinImage"
+              width={500}
+              height={500}
+              priority={true}
+              placeholder='blur'
+              blurDataURL={pin.loading_image_url}
+              className="h-auto w-full rounded-3xl bg-neutral"
+            />
+          </div>
+          <div className='pl-3 pr-3 font-bold overflow-clip'>
+            {pin.title}
+          </div>
+          <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
+            <div className="avatar aspect-square">
+              <div className="w-8 rounded-full flex items-center">
+                {pin.users.profile_picture_url
+                  ? <Image src={pin.users.profile_picture_url}
+                    alt="avatar"
+                    width="0"
+                    height="0"
+                    className="w-full aspect-square"
+                    id="profilePicture"
+                  />
+                  :
+                  <AccountCircleIcon className='w-full aspect-square' />
+                }
+              </div>
+            </div>
             <div>
-              <Image
-                src={pin.image_url}
-                alt="pinImage"
-                width={500}
-                height={500}
-                placeholder='blur'
-                blurDataURL={pin.loading_image_url}
-                className="h-auto w-full rounded-3xl bg-neutral"
-              />
+              {pin.users.username}
             </div>
-            <div className='pl-3 pr-3 font-bold overflow-clip'>
-              {pin.title}
-            </div>
-            <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
-              <div className="avatar aspect-square">
-                <div className="w-8 rounded-full flex items-center">
-                  {pin.users.profile_picture_url
-                    ? <Image src={pin.users.profile_picture_url}
-                      alt="avatar"
-                      width="0"
-                      height="0"
-                      className="w-full aspect-square"
-                      id="profilePicture"
-                    />
-                    :
-                    <AccountCircleIcon className='w-full aspect-square' />
-                  }
-                </div>
-              </div>
-              <div>
-                {pin.users.username}
-              </div>
-            </div>
-          </>
-        }
-        {!pin &&
-          <div className='aspect-square w-full animate-ping'></div>
-        }
-      </div>
-    </>
+          </div>
+        </>
+      }
+      {!pin &&
+        <div className='aspect-square w-full animate-ping'></div>
+      }
+    </div>
   )
 }
