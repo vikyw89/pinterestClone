@@ -1,31 +1,27 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useEffect } from 'react'
-import { setAsyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
   const auth = useAsyncV('auth')
-  console.log("🚀 ~ file: index.js:8 ~ ProfileComponent ~ auth:", auth)
-  const userUUID = auth?.data?.user?.id
-  const userData = useAsyncV('userData')
-  const following = userData?.data?.users_followers
-  //   const firstName = userData?.data?.first_name
-  //   const lastName = userData?.data?.last_name
-  const username = userData?.data?.username
-  useEffect(() => {
-    setAsyncV('userData', async () => {
-      const response = await supabase
-        .from('users')
-        .select(`*,
-                    users_followers!users_followers_follower_uuid_fkey(*)
-                `)
-        .eq('uuid', userUUID)
-        .throwOnError()
-      const data = response.data[0]
-      return data
-    })
-  }, [userUUID])
+  const userUUID = auth.data.user.id
+  const user = useAsyncSubV('user', async () => {
+    const response = await supabase
+      .from('users')
+      .select(`*,
+                	users_followers!users_followers_follower_uuid_fkey(*)
+            	`)
+      .eq('uuid', userUUID)
+      .throwOnError()
+    const data = response.data[0]
+    return data
+  })
+
+  const following = user?.data?.users_followers
+  const username = user?.data?.username
   const avatarURL = auth.data.user.user_metadata.avatar_url
+
   return (
     <div className="flex justify-center p-10">
       <div className="flex flex-col items-center gap-4">
@@ -39,21 +35,21 @@ export const ProfileComponent = () => {
           />
         </div>
         {username &&
-                    <div className="font-bold text-2xl">
-                      {username}
-                    </div>
+          <div className="font-bold text-2xl">
+            {username}
+          </div>
         }
         {following &&
-                    <div className='font-bold'>
-                      {following.length} following
-                    </div>
+          <div className='font-bold'>
+            {following.length} following
+          </div>
         }
         <div className='flex gap-5'>
           <button className='btn btn-primary rounded-btn'>
-                        Share
+            Share
           </button>
           <button className='btn btn-primary rounded-btn'>
-                        Edit Profile
+            Edit Profile
           </button>
         </div>
       </div>
