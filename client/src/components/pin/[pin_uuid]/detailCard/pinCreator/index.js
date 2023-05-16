@@ -41,8 +41,8 @@ export const PinCreatorComponent = () => {
       const data = response.data[0]
       return data
     })
-    setSyncV('isFollower.data', true)
-    setSyncV(`pin${pin_uuid}.data.users.users_followers[0].count`, p => p + 1)
+    setSyncV('isFollower', true)
+    setSyncV(`pin${pin_uuid}.users.users_followers[0].count`, p => p + 1)
   }
 
   const unfollowHandler = () => {
@@ -58,8 +58,8 @@ export const PinCreatorComponent = () => {
       const data = response
       return data
     })
-    setSyncV('isFollower.data', false)
-    setSyncV(`pin${pin_uuid}.data.users.users_followers[0].count`, p => p - 1)
+    setSyncV('isFollower', false)
+    setSyncV(`pin${pin_uuid}.users.users_followers[0].count`, p => p - 1)
   }
 
   return (

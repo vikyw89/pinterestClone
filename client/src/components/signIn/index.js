@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { updateAsyncV } from 'use-sync-v'
+import { setAsyncV } from 'use-sync-v'
 import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
@@ -12,7 +12,7 @@ export const SignInComponent = () => {
   const gmailSignInHandler = (e) => {
     e.currentTarget.classList.add('loading')
     e.currentTarget.classList.add('disabled')
-    updateAsyncV('signIn', async () => {
+    setAsyncV('signIn', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {

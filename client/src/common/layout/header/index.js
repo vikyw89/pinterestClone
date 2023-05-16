@@ -1,19 +1,17 @@
 import { supabase } from '@/lib/supabase'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import AddIcon from '@mui/icons-material/Add'
+import ColorLensIcon from '@mui/icons-material/ColorLens'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import {
   setAsyncV,
   setSyncV,
-  updateAsyncV,
-  updateSyncV,
   useAsyncV,
   useSyncV,
 } from 'use-sync-v'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import AddIcon from '@mui/icons-material/Add'
-import LogoutIcon from '@mui/icons-material/Logout'
-import LoginIcon from '@mui/icons-material/Login'
-import ColorLensIcon from '@mui/icons-material/ColorLens'
 
 
 export const Header = () => {
@@ -23,11 +21,11 @@ export const Header = () => {
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
   const showSignInComponent = () => {
-    updateSyncV('show.signInComponent', true)
+    setSyncV('show.signInComponent', true)
   }
 
   const signOutHandler = () => {
-    updateAsyncV('signOut', async () => {
+    setAsyncV('signOut', async () => {
       const { error } = await supabase.auth.signOut()
       return error
     })
@@ -53,6 +51,10 @@ export const Header = () => {
     })
     setSyncV('users.data.theme', updatedValue)
   }
+
+  const navigateToProfile = () => {
+    router.push('/profile')
+  }
   return (
     <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
@@ -62,6 +64,7 @@ export const Header = () => {
               alt="pinterest logo"
               src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
               width="0"
+              priority={true}
               height="0"
               sizes="100vw"
               className='w-auto'
@@ -126,7 +129,8 @@ export const Header = () => {
             </div>
           </button>
         )}
-        <button className='btn btn-ghost rounded-btn'>
+        <button className='btn btn-ghost rounded-btn'
+          onClick={navigateToProfile}>
           <div className="avatar aspect-square">
             <div className="w-8 rounded-full flex items-center">
               {avatarURL ? <Image src={avatarURL}

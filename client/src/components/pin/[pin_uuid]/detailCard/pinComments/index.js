@@ -4,7 +4,7 @@ import { Divider } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { debugSyncV, setAsyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {
@@ -17,7 +17,7 @@ export const PinCommentsComponent = () => {
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
   const user_uuid = auth?.data?.user.id
-  debugSyncV()
+
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
   }

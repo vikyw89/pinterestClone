@@ -1,12 +1,12 @@
 import { Page } from '@/common/layout/page'
+import { Cloudinary } from '@/lib/cloudinary'
 import { supabase } from '@/lib/supabase'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
-import { setAsyncV, setSyncV, updateAsyncV, useAsyncV } from 'use-sync-v'
-import { v4 } from 'uuid'
-import imageCompression from 'browser-image-compression'
+import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 const initialPin = {
   title: '',
@@ -23,7 +23,7 @@ const CreatePin = () => {
   const [pin, setPin] = useState(initialPin)
   const [selectedBoard, setSelectedBoard] = useState('')
   const id = useId()
-
+  const uploadPin = useAsyncV('pin')
   useEffect(() => {
     if (!auth.data) return
     setAsyncV('boards', async () => {
@@ -38,12 +38,12 @@ const CreatePin = () => {
 
   useEffect(() => {
     const saveButton = document.querySelector(`#${CSS.escape(id)}`)
-    if (pin.image_url === '') {
+    if (pin.image_url === '' || uploadPin.loading) {
       saveButton.classList.add('btn-disabled')
     } else {
       saveButton.classList.remove('btn-disabled')
     }
-  }, [pin.image_url, id])
+  }, [pin.image_url, id, uploadPin.loading])
 
   useEffect(() => {
     if (!boards.data) return
@@ -57,7 +57,7 @@ const CreatePin = () => {
       maxSizeMB: 1,
       maxWidthOrHeight: 2048,
       useWebWorker: true,
-      fileType:'image/webp',
+      fileType: 'image/webp',
       maxIteration: 20
     }
 
@@ -74,7 +74,7 @@ const CreatePin = () => {
       maxSizeMB: 0.00025,
       maxWidthOrHeight: 100,
       useWebWorker: true,
-      fileType:'image/webp',
+      fileType: 'image/webp',
       maxIteration: 20
     }
 
@@ -117,26 +117,13 @@ const CreatePin = () => {
 
   const saveHandler = async () => {
     if (pin.image_url === '') return
-    await updateAsyncV('pin', async () => {
+
+    await setAsyncV('pin', async () => {
       const fetchedImage = await fetch(pin.image_url)
-
       const imageBlob = await fetchedImage.blob()
-      const storagePath = `pins/${auth.data.user.id}/${v4()}`
-      const storageResponse = await supabase.storage
-        .from('pins')
-        .upload(storagePath, imageBlob)
+      const base64 = await imageCompression.getDataUrlFromFile(imageBlob)
 
-      if (storageResponse.error) {
-        setSyncV('pin.error', storageResponse.error)
-        setTimeout(() => {
-          setSyncV('pin.error', false)
-        }, 10000)
-      }
-
-      const imagePublicURL = supabase.storage
-        .from('pins')
-        .getPublicUrl(storagePath).data.publicUrl
-
+      const imagePublicURL = await Cloudinary.setStorage(base64)
       const pinToUpload = {
         title: pin.title,
         description: pin.description,
@@ -147,9 +134,9 @@ const CreatePin = () => {
         loading_image_url: pin.loading_image_url
       }
       const response = await supabase.rpc('create_pin', pinToUpload)
+      setPin(initialPin)
       return response
     })
-    setPin(initialPin)
   }
 
   return (
