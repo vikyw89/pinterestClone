@@ -1,14 +1,12 @@
-import { Page } from "@/common/layout/page";
-import { useAsyncV } from "use-sync-v";
+import { Page } from '@/common/layout/page'
 
 export default function Profile (){
-    const auth = useAsyncV('auth')
-    
-    return (
-        <Page>
-            <div className="flex justify-center">
+
+  return (
+    <Page>
+      <div className="flex justify-center">
                 test
-            </div>
-        </Page>
-    )
+      </div>
+    </Page>
+  )
 }

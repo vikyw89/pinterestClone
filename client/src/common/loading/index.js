@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setSyncV, updateSyncV, useAsyncV } from 'use-sync-v'
+import { setSyncV, useAsyncV } from 'use-sync-v'
 
 export const Loading = () => {
   const router = useRouter()

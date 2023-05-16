@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
 import { asyncRefetchV, setSyncV, useSyncV } from 'use-sync-v'
-import { v4 } from 'uuid'
 
 const QUEUE_LOWER_LIMIT = 50
 
@@ -18,10 +17,8 @@ export const PinComponent = ({ props }) => {
 
   // freeze the index
   useEffect(() => {
+    asyncRefetchV('pins')
     setSyncV('index', p => {
-      if (fetchedPinsQty <= p + QUEUE_LOWER_LIMIT) {
-        asyncRefetchV('pins')
-      }
       setDisplayIndex(p)
       return p + 1
     })
@@ -31,6 +28,12 @@ export const PinComponent = ({ props }) => {
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (fetchedPinsQty <= (displayIndex ?? 0 + QUEUE_LOWER_LIMIT)) {
+      asyncRefetchV('pins')
+    }
+  }, [displayIndex, fetchedPinsQty])
 
   useEffect(() => {
     const pin = element.current

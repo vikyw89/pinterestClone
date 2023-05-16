@@ -4,7 +4,7 @@ import { Divider } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { debugSyncV, setAsyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {

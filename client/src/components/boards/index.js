@@ -1,8 +1,6 @@
-import { useState } from 'react'
+import { setSyncV, useSyncV } from 'use-sync-v'
 import { CreatedComponent } from './created'
 import { SavedComponent } from './saved'
-import { setSyncV, useSyncV } from 'use-sync-v'
-import { Divider } from '@mui/material'
 
 const tabs = [
   {

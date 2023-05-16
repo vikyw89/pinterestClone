@@ -2,7 +2,6 @@ import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
-import { BoardsComponent } from '../boards'
 
 export const ProfileComponent = () => {
   const auth = useAsyncV('auth')
@@ -24,7 +23,7 @@ export const ProfileComponent = () => {
       const data = response.data[0]
       return data
     })
-  }, [])
+  }, [userUUID])
   const avatarURL = auth.data.user.user_metadata.avatar_url
   return (
     <div className="flex justify-center p-10">

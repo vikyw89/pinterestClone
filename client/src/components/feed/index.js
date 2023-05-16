@@ -1,7 +1,7 @@
 import { Page } from '@/common/layout/page'
-import { useEffect, useState } from 'react'
-import { asyncRefetchV, setAsyncV, setSyncV, useAsyncSubV, useSyncV } from 'use-sync-v'
 import { supabase } from '@/lib/supabase'
+import { useEffect, useState } from 'react'
+import { setSyncV, useAsyncSubV } from 'use-sync-v'
 import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
