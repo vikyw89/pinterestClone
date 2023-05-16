@@ -6,10 +6,10 @@ export const PinColumnComponent = () => {
 
   useEffect(() => {
     setPinsToDisplay([
-    <PinComponent key={0} props={{
-      setPinsToDisplay: setPinsToDisplay,
-    }} />,
-  ])
+      <PinComponent key={0} props={{
+        setPinsToDisplay: setPinsToDisplay,
+      }} />,
+    ])
   }, [])
   return (
     <div className="h-max flex flex-col gap-5 w-72">

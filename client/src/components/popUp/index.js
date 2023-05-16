@@ -1,9 +1,9 @@
-import { updateSyncV } from 'use-sync-v'
+import { setSyncV } from 'use-sync-v'
 
 export const PopUpComponent = ({ children }) => {
   const closeComponent = (e) => {
     if (e.target.id !== 'blurredBackground') return
-    updateSyncV('show.signInComponent', false)
+    setSyncV('show.signInComponent', false)
   }
   return (
     <div

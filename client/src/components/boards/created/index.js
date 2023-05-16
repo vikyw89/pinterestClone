@@ -1,7 +1,7 @@
 export const CreatedComponent = () => {
   return (
     <div>
-            test
+            Work in Progress
     </div>
   )
 }

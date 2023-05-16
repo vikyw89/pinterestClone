@@ -64,6 +64,7 @@ export const Header = () => {
               alt="pinterest logo"
               src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
               width="0"
+              priority={true}
               height="0"
               sizes="100vw"
               className='w-auto'
