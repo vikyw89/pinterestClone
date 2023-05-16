@@ -75,6 +75,7 @@ export const PinComponent = ({ props }) => {
               alt="pinImage"
               width={300}
               height={300}
+              sizes='300px'
               priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
