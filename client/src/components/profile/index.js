@@ -5,7 +5,8 @@ import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
   const auth = useAsyncV('auth')
-  const userUUID = auth.data.user.id
+  console.log("🚀 ~ file: index.js:8 ~ ProfileComponent ~ auth:", auth)
+  const userUUID = auth?.data?.user?.id
   const userData = useAsyncV('userData')
   const following = userData?.data?.users_followers
   //   const firstName = userData?.data?.first_name
