@@ -23,6 +23,7 @@ export const PinComponent = ({ props }) => {
     })
     return () => {
       setSyncV('index', p => {
+        setDisplayIndex()
         return p - 1
       })
     }
