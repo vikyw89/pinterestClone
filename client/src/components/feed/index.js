@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase'
 import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
-const QUEUE_LOWER_LIMIT = 50
 const PIN_WIDTH = 300
 setSyncV('queue', [])
 setSyncV('index', 0)

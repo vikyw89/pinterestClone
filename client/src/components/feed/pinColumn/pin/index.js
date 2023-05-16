@@ -5,11 +5,12 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { asyncRefetchV, setSyncV, useSyncV } from 'use-sync-v'
 import { v4 } from 'uuid'
 
+const QUEUE_LOWER_LIMIT = 50
+
 export const PinComponent = ({ props }) => {
   const id = useId()
-  const selector = `displayIndex.${id}`
-  const displayIndex = useSyncV(selector)
-  const pin = useSyncV(`pins[${displayIndex ?? 0}]`)
+  const [displayIndex, setDisplayIndex] = useState()
+  const pin = useSyncV(`pins[${displayIndex}]`)
   const fetchedPins = useSyncV('pins')
   const fetchedPinsQty = fetchedPins.length
   const router = useRouter()
@@ -18,15 +19,14 @@ export const PinComponent = ({ props }) => {
   // freeze the index
   useEffect(() => {
     setSyncV('index', p => {
-      if (fetchedPinsQty <= p) {
+      if (fetchedPinsQty <= p + QUEUE_LOWER_LIMIT) {
         asyncRefetchV('pins')
       }
-      setSyncV(selector, p)
+      setDisplayIndex(p)
       return p + 1
     })
     return () => {
       setSyncV('index', p => {
-        setSyncV(selector)
         return p - 1
       })
     }
@@ -39,7 +39,7 @@ export const PinComponent = ({ props }) => {
         const intersecting = entry.isIntersecting
         if (!intersecting) return
         props.setPinsToDisplay(p => {
-          return [...p, <PinComponent key={v4()} props={{
+          return [...p, <PinComponent key={p.length} props={{
             setPinsToDisplay: props.setPinsToDisplay
           }} />]
         })
@@ -50,7 +50,7 @@ export const PinComponent = ({ props }) => {
     return () => {
       observer.unobserve(pin)
     }
-  }, [id, props])
+  }, [props])
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
