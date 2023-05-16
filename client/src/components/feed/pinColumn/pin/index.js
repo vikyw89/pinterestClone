@@ -69,12 +69,12 @@ export const PinComponent = ({ props }) => {
     <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
       {pin &&
         <>
-          <div>
+          <div className='w-72 h-auto'>
             <Image
               src={pin.image_url}
               alt="pinImage"
-              width={500}
-              height={500}
+              width={300}
+              height={300}
               priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
