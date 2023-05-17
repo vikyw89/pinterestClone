@@ -1,7 +1,8 @@
 import { Page } from '@/common/layout/page'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
-import { setSyncV, useAsyncSubV } from 'use-sync-v'
+import useSWRImmutable from 'swr/immutable'
+import { setSyncV } from 'use-sync-v'
 import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
@@ -12,11 +13,14 @@ setSyncV('index', 0)
 export const FeedsComponent = () => {
   const [column, setColumn] = useState()
   const [nothingToFetch, setNothingToFetch] = useState(false)
-  const { data: fetchedPins } = useAsyncSubV('pins', async (p) => {
+  const feeds = useSWRImmutable('feeds', async () => {
+    let previous = feeds.data
     if (nothingToFetch) {
-      return [...p, ...p]
+      return [...previous, ...previous]
     }
-    const previous = p ? p : []
+    if (!previous) {
+      previous = []
+    }
     const startIndex = previous.length
     const endIndex = startIndex + FETCH_AMOUNT
     const response = await supabase
@@ -56,9 +60,9 @@ export const FeedsComponent = () => {
 
   return (
     <Page>
-      {fetchedPins &&
+      {feeds.data &&
         <div className='flex gap-5 justify-center p-5'>
-          {fetchedPins.length !== 0 && column &&
+          {feeds.data.length !== 0 && column &&
             column.map((e) => {
               return e
             })

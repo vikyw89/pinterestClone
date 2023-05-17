@@ -1,3 +1,6 @@
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useAvailableTheme } from '@/lib/hooks/useAvailableTheme'
+import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AddIcon from '@mui/icons-material/Add'
@@ -6,17 +9,17 @@ import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { mutate } from 'swr'
 import {
   setAsyncV,
-  setSyncV,
-  useAsyncV,
-  useSyncV,
+  setSyncV
 } from 'use-sync-v'
 
 
 export const Header = () => {
-  const theme = useSyncV('theme')
-  const auth = useAsyncV('auth')
+  const theme = useAvailableTheme()
+  const auth = useAuth()
+  const user = useUser()
   const router = useRouter()
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
@@ -39,22 +42,27 @@ export const Header = () => {
     router.push('/createPin')
   }
 
-  const themeHandler = async (e) => {
+  const themeHandler = (e) => {
     const updatedValue = e.target.textContent
-    await setAsyncV('users', async () => {
-      const response = await supabase
+    const options = {
+      optimisticData: {
+        ...user.data,
+        theme: updatedValue
+      }
+    }
+    mutate('user', async (p) => {
+      await supabase
         .from('users')
         .update({ 'theme': updatedValue })
         .eq('uuid', auth.data.user.id)
-        .select()
-      return response.data[0]
-    })
-    setSyncV('users.data.theme', updatedValue)
+        .throwOnError()
+    }, options)
   }
 
   const navigateToProfile = () => {
     router.push('/profile')
   }
+
   return (
     <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
@@ -97,7 +105,7 @@ export const Header = () => {
             tabIndex={0}
             className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral"
           >
-            {theme.map((el, index) => {
+            {theme.data && theme.data.map((el, index) => {
               return (
                 <li key={index} className='text-neutral-content bg-neutral'>
                   <a

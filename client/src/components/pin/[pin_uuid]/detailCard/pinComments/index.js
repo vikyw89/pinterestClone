@@ -1,3 +1,4 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
@@ -8,7 +9,7 @@ import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinDetail = useAsyncV(`pin${pin_uuid}`)

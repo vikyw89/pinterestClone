@@ -2,16 +2,18 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
-import { asyncRefetchV, setSyncV, useSyncV } from 'use-sync-v'
+import { mutate } from 'swr'
+import useSWRImmutable from 'swr/immutable'
+import { setSyncV } from 'use-sync-v'
 
 const QUEUE_LOWER_LIMIT = 50
 
 export const PinComponent = ({ props }) => {
   const id = useId()
   const [displayIndex, setDisplayIndex] = useState()
-  const pin = useSyncV(`pins[${displayIndex}]`)
-  const fetchedPins = useSyncV('pins')
-  const fetchedPinsQty = fetchedPins.length
+  const fetchedPins = useSWRImmutable('feeds')
+  const pin = fetchedPins.data?.[displayIndex]
+  const fetchedPinsQty = fetchedPins.data.length
   const router = useRouter()
   const element = useRef(null)
 
@@ -31,7 +33,7 @@ export const PinComponent = ({ props }) => {
 
   useEffect(() => {
     if (fetchedPinsQty <= (displayIndex ?? 0 + QUEUE_LOWER_LIMIT)) {
-      asyncRefetchV('pins')
+      mutate('feeds')
     }
   }, [displayIndex, fetchedPinsQty])
 
@@ -61,6 +63,7 @@ export const PinComponent = ({ props }) => {
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
   }
+
   const loadingCompleteHandler = (e) => {
     e.classList.remove('animate-pulse')
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)

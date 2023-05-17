@@ -30,14 +30,14 @@ export const BoardsComponent = () => {
       <div className="tabs">
         {tabs.map((el) => {
           if (el.key === activeTab) {
-            return <a key={el.index} onClick={tabHandler} className="tab tab-bordered tab-active">{el.key}</a>
+            return <a key={el.index} onClick={tabHandler} className="tab tab-bordered tab-active font-extrabold">{el.key}</a>
 
           } else {
             return <a key={el.index} onClick={tabHandler} className="tab tab-bordered">{el.key}</a>
           }
         })}
       </div>
-      <div className="flex flex-1 w-full border-t-2">
+      <div className="flex flex-1 w-full">
         {tabs.map((el) => {
           if (el.key === activeTab) {
             return el.content

@@ -1,3 +1,4 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { setSyncV, useAsyncV } from 'use-sync-v'
@@ -7,7 +8,7 @@ export const Loading = () => {
   const route = useAsyncV('route')
   const signIn = useAsyncV('signIn')
   const signOut = useAsyncV('signOut')
-  const auth = useAsyncV('auth')
+  const auth = useAuth()
   const boards = useAsyncV('boards')
   const pin = useAsyncV('pin')
   const initialize = useAsyncV('initialize')

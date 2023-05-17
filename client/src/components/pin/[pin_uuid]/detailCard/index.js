@@ -6,9 +6,10 @@ import { setAsyncV, useAsyncV } from 'use-sync-v'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 export const DetailCardComponent = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const userId = auth?.data?.user?.id
   const router = useRouter()
   const { pin_uuid } = router.query

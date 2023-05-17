@@ -1,12 +1,13 @@
 import { Page } from '@/common/layout/page'
 import { DetailCardComponent } from '@/components/pin/[pin_uuid]/detailCard'
+import { useAuth } from '@/lib/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setAsyncV, useAsyncV } from 'use-sync-v'
+import { setAsyncV } from 'use-sync-v'
 
 const PinDetail = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const router = useRouter()
   const { pin_uuid } = router.query
 

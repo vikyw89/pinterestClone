@@ -7,6 +7,8 @@ import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useUser } from '@/lib/hooks/useUser'
 
 const initialPin = {
   title: '',
@@ -18,23 +20,13 @@ const initialPin = {
 }
 
 const CreatePin = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
-  const boards = useAsyncV('boards')
+  const auth = useAuth()
+  const user = useUser()
+  const boards = user?.data?.boards
   const [pin, setPin] = useState(initialPin)
-  const [selectedBoard, setSelectedBoard] = useState('')
+  const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
   const id = useId()
   const uploadPin = useAsyncV('pin')
-  useEffect(() => {
-    if (!auth.data) return
-    setAsyncV('boards', async () => {
-      const response = await supabase
-        .from('boards')
-        .select()
-        .filter('creator_uuid', 'eq', auth.data.user.id)
-        .throwOnError()
-      return response.data
-    })
-  }, [auth.data])
 
   useEffect(() => {
     const saveButton = document.querySelector(`#${CSS.escape(id)}`)
@@ -44,11 +36,6 @@ const CreatePin = () => {
       saveButton.classList.remove('btn-disabled')
     }
   }, [pin.image_url, id, uploadPin.loading])
-
-  useEffect(() => {
-    if (!boards.data) return
-    setSelectedBoard(boards?.data?.[0])
-  }, [boards.data])
 
   const pinImageHandler = async (e) => {
     e.stopPropagation()
@@ -148,8 +135,8 @@ const CreatePin = () => {
               <MoreHorizIcon className="text-4xl" />
               <div className="flex-1"></div>
               <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
-                {boards.data &&
-                  boards.data.map((p, i) => {
+                {boards &&
+                  boards.map((p, i) => {
                     return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
                   })
                 }
