@@ -6,10 +6,31 @@ import { BoardThumbnailComponent } from './boardThumbnail'
 export const SavedComponent = () => {
   const user = useAsyncV('user')
   const boards = user?.data?.boards
-  // const boards = useAsyncSubV('')
+  let allPinsBoard
+  if (boards) {
+    allPinsBoard = boards.reduce((p, c) => {
+      if (!p) {
+        p = c
+      }
+      p = {
+        ...p,
+        boards_pins: [
+          ...p.boards_pins,
+          ...c.boards_pins
+        ],
+        title: 'All Pins',
+        uuid: 'pins'
+      }
+      return p
+    }, undefined)
+  }
+
   return (
     <div className='flex flex-wrap gap-2 justify-center flex-1 p-2' >
-      {boards && boards.map(el=>{
+      {allPinsBoard &&
+        <BoardThumbnailComponent key={v4()} props={allPinsBoard}/>
+      }
+      {boards && boards.map(el => {
         return (
           <BoardThumbnailComponent key={el.uuid} props={el}/>
         )

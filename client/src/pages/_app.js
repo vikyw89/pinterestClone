@@ -1,3 +1,4 @@
+
 import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
@@ -67,7 +68,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     if (!users.data) return
     document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
-  },[users])
+  }, [users])
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -80,6 +81,6 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-      <Component {...pageProps} />
+        <Component {...pageProps} />
     </>)
 }

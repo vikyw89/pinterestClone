@@ -6,6 +6,7 @@ export const ProfileComponent = () => {
   const auth = useAsyncV('auth')
   const userUUID = auth.data.user.id
   const user = useAsyncSubV('user', async () => {
+    console.log('refetch ! user')
     const response = await supabase
       .from('users')
       .select(`*,
@@ -32,6 +33,7 @@ export const ProfileComponent = () => {
           <Image
             src={avatarURL}
             alt={avatarURL}
+            priority={true}
             width={300}
             height={300}
             className="rounded-full aspect-square w-screen border-4 border-dotted border-secondary"
