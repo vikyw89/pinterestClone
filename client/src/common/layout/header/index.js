@@ -50,7 +50,7 @@ export const Header = () => {
         theme: updatedValue
       }
     }
-    mutate('user', async (p) => {
+    mutate('user', async () => {
       await supabase
         .from('users')
         .update({ 'theme': updatedValue })

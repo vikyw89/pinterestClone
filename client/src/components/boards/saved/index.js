@@ -1,12 +1,9 @@
-import { useEffect } from 'react'
-import { useAsyncSubV, useAsyncV } from 'use-sync-v'
+import { useUser } from '@/lib/hooks/useUser'
 import { v4 } from 'uuid'
 import { BoardThumbnailComponent } from './boardThumbnail'
-import { useUser } from '@/lib/hooks/useUser'
 
 export const SavedComponent = () => {
   const user = useUser()
-  console.log('🚀 ~ file: index.js:9 ~ SavedComponent ~ user:', user)
   const boards = user?.data?.boards
   let allPinsBoard
   if (boards) {
