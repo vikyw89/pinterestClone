@@ -2,7 +2,6 @@
 import { Page } from '@/common/layout/page'
 import { BoardsComponent } from '@/components/boards'
 import { ProfileComponent } from '@/components/profile'
-import useSWRImmutable from 'swr/immutable'
 import { useAuth } from '@/lib/hooks/useAuth'
 
 export default function Profile() {

@@ -1,13 +1,9 @@
 
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useUser } from '@/lib/hooks/useUser'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { asyncRefetchV, setAsyncV, setSyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
-import useSWRImmutable from 'swr/immutable'
-import useSWRSubscription from 'swr/subscription'
-import { useAuth } from '@/lib/hooks/useAuth'
-import { useUser } from '@/lib/hooks/useUser'
 
 export default function App({ Component, pageProps }) {
   const auth = useAuth()
