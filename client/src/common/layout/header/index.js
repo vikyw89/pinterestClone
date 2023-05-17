@@ -14,6 +14,8 @@ import {
 } from 'use-sync-v'
 import useSWRImmutable from 'swr/immutable'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { mutate } from 'swr'
+
 
 export const Header = () => {
   const theme = useSyncV('theme')
@@ -42,20 +44,21 @@ export const Header = () => {
 
   const themeHandler = async (e) => {
     const updatedValue = e.target.textContent
-    await setAsyncV('users', async () => {
+    setSyncV('users.data.theme', updatedValue)
+    await mutate('user', async () => {
       const response = await supabase
         .from('users')
         .update({ 'theme': updatedValue })
         .eq('uuid', auth.data.user.id)
         .select()
-      return response.data[0]
+        .throwOnError()
     })
-    setSyncV('users.data.theme', updatedValue)
   }
 
   const navigateToProfile = () => {
     router.push('/profile')
   }
+  
   return (
     <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">

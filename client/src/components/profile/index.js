@@ -7,7 +7,6 @@ export const ProfileComponent = () => {
   const auth = useAuth()
   const userUUID = auth.data.user.id
   const user = useAsyncSubV('user', async () => {
-    console.log('refetch ! user')
     const response = await supabase
       .from('users')
       .select(`*,

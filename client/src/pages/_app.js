@@ -7,6 +7,7 @@ import { asyncRefetchV, setAsyncV, setSyncV, useAsyncSubV, useAsyncV } from 'use
 import useSWRImmutable from 'swr/immutable'
 import useSWRSubscription from 'swr/subscription'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { useUser } from '@/lib/hooks/useUser'
 
 setSyncV(
   'theme',
@@ -45,18 +46,7 @@ setSyncV(
 
 export default function App({ Component, pageProps }) {
   const auth = useAuth()
-
-  const users = useAsyncSubV('users', async () => {
-    const avatarURL = auth.data.user.user_metadata.avatar_url
-    const response = await supabase
-      .from('users')
-      .update({
-        'profile_picture_url': avatarURL
-      })
-      .eq('uuid', auth.data.user.id)
-      .select()
-    return response.data[0]
-  })
+  const user = useUser()
   const router = useRouter()
 
   useEffect(() => {
@@ -66,12 +56,12 @@ export default function App({ Component, pageProps }) {
     if (auth.data) {
       asyncRefetchV('users')
     }
-  }, [auth.data, auth.loading, router])
+  }, [auth.data, router])
 
   useEffect(() => {
-    if (!users.data) return
-    document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
-  }, [users])
+    if (!user.data) return
+    document.querySelector('html').setAttribute('data-theme', user.data.theme ?? 'dark')
+  }, [user])
 
   return (
     <>
