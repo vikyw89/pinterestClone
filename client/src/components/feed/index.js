@@ -1,9 +1,9 @@
 import { Page } from '@/common/layout/page'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
-import { setSyncV, useAsyncSubV } from 'use-sync-v'
-import { PinColumnComponent } from './pinColumn'
 import useSWRImmutable from 'swr/immutable'
+import { setSyncV } from 'use-sync-v'
+import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
 const PIN_WIDTH = 300
@@ -21,7 +21,6 @@ export const FeedsComponent = () => {
     if (!previous) {
       previous = []
     }
-    console.log("🚀 ~ file: index.js:18 ~ feeds ~ previous:", previous)
     const startIndex = previous.length
     const endIndex = startIndex + FETCH_AMOUNT
     const response = await supabase
@@ -35,24 +34,6 @@ export const FeedsComponent = () => {
     }
     return [...previous, ...(response.data)]
   })
-  // const { data: fetchedPins } = useAsyncSubV('pins', async (p) => {
-  //   if (nothingToFetch) {
-  //     return [...p, ...p]
-  //   }
-  //   const previous = p ? p : []
-  //   const startIndex = previous.length
-  //   const endIndex = startIndex + FETCH_AMOUNT
-  //   const response = await supabase
-  //     .from('pins')
-  //     .select(`*,
-  //       users(*)`)
-  //     .order('inserted_at', { ascending: false })
-  //     .range(startIndex, endIndex)
-  //   if (response.data.length < FETCH_AMOUNT) {
-  //     setNothingToFetch(true)
-  //   }
-  //   return [...previous, ...(response.data)]
-  // })
 
   useEffect(() => {
     const screenWidth = window.innerWidth

@@ -6,7 +6,7 @@ import { useUser } from '@/lib/hooks/useUser'
 
 export const SavedComponent = () => {
   const user = useUser()
-  console.log("🚀 ~ file: index.js:9 ~ SavedComponent ~ user:", user)
+  console.log('🚀 ~ file: index.js:9 ~ SavedComponent ~ user:', user)
   const boards = user?.data?.boards
   let allPinsBoard
   if (boards) {

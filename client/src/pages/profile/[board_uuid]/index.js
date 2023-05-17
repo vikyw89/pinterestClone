@@ -1,15 +1,15 @@
 
-import { Page } from "@/common/layout/page"
-import { useRouter } from "next/router"
+import { Page } from '@/common/layout/page'
+import { useRouter } from 'next/router'
 
 const BoardContent = () => {
-    const router = useRouter()
-    const { board_uuid } = router.query
-    return (
-        <Page>
+  const router = useRouter()
+  // const { board_uuid } = router.query
+  return (
+    <Page>
 
-        </Page>
-    )
+    </Page>
+  )
 }
 
 export default BoardContent
