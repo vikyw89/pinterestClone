@@ -1,3 +1,6 @@
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useAvailableTheme } from '@/lib/hooks/useAvailableTheme'
+import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import AddIcon from '@mui/icons-material/Add'
@@ -6,22 +9,17 @@ import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { mutate } from 'swr'
 import {
   setAsyncV,
-  setSyncV,
-  useAsyncV,
-  useSyncV,
+  setSyncV
 } from 'use-sync-v'
-import useSWRImmutable from 'swr/immutable'
-import { useAuth } from '@/lib/hooks/useAuth'
-import { mutate } from 'swr'
-import { useAvailableTheme } from '@/lib/hooks/useAvailableTheme'
 
 
 export const Header = () => {
   const theme = useAvailableTheme()
-  console.log("🚀 ~ file: index.js:23 ~ Header ~ theme:", theme)
   const auth = useAuth()
+  const user = useUser()
   const router = useRouter()
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
@@ -44,23 +42,27 @@ export const Header = () => {
     router.push('/createPin')
   }
 
-  const themeHandler = async (e) => {
+  const themeHandler = (e) => {
     const updatedValue = e.target.textContent
-    setSyncV('users.data.theme', updatedValue)
-    await mutate('user', async () => {
-      const response = await supabase
+    const options = {
+      optimisticData: {
+        ...user.data,
+        theme: updatedValue
+      }
+    }
+    mutate('user', async (p) => {
+      await supabase
         .from('users')
         .update({ 'theme': updatedValue })
         .eq('uuid', auth.data.user.id)
-        .select()
         .throwOnError()
-    })
+    }, options)
   }
 
   const navigateToProfile = () => {
     router.push('/profile')
   }
-  
+
   return (
     <div className="flex bg-neutral z-20 items-center text-neutral-content">
       <div className="flex-1 px-2 lg:flex-none flex items-center gap-1 cursor-pointer">
