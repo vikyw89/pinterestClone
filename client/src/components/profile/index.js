@@ -1,9 +1,10 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useAsyncSubV, useAsyncV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
-  const auth = useAsyncV('auth')
+  const auth = useAuth()
   const userUUID = auth.data.user.id
   const user = useAsyncSubV('user', async () => {
     console.log('refetch ! user')

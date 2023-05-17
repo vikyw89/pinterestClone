@@ -12,11 +12,12 @@ import {
   useAsyncV,
   useSyncV,
 } from 'use-sync-v'
-
+import useSWRImmutable from 'swr/immutable'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 export const Header = () => {
   const theme = useSyncV('theme')
-  const auth = useAsyncV('auth')
+  const auth = useAuth()
   const router = useRouter()
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url

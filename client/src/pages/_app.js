@@ -4,6 +4,9 @@ import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { asyncRefetchV, setAsyncV, setSyncV, useAsyncSubV, useAsyncV } from 'use-sync-v'
+import useSWRImmutable from 'swr/immutable'
+import useSWRSubscription from 'swr/subscription'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 setSyncV(
   'theme',
@@ -41,7 +44,8 @@ setSyncV(
 )
 
 export default function App({ Component, pageProps }) {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
+
   const users = useAsyncSubV('users', async () => {
     const avatarURL = auth.data.user.user_metadata.avatar_url
     const response = await supabase
@@ -56,7 +60,6 @@ export default function App({ Component, pageProps }) {
   const router = useRouter()
 
   useEffect(() => {
-    if (auth.loading) return
     if (!auth.data && router.route !== '/') {
       router.push('/')
     }
@@ -70,17 +73,8 @@ export default function App({ Component, pageProps }) {
     document.querySelector('html').setAttribute('data-theme', users.data.theme ?? 'dark')
   }, [users])
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setAsyncV('auth', () => session)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
   return (
     <>
-        <Component {...pageProps} />
+      <Component {...pageProps} />
     </>)
 }

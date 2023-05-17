@@ -1,3 +1,4 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -5,7 +6,7 @@ import { useEffect } from 'react'
 import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
 export const PinCreatorComponent = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinDetail = useAsyncV(`pin${pin_uuid}`)

@@ -1,7 +1,8 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { useAsyncV } from 'use-sync-v'
 
 export const Notif = () => {
-  const auth = useAsyncV('auth')
+  const auth = useAuth()
   const boards = useAsyncV('boards')
   const pin = useAsyncV('pin')
   const initialize = useAsyncV('initialize')

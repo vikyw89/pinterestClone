@@ -4,9 +4,11 @@ import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
+import useSWRImmutable from 'swr/immutable'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 const PinDetail = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const router = useRouter()
   const { pin_uuid } = router.query
 

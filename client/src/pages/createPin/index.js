@@ -7,6 +7,7 @@ import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
 import { useEffect, useId, useState } from 'react'
 import { setAsyncV, useAsyncV } from 'use-sync-v'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 const initialPin = {
   title: '',
@@ -18,7 +19,7 @@ const initialPin = {
 }
 
 const CreatePin = () => {
-  const auth = useAsyncV('auth', { initialState: { loading: true } })
+  const auth = useAuth()
   const boards = useAsyncV('boards')
   const [pin, setPin] = useState(initialPin)
   const [selectedBoard, setSelectedBoard] = useState('')
