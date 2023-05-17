@@ -15,10 +15,12 @@ import {
 import useSWRImmutable from 'swr/immutable'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { mutate } from 'swr'
+import { useAvailableTheme } from '@/lib/hooks/useAvailableTheme'
 
 
 export const Header = () => {
-  const theme = useSyncV('theme')
+  const theme = useAvailableTheme()
+  console.log("🚀 ~ file: index.js:23 ~ Header ~ theme:", theme)
   const auth = useAuth()
   const router = useRouter()
 
@@ -101,7 +103,7 @@ export const Header = () => {
             tabIndex={0}
             className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral"
           >
-            {theme.map((el, index) => {
+            {theme.data && theme.data.map((el, index) => {
               return (
                 <li key={index} className='text-neutral-content bg-neutral'>
                   <a
