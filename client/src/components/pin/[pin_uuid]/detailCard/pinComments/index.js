@@ -1,4 +1,3 @@
-import { useAuth } from '@/lib/hooks/useAuth'
 import { usePin } from '@/lib/hooks/usePin'
 import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
@@ -6,9 +5,8 @@ import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { mutate } from 'swr'
-import { setAsyncV, useAsyncV } from 'use-sync-v'
 
 
 export const PinCommentsComponent = () => {
@@ -20,14 +18,15 @@ export const PinCommentsComponent = () => {
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
   const user_uuid = user?.data?.uuid
-  
+
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
   }
 
-  const sendCommentHandler = () => {
+  const sendCommentHandler = async () => {
     if (!commentInput || !user_uuid || !pin_uuid) return
-    mutate(`api/pin/${pin_uuid}`, async()=>{
+    setCommentInput('')
+    mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
         .insert({
@@ -35,10 +34,8 @@ export const PinCommentsComponent = () => {
           'creator_uuid': user_uuid,
           'pin_uuid': pin_uuid
         })
-        .select()
         .throwOnError()
-      setCommentInput('')
-    })
+    }, { populateCache: false })
   }
 
   return (

@@ -11,19 +11,7 @@ const PinDetail = () => {
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinData = usePin(pin_uuid)
-  // const pinData = useSWRImmutable(auth.data && pin_uuid && `pin/${pin_uuid}`, async () => {
-  //   const response = await supabase
-  //     .from('pins')
-  //     .select(`
-  //           *,
-  //           users(*,users_followers!users_followers_user_uuid_fkey(count)),
-  //           pins_comments(*,users(*))
-  //           `)
-  //     .eq('uuid', pin_uuid)
-  //     .eq('pins_comments.pin_uuid', pin_uuid)
-  //   const pinData = response.data[0]
-  //   return pinData
-  // })
+  console.log("🚀 ~ file: index.js:14 ~ PinDetail ~ pinData:", pinData.data)
 
   return (
     <Page>
