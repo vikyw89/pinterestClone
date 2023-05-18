@@ -44,7 +44,7 @@ export const DetailCardComponent = () => {
           }
         </div>
         {/* right half */}
-        <div className="max-w-lg flex flex-col rounded-r-3xl bg-neutral p-5 gap-1 w-screen min-h-full">
+        <div className="max-w-lg flex flex-col rounded-r-3xl bg-neutral p-5 gap-1 w-screen lg:min-h-full">
           <div className="flex items-center justify-end">
             <button className="btn btn-ghost p-0 btn-circle" >
               <MoreHorizIcon />
