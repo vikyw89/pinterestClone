@@ -1,4 +1,3 @@
-
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
 import '@/styles/globals.css'

@@ -1,4 +1,3 @@
-
 import { Page } from '@/common/layout/page'
 
 const BoardContent = () => {

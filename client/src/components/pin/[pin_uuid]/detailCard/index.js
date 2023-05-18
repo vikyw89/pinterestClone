@@ -7,33 +7,23 @@ import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/lib/hooks/useAuth'
+import useSWRImmutable from 'swr/immutable'
+import { useUser } from '@/lib/hooks/useUser'
+import { usePin } from '@/lib/hooks/usePin'
 
 export const DetailCardComponent = () => {
   const auth = useAuth()
   const userId = auth?.data?.user?.id
   const router = useRouter()
   const { pin_uuid } = router.query
-  const pinDetail = useAsyncV(`pin${pin_uuid}`)
-  const boards = useAsyncV('boards')
+  const pinData = usePin(pin_uuid)
+  const user = useUser()
+  const boards = user?.data?.boards
   const [selectedBoard, setSelectedBoard] = useState()
 
   const boardSelectHandler = (e) => {
     setSelectedBoard(JSON.parse(e.target.value))
   }
-
-  useEffect(() => {
-    if (boards.data || !userId) return
-    setAsyncV('boards', async () => {
-      const response = await supabase
-        .from('boards')
-        .select()
-        .eq('creator_uuid', userId)
-        .throwOnError()
-      const data = response.data
-      setSelectedBoard(data)
-      return data
-    })
-  }, [userId, boards.data])
 
   const saveHandler = () => {
 
@@ -44,14 +34,14 @@ export const DetailCardComponent = () => {
       <div className="flex flex-wrap text-neutral-content items-start justify-center">
         {/* left half */}
         <div className="max-w-lg relative rounded-l-3xl bg-neutral-focus">
-          {pinDetail.data &&
+          {pinData.data &&
               <Image
-                src={pinDetail.data.image_url}
-                alt="pinDetailImage"
+                src={pinData.data.image_url}
+                alt="pinDataImage"
                 width={500}
                 height={500}
                 placeholder='blur'
-                blurDataURL={pinDetail.data.loading_image_url}
+                blurDataURL={pinData.data.loading_image_url}
                 className='rounded-l-3xl'
               />
           }
@@ -65,23 +55,23 @@ export const DetailCardComponent = () => {
             <div className="flex-1"></div>
             {selectedBoard &&
               <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
-                {boards.data.map((p, i) => {
+                {selectedBoard.map((p, i) => {
                   return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
                 })}
               </select>
             }
             <button onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
           </div>
-          {pinDetail.data &&
+          {pinData.data &&
             <div className='w-full'>
               <div className='underline'>
-                <a href={pinDetail.data.link_url}>{pinDetail.data.link_url}</a>
+                <a href={pinData.data.link_url}>{pinData.data.link_url}</a>
               </div>
               <div className="font-bold">
-                {pinDetail.data.title}
+                {pinData.data.title}
               </div>
               <div>
-                {pinDetail.data.description}
+                {pinData.data.description}
               </div>
             </div>
           }

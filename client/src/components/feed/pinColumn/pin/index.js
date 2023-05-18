@@ -8,6 +8,8 @@ import useSWRImmutable from 'swr/immutable'
 
 const QUEUE_LOWER_LIMIT = 50
 
+setSyncSWR('index', 0)
+
 export const PinComponent = ({ props }) => {
   const id = useId()
   const [displayIndex, setDisplayIndex] = useState()
