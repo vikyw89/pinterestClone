@@ -1,6 +1,4 @@
-import { useAuth } from '@/lib/hooks/useAuth'
 import { usePin } from '@/lib/hooks/usePin'
-import { useUser } from '@/lib/hooks/useUser'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -9,13 +7,9 @@ import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
 
 export const DetailCardComponent = () => {
-  const auth = useAuth()
-  const userId = auth?.data?.user?.id
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinData = usePin(pin_uuid)
-  const user = useUser()
-  const boards = user?.data?.boards
   const [selectedBoard, setSelectedBoard] = useState()
 
   const boardSelectHandler = (e) => {

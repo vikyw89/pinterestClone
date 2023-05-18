@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
 import { mutate } from 'swr'
-import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
+import { setSyncSWR } from 'swr-sync-state'
 import useSWRImmutable from 'swr/immutable'
 
 const QUEUE_LOWER_LIMIT = 50

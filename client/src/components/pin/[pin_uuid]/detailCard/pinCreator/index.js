@@ -1,13 +1,10 @@
-import { useAuth } from '@/lib/hooks/useAuth'
 import { usePin } from '@/lib/hooks/usePin'
 import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { mutate } from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
 export const PinCreatorComponent = () => {
   const user = useUser()
