@@ -7,7 +7,8 @@ export const usePin = (uuid) => {
             .from('pins')
             .select(`
               *,
-              users(*,users_followers!users_followers_user_uuid_fkey(count)),
+              users(*,
+                users_followers!users_followers_user_uuid_fkey(count)),
               pins_comments(*,users(*))
               `)
             .eq('uuid', uuid)

@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { mutate } from 'swr'
 
-
 export const PinCommentsComponent = () => {
   const user = useUser()
   const router = useRouter()

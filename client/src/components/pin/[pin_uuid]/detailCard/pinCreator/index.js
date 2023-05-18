@@ -1,36 +1,35 @@
 import { useAuth } from '@/lib/hooks/useAuth'
+import { usePin } from '@/lib/hooks/usePin'
+import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { mutate } from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { setAsyncV, setSyncV, useAsyncV } from 'use-sync-v'
 
 export const PinCreatorComponent = () => {
-  const auth = useAuth()
+  const user = useUser()
   const router = useRouter()
   const { pin_uuid } = router.query
-  const pinDetail = useAsyncV(`pin${pin_uuid}`)
-  const isFollower = useAsyncV('isFollower')
+  const pinDetail = usePin(pin_uuid)
   const creator_uuid = pinDetail?.data?.users?.uuid
-  const user_uuid = auth?.data?.user?.id
+  const user_uuid = user?.data?.uuid
+  const isFollower = useSWRImmutable(pin_uuid && creator_uuid && `api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
+    const response = await supabase
+      .from('users_followers')
+      .select('count')
+      .eq('user_uuid', creator_uuid)
+      .eq('follower_uuid', user_uuid)
+      .throwOnError()
+    const data = response.data[0].count === 0 ? false : true
+    return data
+  })
 
-  useEffect(() => {
+  const followHandler = async () => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    setAsyncV('isFollower', async () => {
-      const response = await supabase
-        .from('users_followers')
-        .select('count')
-        .eq('user_uuid', creator_uuid)
-        .eq('follower_uuid', user_uuid)
-        .throwOnError()
-      const data = response.data[0].count === 0 ? false : true
-      return data
-    }, { deleteExistingData: false })
-  }, [pinDetail.data, creator_uuid, user_uuid])
-
-  const followHandler = () => {
-    if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    setAsyncV('followUser', async () => {
+    await mutate(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
       const response = await supabase
         .from('users_followers')
         .upsert({
@@ -41,14 +40,13 @@ export const PinCreatorComponent = () => {
         .throwOnError()
       const data = response.data[0]
       return data
-    })
-    setSyncV('isFollower', true)
-    setSyncV(`pin${pin_uuid}.users.users_followers[0].count`, p => p + 1)
+    }, { populateCache: false, optimisticData: (p) => !p })
+    await pinDetail.mutate()
   }
 
-  const unfollowHandler = () => {
+  const unfollowHandler = async () => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    setAsyncV('unfollowUser', async () => {
+    await mutate(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
       const response = await supabase
         .from('users_followers')
         .delete()
@@ -58,9 +56,8 @@ export const PinCreatorComponent = () => {
         .throwOnError()
       const data = response
       return data
-    })
-    setSyncV('isFollower', false)
-    setSyncV(`pin${pin_uuid}.users.users_followers[0].count`, p => p - 1)
+    }, { populateCache: false, optimisticData: (p) => !p })
+    await pinDetail.mutate()
   }
 
   return (

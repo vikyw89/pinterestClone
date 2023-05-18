@@ -1,15 +1,12 @@
-import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { usePin } from '@/lib/hooks/usePin'
+import { useUser } from '@/lib/hooks/useUser'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import { setAsyncV, useAsyncV } from 'use-sync-v'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
-import { useRouter } from 'next/router'
-import { useAuth } from '@/lib/hooks/useAuth'
-import useSWRImmutable from 'swr/immutable'
-import { useUser } from '@/lib/hooks/useUser'
-import { usePin } from '@/lib/hooks/usePin'
 
 export const DetailCardComponent = () => {
   const auth = useAuth()
