@@ -1,25 +1,26 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useId, useRef, useState } from 'react'
-import { v4 } from 'uuid'
+import { useEffect, useRef, useState } from 'react'
+import { useSyncSWR } from 'swr-sync-state'
 
 const QUEUE_LOWER_LIMIT = 50
 
 export const PinComponent = ({ props }) => {
-  const { index, setIndex, feeds, setPinsToDisplay, refetchFn, infinite } = props
-  const id = useId()
+  const { setIndex, feeds, setPinsToDisplay, refetchFn, infinite } = props
   const [displayIndex, setDisplayIndex] = useState()
   const pin = feeds?.[displayIndex]
   const fetchedPinsQty = feeds?.length
   const router = useRouter()
+
   const element = useRef(null)
 
   // freeze the index
   useEffect(() => {
     setIndex(p => {
-      setDisplayIndex(p)
-      return p + 1
+      let prev = p ?? 0
+      setDisplayIndex(prev)
+      return prev + 1
     })
     return () => {
       setIndex(p => {
@@ -31,8 +32,6 @@ export const PinComponent = ({ props }) => {
   useEffect(() => {
     if (!displayIndex) return
     if (fetchedPinsQty <= displayIndex) {
-      console.log("🚀 ~ file: index.js:34 ~ useEffect ~ fetchedPinsQty:", fetchedPinsQty)
-      console.log("🚀 ~ file: index.js:34 ~ useEffect ~ displayIndex:", displayIndex)
       refetchFn()
     }
   }, [displayIndex, fetchedPinsQty])
@@ -49,22 +48,17 @@ export const PinComponent = ({ props }) => {
         //   observer.unobserve(thisPin)
         //   return
         // }
-        props.setPinsToDisplay(p => {
-          return [
-            ...p,
-            <PinComponent key={v4()} props={{
-              ...props
-            }} />,
-          ]
-        })
         observer.unobserve(thisPin)
+        setPinsToDisplay(p => {
+          return [...p, 'dummy']
+        })
       })
     })
     observer.observe(thisPin)
     return () => {
       observer.unobserve(thisPin)
     }
-  }, [props])
+  }, [])
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
@@ -76,7 +70,7 @@ export const PinComponent = ({ props }) => {
   }
 
   return (
-    <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
+    <div className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
       {pin &&
         <>
           <div className='w-72 h-auto'>

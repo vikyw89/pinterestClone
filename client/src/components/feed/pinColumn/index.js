@@ -4,18 +4,16 @@ import { v4 } from 'uuid'
 
 export const PinColumnComponent = ({ props }) => {
   const [pinsToDisplay, setPinsToDisplay] = useState([])
-
   useEffect(() => {
-    setPinsToDisplay([
-      <PinComponent key={v4()} props={{
-        ...props,
-        setPinsToDisplay: setPinsToDisplay,
-      }} />,
-    ])
+    setPinsToDisplay(['dummy'])
   }, [])
   return (
     <div className="h-max flex flex-col gap-5 w-72 overflow-hidden">
-      {pinsToDisplay}
+      {pinsToDisplay.map((e,i) => {
+        return (
+          <PinComponent key={i} props={{ ...props, setPinsToDisplay }} />
+        )
+      })}
     </div>
   )
 }

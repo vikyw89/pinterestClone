@@ -1,10 +1,10 @@
 import { Page } from '@/common/layout/page'
 import { useBoard } from '@/lib/hooks/useBoard'
 import { useRouter } from 'next/router'
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import Image from 'next/image';
-import AddIcon from '@mui/icons-material/Add';
-import { FeedsComponent } from '@/components/feed';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import Image from 'next/image'
+import AddIcon from '@mui/icons-material/Add'
+import { FeedsComponent } from '@/components/feed'
 
 const BoardContent = () => {
   const router = useRouter()
