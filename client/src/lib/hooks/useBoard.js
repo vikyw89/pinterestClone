@@ -6,7 +6,9 @@ export const useBoard = (board_uuid) => {
         const response = await supabase
             .from('boards')
             .select(`*,
-                boards_pins!boards_pins_board_uuid_fkey(*),
+                boards_pins!boards_pins_board_uuid_fkey(
+                    pins(*,
+                        users(*))),
                 boards_members!boards_members_board_uuid_fkey(*,users(*)),
                 boards_comments!boards_comments_board_uuid_fkey(*)
             `)

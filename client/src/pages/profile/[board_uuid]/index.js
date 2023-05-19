@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Image from 'next/image';
 import AddIcon from '@mui/icons-material/Add';
+import { FeedsComponent } from '@/components/feed';
 
 const BoardContent = () => {
   const router = useRouter()
@@ -11,15 +12,14 @@ const BoardContent = () => {
   const board = useBoard(board_uuid)
   const board_title = board?.data?.title
   const board_description = board?.data?.description
-  console.log("🚀 ~ file: index.js:14 ~ BoardContent ~ board_description:", board_description)
   const board_members = board?.data?.boards_members
-  console.log("🚀 ~ file: index.js:13 ~ BoardContent ~ board_members:", board_members)
   const board_comments = board?.data?.boards_comments
-  const board_pins = board?.data?.boards_pins
-
+  const board_pins = board?.data?.boards_pins && board?.data?.boards_pins.reduce((p, c) => {
+    return [...p, c.pins]
+  }, [])
   return (
     <Page>
-      {board &&
+      {board.data &&
         <div className='flex justify-center bg-base-200 text-base-content'>
           {/* board_data */}
           <div className='flex flex-col p-5 gap-5'>
@@ -67,7 +67,7 @@ const BoardContent = () => {
         </div>}
       {/* board+pins */}
       <div className='flex-1 bg-base-200 text-base-content'>
-        test
+        {board_pins && < FeedsComponent props={{ feeds: board_pins, infinite: false, refetchFn: () => undefined }} />}
       </div>
     </Page>
   )

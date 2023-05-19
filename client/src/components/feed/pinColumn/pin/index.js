@@ -2,41 +2,38 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
-import { mutate } from 'swr'
-import { setSyncSWR } from 'swr-sync-state'
-import useSWRImmutable from 'swr/immutable'
+import { v4 } from 'uuid'
 
 const QUEUE_LOWER_LIMIT = 50
 
-setSyncSWR('index', 0)
-
 export const PinComponent = ({ props }) => {
+  const { index, setIndex, feeds, setPinsToDisplay, refetchFn, infinite } = props
   const id = useId()
   const [displayIndex, setDisplayIndex] = useState()
-  const fetchedPins = useSWRImmutable('feeds')
-  const pin = fetchedPins.data?.[displayIndex]
-  const fetchedPinsQty = fetchedPins.data.length
+  const pin = feeds?.[displayIndex]
+  const fetchedPinsQty = feeds?.length
   const router = useRouter()
   const element = useRef(null)
+
   // freeze the index
   useEffect(() => {
-    setSyncSWR('index', p => {
-      if (!p) {
-        p = 0
-      }
+    setIndex(p => {
       setDisplayIndex(p)
       return p + 1
     })
     return () => {
-      setSyncSWR('index', p => {
+      setIndex(p => {
         return p - 1
       })
     }
   }, [])
 
   useEffect(() => {
-    if (fetchedPinsQty <= (displayIndex ?? 0 + QUEUE_LOWER_LIMIT)) {
-      mutate('feeds')
+    if (!displayIndex) return
+    if (fetchedPinsQty <= displayIndex) {
+      console.log("🚀 ~ file: index.js:34 ~ useEffect ~ fetchedPinsQty:", fetchedPinsQty)
+      console.log("🚀 ~ file: index.js:34 ~ useEffect ~ displayIndex:", displayIndex)
+      refetchFn()
     }
   }, [displayIndex, fetchedPinsQty])
 
@@ -44,13 +41,19 @@ export const PinComponent = ({ props }) => {
     const thisPin = element.current
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
+        // stop replicating
         const intersecting = entry.isIntersecting
         if (!intersecting) return
+        // if (index === (fetchedPinsQty - 1) && !infinite) {
+        //   console.log('endofreplicating')
+        //   observer.unobserve(thisPin)
+        //   return
+        // }
         props.setPinsToDisplay(p => {
           return [
             ...p,
-            <PinComponent key={p.length} props={{
-              setPinsToDisplay: props.setPinsToDisplay
+            <PinComponent key={v4()} props={{
+              ...props
             }} />,
           ]
         })
@@ -71,6 +74,7 @@ export const PinComponent = ({ props }) => {
     e.classList.remove('animate-pulse')
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
+
   return (
     <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
       {pin &&
