@@ -13,7 +13,7 @@ const BoardContent = () => {
   const board_title = board?.data?.title
   const board_description = board?.data?.description
   const board_members = board?.data?.boards_members
-  const board_comments = board?.data?.boards_comments
+  // const board_comments = board?.data?.boards_comments
   const board_pins = board?.data?.boards_pins && board?.data?.boards_pins.reduce((p, c) => {
     return [...p, c.pins]
   }, [])
@@ -40,13 +40,14 @@ const BoardContent = () => {
             </div>
             {/* avatar group */}
             <div className="avatar-group -space-x-6 flex justify-center">
-              {board_members.map(el => {
-                const avatar_url = el?.users?.profile_picture_url
+              {board_members.map((e,i) => {
+                const avatar_url = e?.users?.profile_picture_url
                 return (
-                  <div className="avatar">
+                  <div key={i} className="avatar">
                     <div className="w-12 relative aspect-square">
                       <Image
                         src={avatar_url}
+                        alt={avatar_url}
                         height={300}
                         width={300}
                         style={{
