@@ -105,7 +105,7 @@ export const Header = () => {
             tabIndex={0}
             className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral"
           >
-            {theme.data && theme.data.map((el, index) => {
+            {theme && theme.map((el, index) => {
               return (
                 <li key={index} className='text-neutral-content bg-neutral'>
                   <a
