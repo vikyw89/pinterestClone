@@ -8,7 +8,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
 import { useEffect, useId, useRef, useState } from 'react'
-import { mutate } from 'swr'
 import useSWRMutation from 'swr/mutation'
 
 const initialPin = {

@@ -3,8 +3,8 @@ import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { mutate } from 'swr'
 import useSWRImmutable from 'swr/immutable'
+import useSWRMutation from 'swr/mutation'
 
 export const PinCreatorComponent = () => {
   const user = useUser()
@@ -23,37 +23,39 @@ export const PinCreatorComponent = () => {
     const data = response.data[0].count === 0 ? false : true
     return data
   })
+  const followAPI = useSWRMutation(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
+    const response = await supabase
+      .from('users_followers')
+      .upsert({
+        'user_uuid': creator_uuid,
+        'follower_uuid': user_uuid
+      })
+      .select()
+      .throwOnError()
+    const data = response.data[0]
+    return data
+  })
+  const unfollowAPI = useSWRMutation(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
+    const response = await supabase
+      .from('users_followers')
+      .delete()
+      .eq('user_uuid', creator_uuid)
+      .eq('follower_uuid', user_uuid)
+      .select()
+      .throwOnError()
+    const data = response
+    return data
+  })
 
   const followHandler = async () => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    await mutate(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
-      const response = await supabase
-        .from('users_followers')
-        .upsert({
-          'user_uuid': creator_uuid,
-          'follower_uuid': user_uuid
-        })
-        .select()
-        .throwOnError()
-      const data = response.data[0]
-      return data
-    }, { populateCache: false, optimisticData: (p) => !p })
+    await followAPI.trigger()
     await pinDetail.mutate()
   }
 
   const unfollowHandler = async () => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    await mutate(`api/user/${pin_uuid}/following/${creator_uuid}`, async () => {
-      const response = await supabase
-        .from('users_followers')
-        .delete()
-        .eq('user_uuid', creator_uuid)
-        .eq('follower_uuid', user_uuid)
-        .select()
-        .throwOnError()
-      const data = response
-      return data
-    }, { populateCache: false, optimisticData: (p) => !p })
+    await unfollowAPI.trigger()
     await pinDetail.mutate()
   }
 

@@ -1,11 +1,10 @@
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
-import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { SWRConfig } from 'swr'
-import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
+import { setSyncSWR } from 'swr-sync-state'
 
 
 export default function App({ Component, pageProps }) {

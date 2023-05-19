@@ -11,24 +11,32 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { mutate } from 'swr'
 import { setSyncSWR } from 'swr-sync-state'
-
+import useSWRMutation from 'swr/mutation'
 
 export const Header = () => {
-  const theme = useAvailableTheme()
+  const theme = useAvailableTheme() ?? []
   const auth = useAuth()
   const user = useUser()
   const router = useRouter()
-
+  const signOutAPI = useSWRMutation('api/auth', async () => {
+    const { error } = await supabase.auth.signOut()
+    return error
+  })
+  const themeAPI = useSWRMutation(auth?.data?.user?.id && `api/user/${auth.data.user.id}`, async (key, { arg }) => {
+    await supabase
+      .from('users')
+      .update({ 'theme': arg })
+      .eq('uuid', auth.data.user.id)
+      .throwOnError()
+  })
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
+
   const showSignInComponent = () => {
     setSyncSWR('show/signInComponent', true)
   }
 
   const signOutHandler = () => {
-    mutate('api/auth', async () => {
-      const { error } = await supabase.auth.signOut()
-      return error
-    }, { populateCache: false })
+    signOutAPI.trigger()
   }
 
   const navigateToLanding = () => {
@@ -45,15 +53,9 @@ export const Header = () => {
       optimisticData: {
         ...user.data,
         theme: updatedValue
-      }
+      },
     }
-    mutate('user', async () => {
-      await supabase
-        .from('users')
-        .update({ 'theme': updatedValue })
-        .eq('uuid', auth.data.user.id)
-        .throwOnError()
-    }, options)
+    themeAPI.trigger(updatedValue, options)
   }
 
   const navigateToProfile = () => {
