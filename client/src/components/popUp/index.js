@@ -1,9 +1,9 @@
-import { setSyncV } from 'use-sync-v'
+import { setSyncSWR } from 'swr-sync-state'
 
 export const PopUpComponent = ({ children }) => {
   const closeComponent = (e) => {
     if (e.target.id !== 'blurredBackground') return
-    setSyncV('show.signInComponent', false)
+    setSyncSWR('show/signInComponent', false)
   }
   return (
     <div

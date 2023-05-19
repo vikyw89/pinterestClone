@@ -1,8 +1,10 @@
-import useSWRImmutable from 'swr/immutable'
+import { useEffect } from 'react'
+import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
 
 export const useAvailableTheme = () => {
-  const theme = useSWRImmutable('theme', () => {
-    return [
+  const theme = useSyncSWR('theme')
+  useEffect(() => {
+    setSyncSWR('theme', [
       'light',
       'dark',
       'cupcake',
@@ -32,7 +34,8 @@ export const useAvailableTheme = () => {
       'night',
       'coffee',
       'winter',
-    ].sort((a, b) => (a > b ? 1 : -1))
-  })
+    ].sort((a, b) => (a > b ? 1 : -1)))
+  }, [])
+  
   return theme
 }

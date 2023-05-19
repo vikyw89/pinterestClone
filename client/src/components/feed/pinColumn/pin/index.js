@@ -3,10 +3,12 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useId, useRef, useState } from 'react'
 import { mutate } from 'swr'
+import { setSyncSWR } from 'swr-sync-state'
 import useSWRImmutable from 'swr/immutable'
-import { setSyncV } from 'use-sync-v'
 
 const QUEUE_LOWER_LIMIT = 50
+
+setSyncSWR('index', 0)
 
 export const PinComponent = ({ props }) => {
   const id = useId()
@@ -16,16 +18,17 @@ export const PinComponent = ({ props }) => {
   const fetchedPinsQty = fetchedPins.data.length
   const router = useRouter()
   const element = useRef(null)
-
   // freeze the index
   useEffect(() => {
-    setSyncV('index', p => {
+    setSyncSWR('index', p => {
+      if (!p) {
+        p = 0
+      }
       setDisplayIndex(p)
       return p + 1
     })
     return () => {
-      setSyncV('index', p => {
-        setDisplayIndex()
+      setSyncSWR('index', p => {
         return p - 1
       })
     }

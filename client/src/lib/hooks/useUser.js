@@ -2,9 +2,10 @@ import useSWRImmutable from 'swr/immutable'
 import { useAuth } from './useAuth'
 import { supabase } from '../supabase'
 
+// all data related to user
 export const useUser = () => {
   const auth = useAuth()
-  const user = useSWRImmutable(auth.data && 'user', async () => {
+  const user = useSWRImmutable(auth?.data?.user?.id && `api/user/${auth.data.user.id}`, async () => {
     const response = await supabase
       .from('users')
       .select(`*,

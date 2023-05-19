@@ -1,27 +1,10 @@
 import { useAuth } from '@/lib/hooks/useAuth'
-import { supabase } from '@/lib/supabase'
+import { useUser } from '@/lib/hooks/useUser'
 import Image from 'next/image'
-import { useAsyncSubV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
   const auth = useAuth()
-  const userUUID = auth.data.user.id
-  const user = useAsyncSubV('user', async () => {
-    const response = await supabase
-      .from('users')
-      .select(`*,
-                	users_followers!users_followers_follower_uuid_fkey(*),
-                  boards!boards_creator_uuid_fkey(*, 
-                    boards_pins!boards_pins_board_uuid_fkey(*, 
-                      pins(*))
-                  )
-            	`)
-      .eq('uuid', userUUID)
-      .throwOnError()
-    const data = response.data[0]
-    return data
-  })
-
+  const user = useUser()
   const following = user?.data?.users_followers
   const username = user?.data?.username
   const avatarURL = auth.data.user.user_metadata.avatar_url

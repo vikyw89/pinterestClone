@@ -1,14 +1,14 @@
 import { Page } from '@/common/layout/page'
 import { Cloudinary } from '@/lib/cloudinary'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useUser } from '@/lib/hooks/useUser'
 import { supabase } from '@/lib/supabase'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
-import { useEffect, useId, useState } from 'react'
-import { setAsyncV, useAsyncV } from 'use-sync-v'
-import { useAuth } from '@/lib/hooks/useAuth'
-import { useUser } from '@/lib/hooks/useUser'
+import { useEffect, useId, useRef, useState } from 'react'
+import useSWRMutation from 'swr/mutation'
 
 const initialPin = {
   title: '',
@@ -26,16 +26,34 @@ const CreatePin = () => {
   const [pin, setPin] = useState(initialPin)
   const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
   const id = useId()
-  const uploadPin = useAsyncV('pin')
+  const uploadPin = useSWRMutation('api/pin', async () => {
+    const fetchedImage = await fetch(pin.image_url)
+    const imageBlob = await fetchedImage.blob()
+    const base64 = await imageCompression.getDataUrlFromFile(imageBlob)
+
+    const imagePublicURL = await Cloudinary.setStorage(base64)
+    const pinToUpload = {
+      title: pin.title,
+      description: pin.description,
+      link_url: pin.link_url,
+      creator_uuid: auth.data.user.id,
+      board_uuid: selectedBoard.uuid,
+      image_url: imagePublicURL,
+      loading_image_url: pin.loading_image_url
+    }
+    const response = await supabase.rpc('create_pin', pinToUpload)
+    setPin(initialPin)
+    return response
+  })
+  const saveButton = useRef(null)
 
   useEffect(() => {
-    const saveButton = document.querySelector(`#${CSS.escape(id)}`)
-    if (pin.image_url === '' || uploadPin.loading) {
-      saveButton.classList.add('btn-disabled')
+    if (pin.image_url === ''|| uploadPin.isMutating) {
+      saveButton.current.classList.add('btn-disabled')
     } else {
-      saveButton.classList.remove('btn-disabled')
+      saveButton.current.classList.remove('btn-disabled')
     }
-  }, [pin.image_url, id, uploadPin.loading])
+  }, [pin.image_url, id, uploadPin.isMutating])
 
   const pinImageHandler = async (e) => {
     e.stopPropagation()
@@ -104,26 +122,7 @@ const CreatePin = () => {
 
   const saveHandler = async () => {
     if (pin.image_url === '') return
-
-    await setAsyncV('pin', async () => {
-      const fetchedImage = await fetch(pin.image_url)
-      const imageBlob = await fetchedImage.blob()
-      const base64 = await imageCompression.getDataUrlFromFile(imageBlob)
-
-      const imagePublicURL = await Cloudinary.setStorage(base64)
-      const pinToUpload = {
-        title: pin.title,
-        description: pin.description,
-        link_url: pin.link_url,
-        creator_uuid: auth.data.user.id,
-        board_uuid: selectedBoard.uuid,
-        image_url: imagePublicURL,
-        loading_image_url: pin.loading_image_url
-      }
-      const response = await supabase.rpc('create_pin', pinToUpload)
-      setPin(initialPin)
-      return response
-    })
+    uploadPin.trigger()
   }
 
   return (
@@ -141,7 +140,7 @@ const CreatePin = () => {
                   })
                 }
               </select>
-              <button id={id} onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
+              <button ref={saveButton} onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
               <div className="flex-1 flex flex-col bg-neutral text-neutral-content min-w-[300px]">

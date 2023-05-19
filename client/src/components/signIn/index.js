@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { setAsyncV } from 'use-sync-v'
+import { mutate } from 'swr'
 import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
@@ -12,7 +12,7 @@ export const SignInComponent = () => {
   const gmailSignInHandler = (e) => {
     e.currentTarget.classList.add('loading')
     e.currentTarget.classList.add('disabled')
-    setAsyncV('signIn', async () => {
+    mutate('api/auth', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -20,7 +20,7 @@ export const SignInComponent = () => {
         }
       })
       return response
-    })
+    }, { populateCache: false })
   }
 
   return (

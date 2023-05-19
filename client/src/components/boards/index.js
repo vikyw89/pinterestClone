@@ -1,4 +1,4 @@
-import { setSyncV, useSyncV } from 'use-sync-v'
+import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
 import { CreatedComponent } from './created'
 import { SavedComponent } from './saved'
 
@@ -15,15 +15,15 @@ const tabs = [
   }
 ]
 
-setSyncV('activeTab', 'Saved')
+setSyncSWR('activeTab','Saved')
 
 export const BoardsComponent = () => {
-  const activeTab = useSyncV('activeTab')
+  const activeTab = useSyncSWR('activeTab')
 
   const tabHandler = (e) => {
     e.stopPropagation()
     const value = e.target.textContent
-    setSyncV('activeTab', value)
+    setSyncSWR('activeTab', value)
   }
   return (
     <div className="flex flex-col items-center">

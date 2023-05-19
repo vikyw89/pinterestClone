@@ -1,26 +1,18 @@
-import { useAuth } from '@/lib/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { setSyncV, useAsyncV } from 'use-sync-v'
+import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
 
 export const Loading = () => {
   const router = useRouter()
-  const route = useAsyncV('route')
-  const signIn = useAsyncV('signIn')
-  const signOut = useAsyncV('signOut')
-  const auth = useAuth()
-  const boards = useAsyncV('boards')
-  const pin = useAsyncV('pin')
-  const initialize = useAsyncV('initialize')
-  const downloadPins = useAsyncV('downloadPins')
-  const users = useAsyncV('users')
+  const route = useSyncSWR('route/loading')
+  const loadingCounter = useSyncSWR('loadingCounter')
 
   useEffect(() => {
     const changeStartHandler = () => {
-      setSyncV('route.loading', true)
+      setSyncSWR('route/loading', true)
     }
     const changeCompleteHandler = () => {
-      setSyncV('route.loading', false)
+      setSyncSWR('route/loading', false)
     }
     router.events.on('routeChangeStart', changeStartHandler)
     router.events.on('routeChangeComplete', changeCompleteHandler)
@@ -33,15 +25,7 @@ export const Loading = () => {
   }, [router])
   return (
     <div className='fixed z-50 top-12 w-full flex'>
-      {(route.loading ||
-        signIn.loading ||
-        signOut.loading ||
-        auth.loading ||
-        boards.loading ||
-        pin.loading ||
-        initialize.loading ||
-        downloadPins.loading ||
-        users.loading) && <progress className="progress progress-accent"></progress>}
+      {(route || (loadingCounter > 0)) && <progress className="progress progress-accent"></progress>}
     </div>
   )
 }
