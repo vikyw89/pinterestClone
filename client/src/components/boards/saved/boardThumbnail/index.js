@@ -18,20 +18,20 @@ export const BoardThumbnailComponent = ({ props }) => {
         gridAutoRows: '1fr'
       }}>
         {thumbnails &&
-                    thumbnails.map(el => {
-                      return (
-                        <div key={v4()} className="relative aspect-square">
-                          <Image
-                            fill={true}
-                            placeholder="blur"
-                            alt={el.pins.image_url}
-                            blurDataURL={el.pins.loading_image_url}
-                            src={el.pins.image_url}
-                            className="aspect-square object-cover rounded-box"
-                          />
-                        </div>
-                      )
-                    })
+          thumbnails.map(el => {
+            return (
+              <div key={v4()} className="relative aspect-square">
+                <Image
+                  fill={true}
+                  placeholder="blur"
+                  alt={el.pins.image_url}
+                  blurDataURL={el.pins.loading_image_url}
+                  src={el.pins.image_url}
+                  className="aspect-square object-cover rounded-box"
+                />
+              </div>
+            )
+          })
         }
       </div>
       <div className="text-center font-bold"
