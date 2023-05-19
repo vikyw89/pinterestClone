@@ -10,10 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { mutate } from 'swr'
-import {
-  setAsyncV,
-  setSyncV
-} from 'use-sync-v'
+import { setSyncSWR } from 'swr-sync-state'
 
 
 export const Header = () => {
@@ -24,14 +21,14 @@ export const Header = () => {
 
   const avatarURL = auth?.data?.user?.user_metadata?.avatar_url
   const showSignInComponent = () => {
-    setSyncV('show.signInComponent', true)
+    setSyncSWR('show/signInComponent', true)
   }
 
   const signOutHandler = () => {
-    setAsyncV('signOut', async () => {
+    mutate('api/auth', async () => {
       const { error } = await supabase.auth.signOut()
       return error
-    })
+    }, { populateCache: false })
   }
 
   const navigateToLanding = () => {
