@@ -4,9 +4,7 @@ import Image from 'next/image'
 
 export const ProfileComponent = () => {
   const auth = useAuth()
-  const userUUID = auth.data.user.id
   const user = useUser()
-
   const following = user?.data?.users_followers
   const username = user?.data?.username
   const avatarURL = auth.data.user.user_metadata.avatar_url

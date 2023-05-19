@@ -9,7 +9,6 @@ import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { mutate } from 'swr'
 import { setSyncSWR } from 'swr-sync-state'
 import useSWRMutation from 'swr/mutation'
 

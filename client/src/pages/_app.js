@@ -6,6 +6,30 @@ import { useEffect } from 'react'
 import { SWRConfig } from 'swr'
 import { setSyncSWR } from 'swr-sync-state'
 
+const requestCounter = (useSWRNext) => {
+  return (key, fetcher, config) => {
+    if (key && key.match(new RegExp(
+      String.raw`[/]sub[/]`, 'g'
+    ))) {
+      return useSWRNext(key, fetcher, config)
+    } else if (typeof fetcher !== 'function') {
+      return useSWRNext(key, fetcher, config)
+    } else {
+      const extendedFetcher = async (...args) => {
+        setSyncSWR('loadingCounter', p => {
+          if (!p) {
+            p = 0
+          }
+          return p + 1
+        })
+        const result = await fetcher(...args)
+        setSyncSWR('loadingCounter', p => p - 1)
+        return result
+      }
+      return useSWRNext(key, extendedFetcher, config)
+    }
+  }
+}
 
 export default function App({ Component, pageProps }) {
   const auth = useAuth()
@@ -24,34 +48,10 @@ export default function App({ Component, pageProps }) {
     document.querySelector('html').setAttribute('data-theme', activeTheme ?? 'dark')
   }, [activeTheme])
 
-  const requestCounter = (useSWRNext) => {
-    return (key, fetcher, config) => {
-      if (key && key.match(new RegExp(
-        String.raw`[/]sub[/]`, 'g'
-      ))) {
-        return useSWRNext(key, fetcher, config)
-      } else if (typeof fetcher !== 'function') {
-        return useSWRNext(key, fetcher, config)
-      } else {
-        const extendedFetcher = async (...args) => {
-          setSyncSWR('loadingCounter', p => {
-            if (!p) {
-              p = 0
-            }
-            return p + 1
-          })
-          const result = await fetcher(...args)
-          setSyncSWR('loadingCounter', p => p - 1)
-          return result
-        }
-        return useSWRNext(key, extendedFetcher, config)
-      }
-    }
-  }
   return (
     <>
       <SWRConfig value={{
-        onError: (error, key) => {
+        onError: (error) => {
           setSyncSWR('error', error)
           setTimeout(() => {
             setSyncSWR('error')

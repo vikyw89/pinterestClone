@@ -6,7 +6,7 @@ export const Loading = () => {
   const router = useRouter()
   const route = useSyncSWR('route/loading')
   const loadingCounter = useSyncSWR('loadingCounter')
-  
+
   useEffect(() => {
     const changeStartHandler = () => {
       setSyncSWR('route/loading', true)
