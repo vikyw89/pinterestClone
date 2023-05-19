@@ -36,6 +36,6 @@ export const useAvailableTheme = () => {
       'winter',
     ].sort((a, b) => (a > b ? 1 : -1)))
   }, [])
-  
+
   return theme
 }
