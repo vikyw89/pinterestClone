@@ -65,7 +65,7 @@ export const PinComponent = ({ props }) => {
             />
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
-            {pin.title}{displayIndex}
+            {pin.title}
           </div>
           <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
             <div className="avatar aspect-square">
