@@ -10,7 +10,7 @@ export default function Profile() {
     <Page>
       <div className="flex  flex-col justify-center">
         {auth.data && <ProfileComponent />}
-        {auth.data && <BoardsComponent />}
+        {auth.data && <BoardsComponent/>}
       </div>
     </Page>
   )

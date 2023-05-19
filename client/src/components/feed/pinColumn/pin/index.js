@@ -1,67 +1,41 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useEffect, useId, useRef, useState } from 'react'
-import { mutate } from 'swr'
-import { setSyncSWR } from 'swr-sync-state'
-import useSWRImmutable from 'swr/immutable'
+import { useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 
-const QUEUE_LOWER_LIMIT = 50
+const QUEUE_LOWER_LIMIT = 10
 
-setSyncSWR('index', 0)
 
 export const PinComponent = ({ props }) => {
-  const id = useId()
+  const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
   const [displayIndex, setDisplayIndex] = useState()
-  const fetchedPins = useSWRImmutable('feeds')
-  const pin = fetchedPins.data?.[displayIndex]
-  const fetchedPinsQty = fetchedPins.data.length
+  const pin = feeds?.[displayIndex]
+  const fetchedPinsQty = feeds?.length
   const router = useRouter()
-  const element = useRef(null)
-  // freeze the index
-  useEffect(() => {
-    setSyncSWR('index', p => {
-      if (!p) {
-        p = 0
-      }
-      setDisplayIndex(p)
-      return p + 1
-    })
-    return () => {
-      setSyncSWR('index', p => {
-        return p - 1
-      })
-    }
-  }, [])
+  const [skip, setSkip] = useState(false)
+  const { inView, entry, ref } = useInView({ skip })
 
   useEffect(() => {
-    if (fetchedPinsQty <= (displayIndex ?? 0 + QUEUE_LOWER_LIMIT)) {
-      mutate('feeds')
-    }
-  }, [displayIndex, fetchedPinsQty])
-
-  useEffect(() => {
-    const thisPin = element.current
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        const intersecting = entry.isIntersecting
-        if (!intersecting) return
-        props.setPinsToDisplay(p => {
-          return [
-            ...p,
-            <PinComponent key={p.length} props={{
-              setPinsToDisplay: props.setPinsToDisplay
-            }} />,
-          ]
+    if (inView && entry?.isIntersecting) {
+      if (infinite || fetchedPinsQty >= index.current) {
+        setPinsToDisplay(p => {
+          return [...p, 'dummy']
         })
-        observer.unobserve(thisPin)
-      })
-    })
-    observer.observe(thisPin)
-    return () => {
-      observer.unobserve(thisPin)
+      }
+      setSkip(true)
+      setDisplayIndex(++index.current)
     }
-  }, [props])
+  }, [inView, entry?.isIntersecting, setPinsToDisplay, fetchedPinsQty, index, infinite])
+
+  useEffect(() => {
+    if (!displayIndex) return
+    if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
+      if (infinite) {
+        refetchFn()
+      }
+    }
+  }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
@@ -71,8 +45,9 @@ export const PinComponent = ({ props }) => {
     e.classList.remove('animate-pulse')
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
+
   return (
-    <div id={id} className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={element}>
+    <div className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={ref}>
       {pin &&
         <>
           <div className='w-72 h-auto'>
