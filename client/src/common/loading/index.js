@@ -1,9 +1,6 @@
-import { useAuth } from '@/lib/hooks/useAuth'
-import { usePin } from '@/lib/hooks/usePin'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
-import { setSyncV, useAsyncV } from 'use-sync-v'
 
 export const Loading = () => {
   const router = useRouter()

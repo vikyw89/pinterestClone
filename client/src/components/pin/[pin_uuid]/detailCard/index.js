@@ -26,15 +26,18 @@ export const DetailCardComponent = () => {
         {/* left half */}
         <div className="max-w-lg relative rounded-l-3xl bg-neutral-focus">
           {pinData.data &&
-              <Image
-                src={pinData.data.image_url}
-                alt="pinDataImage"
-                width={500}
-                height={500}
-                placeholder='blur'
-                blurDataURL={pinData.data.loading_image_url}
-                className='rounded-l-3xl'
-              />
+            <Image
+              src={pinData.data.image_url}
+              alt="pinDataImage"
+              width={500}
+              height={500}
+              placeholder='blur'
+              blurDataURL={pinData.data.loading_image_url}
+              style={{
+                height: 'auto'
+              }}
+              className='rounded-l-3xl w-screen'
+            />
           }
         </div>
         {/* right half */}

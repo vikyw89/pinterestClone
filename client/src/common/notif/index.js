@@ -1,6 +1,4 @@
-import { useAuth } from '@/lib/hooks/useAuth'
 import { useSyncSWR } from 'swr-sync-state'
-import { useAsyncV } from 'use-sync-v'
 
 export const Notif = () => {
   const error = useSyncSWR('error')

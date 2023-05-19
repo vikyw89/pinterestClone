@@ -1,8 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { setAsyncV } from 'use-sync-v'
-import { PopUpComponent } from '../popUp'
 import { mutate } from 'swr'
+import { PopUpComponent } from '../popUp'
 
 export const SignInComponent = () => {
   // const moveToSignUpPage = () => {

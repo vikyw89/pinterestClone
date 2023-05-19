@@ -2,13 +2,10 @@ import { Page } from '@/common/layout/page'
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
-import { setSyncV } from 'use-sync-v'
 import { PinColumnComponent } from './pinColumn'
 
 const FETCH_AMOUNT = 50
 const PIN_WIDTH = 300
-setSyncV('queue', [])
-setSyncV('index', 0)
 
 export const FeedsComponent = () => {
   const [column, setColumn] = useState()
