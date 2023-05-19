@@ -1,8 +1,6 @@
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
-import { supabase } from '@/lib/supabase'
 import Image from 'next/image'
-import { useAsyncSubV } from 'use-sync-v'
 
 export const ProfileComponent = () => {
   const auth = useAuth()

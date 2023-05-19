@@ -5,8 +5,7 @@ import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
 export const Loading = () => {
   const router = useRouter()
   const route = useSyncSWR('route/loading')
-  const loadingCounter = useSyncSWR('loadingCounter')
-
+  const loadingCounter = useSyncSWR('loadingCounter') ?? 0
   useEffect(() => {
     const changeStartHandler = () => {
       setSyncSWR('route/loading', true)
@@ -25,7 +24,7 @@ export const Loading = () => {
   }, [router])
   return (
     <div className='fixed z-50 top-12 w-full flex'>
-      {(route || loadingCounter > 0) && <progress className="progress progress-accent"></progress>}
+      {(route || (loadingCounter > 0)) && <progress className="progress progress-accent"></progress>}
     </div>
   )
 }

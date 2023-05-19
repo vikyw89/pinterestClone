@@ -1,10 +1,11 @@
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
+import { supabase } from '@/lib/supabase'
 import '@/styles/globals.css'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { SWRConfig } from 'swr'
-import { setSyncSWR } from 'swr-sync-state'
+import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
 
 
 export default function App({ Component, pageProps }) {
@@ -30,9 +31,18 @@ export default function App({ Component, pageProps }) {
         String.raw`[/]sub[/]`, 'g'
       ))) {
         return useSWRNext(key, fetcher, config)
+      } else if (typeof fetcher !== 'function') {
+        return useSWRNext(key, fetcher, config)
       } else {
         const extendedFetcher = async (...args) => {
+          setSyncSWR('loadingCounter', p => {
+            if (!p) {
+              p = 0
+            }
+            return p + 1
+          })
           const result = await fetcher(...args)
+          setSyncSWR('loadingCounter', p => p - 1)
           return result
         }
         return useSWRNext(key, extendedFetcher, config)
