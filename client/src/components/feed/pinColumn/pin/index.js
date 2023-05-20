@@ -7,49 +7,43 @@ import { useInView } from 'react-intersection-observer'
 const QUEUE_LOWER_LIMIT = 10
 
 export const PinComponent = ({ props }) => {
-  const { index, setIndex, feeds, setPinsToDisplay, refetchFn, infinite } = props
-  console.log('🚀 ~ file: index.js:11 ~ PinComponent ~ index:', index)
-  const [displayIndex, setDisplayIndex] = useState(index)
-  console.log('🚀 ~ file: index.js:13 ~ PinComponent ~ displayIndex:', displayIndex)
-  const pin = feeds?.[displayIndex]
-  const fetchedPinsQty = feeds?.length
-  const router = useRouter()
-  const [skip, setSkip] = useState(false)
-  const { inView, entry, ref } = useInView({ skip })
-
+  const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
   // increment index on every new component
   useEffect(() => {
-    setIndex(p => {
-      setDisplayIndex(p)
-      return p + 1
-    })
+    index.current++
     return () => {
-      setIndex(p => {
-        return p - 1
-      })
+      index.current--
     }
-  }, [])
+  }, [index])
 
-  // useEffect(() => {
-  //   if (inView && entry?.isIntersecting) {
-  //     if (infinite || fetchedPinsQty >= index.current) {
-  //       setPinsToDisplay(p => {
-  //         return [...p, 'dummy']
-  //       })
-  //     }
-  //     setSkip(true)
-  //     setDisplayIndex(++index.current)
-  //   }
-  // }, [inView, entry?.isIntersecting, setPinsToDisplay, fetchedPinsQty, index, infinite])
+  const fetchedPinsQty = feeds?.length
+  const [displayIndex, setDisplayIndex] = useState()
+  useEffect(()=>{
+    setDisplayIndex(index.current)
+  },[])
+  const pin = feeds?.[displayIndex]
+  const router = useRouter()
 
-  // useEffect(() => {
-  //   if (!displayIndex) return
-  //   if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
-  //     if (infinite) {
-  //       refetchFn()
-  //     }
-  //   }
-  // }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
+  const [skip, setSkip] = useState(false)
+  const { entry, ref } = useInView({ skip })
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      setPinsToDisplay(p => {
+        return [...p, 'dummy']
+      })
+      setSkip(true)
+    }
+  }, [entry?.isIntersecting, setPinsToDisplay])
+
+  // refetch when displayIndex is > index
+  useEffect(() => {
+    if (!displayIndex) return
+    if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
+      if (infinite) {
+        refetchFn()
+      }
+    }
+  }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)

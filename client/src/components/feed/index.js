@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PinColumnComponent } from './pinColumn'
 
 const PIN_WIDTH = 300
 
 export const FeedsComponent = ({ props }) => {
   const { feeds } = props
-  const [index, setIndex] = useState(0)
+  const index = useRef(-1)
 
-  const [columns, setColumns] = useState()
+  const [columns, setColumns] = useState(['dummy'])
+  // set column when resized
   useEffect(() => {
     const resizeScreenHandler = (e) => {
       let temp = []
@@ -23,7 +24,7 @@ export const FeedsComponent = ({ props }) => {
       window.removeEventListener('resize', resizeScreenHandler)
     }
   }, [])
-
+  // set columns when mounted
   useEffect(() => {
     const screenWidth = window.innerWidth
     const columnQty = Math.floor(screenWidth / PIN_WIDTH)
@@ -41,7 +42,7 @@ export const FeedsComponent = ({ props }) => {
           {feeds.length !== 0 && columns &&
             columns.map((e, i) => {
               return (
-                <PinColumnComponent key={i} props={{ ...props, index, setIndex }} />
+                <PinColumnComponent key={i} props={{ ...props, index}} />
               )
             })
           }
