@@ -6,36 +6,50 @@ import { useInView } from 'react-intersection-observer'
 
 const QUEUE_LOWER_LIMIT = 10
 
-
 export const PinComponent = ({ props }) => {
-  const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
-  const [displayIndex, setDisplayIndex] = useState()
+  const { index, setIndex, feeds, setPinsToDisplay, refetchFn, infinite } = props
+  console.log('🚀 ~ file: index.js:11 ~ PinComponent ~ index:', index)
+  const [displayIndex, setDisplayIndex] = useState(index)
+  console.log('🚀 ~ file: index.js:13 ~ PinComponent ~ displayIndex:', displayIndex)
   const pin = feeds?.[displayIndex]
   const fetchedPinsQty = feeds?.length
   const router = useRouter()
   const [skip, setSkip] = useState(false)
   const { inView, entry, ref } = useInView({ skip })
 
+  // increment index on every new component
   useEffect(() => {
-    if (inView && entry?.isIntersecting) {
-      if (infinite || fetchedPinsQty >= index.current) {
-        setPinsToDisplay(p => {
-          return [...p, 'dummy']
-        })
-      }
-      setSkip(true)
-      setDisplayIndex(++index.current)
+    setIndex(p => {
+      setDisplayIndex(p)
+      return p + 1
+    })
+    return () => {
+      setIndex(p => {
+        return p - 1
+      })
     }
-  }, [inView, entry?.isIntersecting, setPinsToDisplay, fetchedPinsQty, index, infinite])
+  }, [])
 
-  useEffect(() => {
-    if (!displayIndex) return
-    if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
-      if (infinite) {
-        refetchFn()
-      }
-    }
-  }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
+  // useEffect(() => {
+  //   if (inView && entry?.isIntersecting) {
+  //     if (infinite || fetchedPinsQty >= index.current) {
+  //       setPinsToDisplay(p => {
+  //         return [...p, 'dummy']
+  //       })
+  //     }
+  //     setSkip(true)
+  //     setDisplayIndex(++index.current)
+  //   }
+  // }, [inView, entry?.isIntersecting, setPinsToDisplay, fetchedPinsQty, index, infinite])
+
+  // useEffect(() => {
+  //   if (!displayIndex) return
+  //   if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
+  //     if (infinite) {
+  //       refetchFn()
+  //     }
+  //   }
+  // }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
 
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
@@ -65,7 +79,7 @@ export const PinComponent = ({ props }) => {
             />
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
-            {pin.title}
+            {pin.title}{displayIndex}
           </div>
           <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
             <div className="avatar aspect-square">
