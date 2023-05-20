@@ -5,17 +5,11 @@ const PIN_WIDTH = 300
 
 export const FeedsComponent = ({ props }) => {
   const { feeds } = props
-  const index = useRef(0)
-  const [column, setColumn] = useState()
+  const index = useRef(-1)
 
+  const [columns, setColumns] = useState(['dummy'])
+  // set column when resized
   useEffect(() => {
-    const screenWidth = window.innerWidth
-    const columnQty = Math.floor(screenWidth / PIN_WIDTH)
-    let temp = []
-    for (let i = 0; i < columnQty; i++) {
-      temp.push('dummy')
-    }
-    setColumn(temp)
     const resizeScreenHandler = (e) => {
       let temp = []
       const screenWidth = e ? e.target.innerWidth : window.innerWidth
@@ -23,23 +17,32 @@ export const FeedsComponent = ({ props }) => {
       for (let i = 0; i < columnQty; i++) {
         temp.push('dummy')
       }
-      setColumn(temp)
+      setColumns(temp)
     }
     window.addEventListener('resize', resizeScreenHandler)
     return () => {
-      setColumn()
       window.removeEventListener('resize', resizeScreenHandler)
     }
+  }, [])
+  // set columns when mounted
+  useEffect(() => {
+    const screenWidth = window.innerWidth
+    const columnQty = Math.floor(screenWidth / PIN_WIDTH)
+    let temp = []
+    for (let i = 0; i < columnQty; i++) {
+      temp.push('dummy')
+    }
+    setColumns(temp)
   }, [])
 
   return (
     <div>
       {feeds &&
         <div className='flex gap-5 justify-center p-5'>
-          {feeds.length !== 0 && column &&
-            column.map((e,i) => {
+          {feeds.length !== 0 && columns &&
+            columns.map((e, i) => {
               return (
-                <PinColumnComponent key={i} props={{ ...props, index }} />
+                <PinColumnComponent key={i} props={{ ...props, index}} />
               )
             })
           }

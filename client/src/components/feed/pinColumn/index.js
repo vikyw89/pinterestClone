@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { PinComponent } from './pin'
 
 export const PinColumnComponent = ({ props }) => {
-  const [pinsToDisplay, setPinsToDisplay] = useState()
-  useEffect(() => {
-    setPinsToDisplay(['dummy'])
-    return () => {
-      setPinsToDisplay()
-    }
-  }, [])
+  const [pinsToDisplay, setPinsToDisplay] = useState(['dummy'])
   return (
     <div className="h-max flex flex-col gap-5 w-72 overflow-hidden">
       {pinsToDisplay &&

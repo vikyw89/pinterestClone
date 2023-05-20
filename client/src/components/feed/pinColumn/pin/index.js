@@ -6,28 +6,36 @@ import { useInView } from 'react-intersection-observer'
 
 const QUEUE_LOWER_LIMIT = 10
 
-
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
-  const [displayIndex, setDisplayIndex] = useState()
-  const pin = feeds?.[displayIndex]
-  const fetchedPinsQty = feeds?.length
-  const router = useRouter()
-  const [skip, setSkip] = useState(false)
-  const { inView, entry, ref } = useInView({ skip })
-
+  // increment index on every new component
   useEffect(() => {
-    if (inView && entry?.isIntersecting) {
-      if (infinite || fetchedPinsQty >= index.current) {
-        setPinsToDisplay(p => {
-          return [...p, 'dummy']
-        })
-      }
-      setSkip(true)
-      setDisplayIndex(++index.current)
+    index.current++
+    return () => {
+      index.current--
     }
-  }, [inView, entry?.isIntersecting, setPinsToDisplay, fetchedPinsQty, index, infinite])
+  }, [index])
 
+  const fetchedPinsQty = feeds?.length
+  const [displayIndex, setDisplayIndex] = useState()
+  useEffect(()=>{
+    setDisplayIndex(index.current)
+  },[])
+  const pin = feeds?.[displayIndex]
+  const router = useRouter()
+
+  const [skip, setSkip] = useState(false)
+  const { entry, ref } = useInView({ skip })
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      setPinsToDisplay(p => {
+        return [...p, 'dummy']
+      })
+      setSkip(true)
+    }
+  }, [entry?.isIntersecting, setPinsToDisplay])
+
+  // refetch when displayIndex is > index
   useEffect(() => {
     if (!displayIndex) return
     if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
@@ -65,7 +73,7 @@ export const PinComponent = ({ props }) => {
             />
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
-            {pin.title}
+            {pin.title}{displayIndex}
           </div>
           <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
             <div className="avatar aspect-square">
