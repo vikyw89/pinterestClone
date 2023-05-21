@@ -66,7 +66,7 @@ export const PinComponent = ({ props }) => {
   }
 
   const saveHandler = (e) => {
-    
+
   }
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
@@ -82,10 +82,10 @@ export const PinComponent = ({ props }) => {
               priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
-              className="h-auto w-full rounded-3xl bg-neutral animate-pulse hover:opacity-20"
+              className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
               onLoadingComplete={loadingCompleteHandler}
             />
-            <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100 flex justify-between'>
+            <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100  hover:backdrop-brightness-50 flex justify-between'>
               <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                 {boards &&
                   boards.map((p, i) => {
