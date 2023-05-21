@@ -1,3 +1,4 @@
+import { useUser } from '@/lib/hooks/useUser'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -48,6 +49,13 @@ export const PinComponent = ({ props }) => {
     }
   }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
 
+  const user = useUser()
+  const boards = user?.data?.boards
+  const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
+  const boardSelectHandler = (e) => {
+    setSelectedBoard(JSON.parse(e.target.value))
+  }
+
   const pinClickHandler = () => {
     router.push(`/pin/${pin.uuid}`)
   }
@@ -57,11 +65,14 @@ export const PinComponent = ({ props }) => {
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
 
+  const saveHandler = (e) => {
+    
+  }
   return (
-    <div className="flex flex-col relative gap-1" onClick={pinClickHandler} ref={ref}>
+    <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
       {pin &&
         <>
-          <div className='w-72 h-auto'>
+          <div className='w-72 h-auto relative'>
             <Image
               src={pin.image_url}
               alt="pinImage"
@@ -71,9 +82,23 @@ export const PinComponent = ({ props }) => {
               priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
-              className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
+              className="h-auto w-full rounded-3xl bg-neutral animate-pulse hover:opacity-20"
               onLoadingComplete={loadingCompleteHandler}
             />
+            <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100 flex justify-between'>
+              <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
+                {boards &&
+                  boards.map((p, i) => {
+                    return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
+                  })
+                }
+              </select>
+              <div >
+                <button className='btn btn-primary'>
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
             {pin.title}
