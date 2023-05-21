@@ -8,7 +8,7 @@ const QUEUE_LOWER_LIMIT = 10
 
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
-  
+
   // increment index on every new component
   useEffect(() => {
     index.current++
