@@ -18,9 +18,9 @@ export const PinComponent = ({ props }) => {
 
   const fetchedPinsQty = feeds?.length
   const [displayIndex, setDisplayIndex] = useState()
-  useEffect(()=>{
+  useEffect(() => {
     setDisplayIndex(index.current)
-  },[])
+  }, [])
   const pin = feeds?.[displayIndex]
   const router = useRouter()
 
@@ -41,6 +41,8 @@ export const PinComponent = ({ props }) => {
     if (fetchedPinsQty <= (displayIndex + QUEUE_LOWER_LIMIT)) {
       if (infinite) {
         refetchFn()
+      } else {
+        setSkip(true)
       }
     }
   }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
