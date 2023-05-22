@@ -135,19 +135,21 @@ export const Header = () => {
             </div>
           </button>
         )}
-        <button className='btn btn-ghost rounded-btn'
+        <button className='btn btn-ghost rounded-btn flex items-center justify-center'
           onClick={navigateToProfile}>
           <div className="avatar aspect-square">
-            <div className="w-8 rounded-full flex items-center">
-              {avatarURL ? <Image src={avatarURL}
-                alt="avatar"
-                width="0"
-                height="0"
-                className="w-auto h-auto"
-                id="user_avatar"
-              />
+            <div className="rounded-full flex items-center">
+              {avatarURL
+                ?
+                <Image src={avatarURL}
+                  alt="avatar"
+                  width="0"
+                  height="0"
+                  className="w-auto h-auto"
+                  id="user_avatar"
+                />
                 :
-                <AccountCircleIcon className='text-3xl' />
+                <AccountCircleIcon className='text-2xl' />
               }
             </div>
           </div>
