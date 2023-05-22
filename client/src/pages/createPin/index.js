@@ -26,6 +26,8 @@ const CreatePin = () => {
   const [pin, setPin] = useState(initialPin)
   const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
   const id = useId()
+  const uploadNotif = useRef(null)
+
   const uploadPin = useSWRMutation('api/pin', async () => {
     const fetchedImage = await fetch(pin.image_url)
     const imageBlob = await fetchedImage.blob()
@@ -48,15 +50,16 @@ const CreatePin = () => {
   const saveButton = useRef(null)
 
   useEffect(() => {
-    if (pin.image_url === ''|| uploadPin.isMutating) {
+    if (pin.image_url === '') {
       saveButton.current.classList.add('btn-disabled')
     } else {
       saveButton.current.classList.remove('btn-disabled')
     }
-  }, [pin.image_url, id, uploadPin.isMutating])
+  }, [pin.image_url, id])
 
   const pinImageHandler = async (e) => {
     e.stopPropagation()
+    uploadNotif.current.textContent = 'processing image...'
     const file = e.target.files[0]
     const options = {
       maxSizeMB: 1,
@@ -120,9 +123,11 @@ const CreatePin = () => {
     setSelectedBoard(JSON.parse(e.target.value))
   }
 
-  const saveHandler = async () => {
+  const saveHandler = async (e) => {
     if (pin.image_url === '') return
-    uploadPin.trigger()
+    e.target.classList.add('loading')
+    await uploadPin.trigger()
+    e.target.classList.remove('loading')
   }
 
   return (
@@ -164,8 +169,8 @@ const CreatePin = () => {
                     <div
                       className=' aspect-square flex flex-col items-center justify-center relative border-opacity-50 border-neutral-content border-4 border-dashed rounded-box'>
                       <CloudUploadIcon className='animate-bounce text-6xl' />
-                      <div className='text-lg'>
-                        click to upload
+                      <div className='text-lg' ref={uploadNotif}>
+                        click to upload, max size 1MB
                       </div>
                       <input
                         className="w-full h-full absolute left-0 top-0 opacity-0"
