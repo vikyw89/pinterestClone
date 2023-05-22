@@ -1,24 +1,28 @@
-# javaScriptFinalProject
-
 ## This is an attempt to clone Pinterest, with a slight twist
 
 Dev live preview: https://vikyw89.github.io/pinterestClone
 
 ## Dependencies:
 - supabase (for BAAS)
-  - I chose SQL because real world data is always interconnected / relational, with SQL we will have no syncing problem
+  - because pinterest data is mostly relational
   - BAAS is faster to deploy and prototype than writing backend from scratch
+  - downside is subscribe function in supabase / postgres aren't that good
+  - rpc is stored in the cloud supabase site
 - nextJS
   - filesystem routing is intuitive
-- useSyncV (for global state management)
+  - it's the new recomended way to scafold react app as per react.dev
+- SWR for fetching and state management
   - it scales better than local state
-  - unopinionated, plug and play
-- TailwindCSS
+  - the idea of rebuilding model for front end using redux and copying normalized database to front end, and doing JOIN operation in front end isn't appealing
+  - single source of truth is in the backend / db
+- TailwindCSS and daisyUI
   - trying out new css framework aside from css module, bootstrap and mui
   - nextJS offers it
+  - it has a lot of theme
 
 ## Database model:
-
+outdated, but the idea holds
+some improvements can be made, using only insert operation, and no delete therefore maintaining log etc
 ![Untitled Diagram](https://user-images.githubusercontent.com/112059651/236874824-c1aec858-89e1-470c-9272-f88961ab3abc.jpg)
 
 ## Page Routing:
@@ -37,23 +41,11 @@ Dev live preview: https://vikyw89.github.io/pinterestClone
 '/[user_id]/[board_title]'
 // board page, show board's stats, members, content and recomendation
 
-'/pin-builder'
+'/createPin'
 // show a page to create a pin
 
 sign in and signup will be handled in the '/' route using popup or modal
 
-```
-
-## Client Model:
-
-We will store and cache client data in a global state:
-
-```jsx
-clientModel:{
-  data:{
-    new
-  }
-}
 ```
 
 ## Original assignment
