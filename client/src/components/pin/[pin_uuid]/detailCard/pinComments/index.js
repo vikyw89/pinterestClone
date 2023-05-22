@@ -13,6 +13,7 @@ export const PinCommentsComponent = () => {
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinDetail = usePin(pin_uuid)
+  const { isLoading, isValidating } = pinDetail
   const [commentInput, setCommentInput] = useState('')
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
@@ -84,9 +85,15 @@ export const PinCommentsComponent = () => {
           className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
           onChange={commentInputHandler}
           value={commentInput} />
-        <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler}>
-          <SendIcon />
-        </button>
+        {(isLoading || isValidating)
+          ?
+          <button className="btn btn-primary rounded-btn btn-circle loading">
+          </button>
+          :
+          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler}>
+            <SendIcon />
+          </button>
+        }
       </div>
     </>
   )
