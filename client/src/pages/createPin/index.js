@@ -8,7 +8,6 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import imageCompression from 'browser-image-compression'
 import Image from 'next/image'
 import { useEffect, useId, useRef, useState } from 'react'
-import { mutate } from 'swr'
 import useSWRMutation from 'swr/mutation'
 
 const initialPin = {
@@ -60,7 +59,7 @@ const CreatePin = () => {
 
   const pinImageHandler = async (e) => {
     e.stopPropagation()
-    uploadNotif.current.textContent = "processing image..."
+    uploadNotif.current.textContent = 'processing image...'
     const file = e.target.files[0]
     const options = {
       maxSizeMB: 1,
