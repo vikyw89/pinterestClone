@@ -36,7 +36,7 @@ export const CommentComponent = ({ props }) => {
         <p className="break-all">{comment}</p>
       </div>
       {isCommentCreator &&
-        <button className='btn btn-circle btn-ghost absolute top-0 right-0 focus:bg-red-300'
+        <button className='btn btn-circle btn-ghost absolute top-0 right-0'
           onClick={deleteComment}>
           <div>
             <ClearIcon className='text-3xl font-bold text-info'/>
