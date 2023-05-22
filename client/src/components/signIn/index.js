@@ -29,8 +29,8 @@ export const SignInComponent = () => {
         alt="pinterest logo"
         src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
         priority={true}
-        width="100" 
-        height="100" 
+        width="100"
+        height="100"
         style={{ width: '100' }} />
       <p className="font-extrabold text-center">Welcome to Pinterest</p>
       <div className="flex flex-col gap-1">

@@ -1,8 +1,7 @@
-import Image from 'next/image'
-import { useState } from 'react'
-import ClearIcon from '@mui/icons-material/Clear'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
+import ClearIcon from '@mui/icons-material/Clear'
+import Image from 'next/image'
 import { mutate } from 'swr'
 
 export const CommentComponent = ({ props }) => {
@@ -40,7 +39,7 @@ export const CommentComponent = ({ props }) => {
         <button className='btn btn-circle btn-ghost absolute top-0 right-0'
           onClick={deleteComment}>
           <div>
-            <ClearIcon className='text-3xl font-bold text-info' />
+            <ClearIcon className='text-3xl font-bold text-info'/>
           </div>
         </button>
       }
