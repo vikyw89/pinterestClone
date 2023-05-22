@@ -50,7 +50,7 @@ export const DetailCardComponent = () => {
               onLoadingComplete={loadingCompleteHandler}
             />
             :
-            <div className='w-screen aspect-square animate-pulse bg-neutral-focus rounded-l-3xl flex justify-center items-center'>
+            <div className='w-screen max-w-lg aspect-square animate-pulse bg-neutral-focus rounded-l-3xl flex justify-center items-center'>
             </div>
           }
         </div>
@@ -71,7 +71,7 @@ export const DetailCardComponent = () => {
             {pin_uuid && selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin_uuid, board_uuid: selectedBoard.uuid, pinIsModified, setPinIsModified }} />}
           </div>
           {pinData.data &&
-            <div className='w-full'>
+            <div className='w-full overflow-clip break-all'>
               <div className='underline'>
                 <a href={pinData.data.link_url}>{pinData.data.link_url}</a>
               </div>
