@@ -25,7 +25,13 @@ export const SignInComponent = () => {
 
   return (
     <PopUpComponent>
-      <Image alt="pinterest logo" src="./p-logo-lowres.png" width="100" height="100" />
+      <Image
+        alt="pinterest logo"
+        src="https://hffebrjtrzopihuffrxv.supabase.co/storage/v1/object/public/assets/p-logo-lowres.png"
+        priority={true}
+        width="100" 
+        height="100" 
+        style={{ width: '100' }} />
       <p className="font-extrabold text-center">Welcome to Pinterest</p>
       <div className="flex flex-col gap-1">
         {/* <label htmlFor="email" className="pl-4">

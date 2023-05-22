@@ -52,9 +52,9 @@ export default function App({ Component, pageProps }) {
     <>
       <SWRConfig value={{
         onError: (error) => {
-          setSyncSWR('error', error)
+          setSyncSWR('error', p => [...p, error])
           setTimeout(() => {
-            setSyncSWR('error')
+            setSyncSWR('error', p => [...(p.slice(1))])
           }, 10000)
         },
         use: [requestCounter]
