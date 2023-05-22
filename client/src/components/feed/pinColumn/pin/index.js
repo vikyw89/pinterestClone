@@ -89,8 +89,8 @@ export const PinComponent = ({ props }) => {
       {pin &&
         <>
           <div className='w-72 h-auto relative'
-            onPointerEnter={hoverHandler}
-            onPointerLeave={unHoverHandler}>
+            onMouseEnter={hoverHandler}
+            onMouseLeave={unHoverHandler}>
             <Image
               src={pin.image_url}
               alt="pinImage"
@@ -112,7 +112,7 @@ export const PinComponent = ({ props }) => {
                     })
                   }
                 </select>
-                {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid}} />}
+                {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid }} />}
               </div>}
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
