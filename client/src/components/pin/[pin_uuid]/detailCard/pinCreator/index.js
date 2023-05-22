@@ -81,15 +81,21 @@ export const PinCreatorComponent = () => {
         </div>
       }
       <div className="flex-1 text-right">
-        {isFollower.data
+        {typeof isFollower.data === 'undefined'
           ?
-          <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
-            Following
+          <button className="btn btn-primary loading text-primary-content rounded-btn max-sm:w-full">
+            Loading
           </button>
-          :
-          <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
-            Follow
-          </button>
+          : isFollower.data
+            ?
+            <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
+              Following
+            </button>
+            :
+            <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
+              Follow
+            </button>
+
         }
       </div>
     </div>

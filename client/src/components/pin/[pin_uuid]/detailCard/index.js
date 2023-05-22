@@ -2,22 +2,27 @@ import { usePin } from '@/lib/hooks/usePin'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
+import { SaveButtonComponent } from '@/components/feed/pinColumn/pin/saveButton'
+import { useBoard } from '@/lib/hooks/useBoard'
+import { useUser } from '@/lib/hooks/useUser'
 
 export const DetailCardComponent = () => {
+  const [pinIsModified, setPinIsModified] = useState(false)
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinData = usePin(pin_uuid)
+  const user = useUser()
+  const boards = user?.data?.boards
+  useEffect(() => {
+    setSelectedBoard(boards?.[0])
+  }, [boards])
   const [selectedBoard, setSelectedBoard] = useState()
 
   const boardSelectHandler = (e) => {
     setSelectedBoard(JSON.parse(e.target.value))
-  }
-
-  const saveHandler = () => {
-
   }
 
   return (
@@ -47,14 +52,14 @@ export const DetailCardComponent = () => {
               <MoreHorizIcon />
             </button>
             <div className="flex-1"></div>
-            {selectedBoard &&
+            {boards &&
               <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
-                {selectedBoard.map((p, i) => {
+                {boards.map((p, i) => {
                   return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
                 })}
               </select>
             }
-            <button onClick={saveHandler} className="btn btn-primary rounded-btn">Save</button>
+            {pin_uuid && selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin_uuid, board_uuid: selectedBoard.uuid, pinIsModified, setPinIsModified }} />}
           </div>
           {pinData.data &&
             <div className='w-full'>

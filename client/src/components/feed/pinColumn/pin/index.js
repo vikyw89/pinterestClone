@@ -1,12 +1,11 @@
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
-import { supabase } from '@/lib/supabase'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { mutate } from 'swr'
+import { SaveButtonComponent } from './saveButton'
 
 const QUEUE_LOWER_LIMIT = 10
 
@@ -55,7 +54,10 @@ export const PinComponent = ({ props }) => {
 
   const user = useUser()
   const boards = user?.data?.boards
-  const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
+  useEffect(()=>{
+    setSelectedBoard(boards?.[0])
+  },[boards])
+  const [selectedBoard, setSelectedBoard] = useState()
   const [pinIsSaved, setPinIsSaved] = useState(true)
   const [pinIsModified, setPinIsModified] = useState(false)
 
@@ -75,38 +77,7 @@ export const PinComponent = ({ props }) => {
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
 
-  const saveHandler = async (e) => {
-    e.stopPropagation()
-    e.target.classList.add('loading')
-    mutate('api/feeds', async () => {
-      const pin_uuid = pin?.uuid
-      const board_uuid = selectedBoard?.uuid
-      await supabase
-        .rpc('save_pin', {
-          board_uuid: board_uuid,
-          pin_uuid: pin_uuid
-        })
-        .throwOnError()
-      setPinIsSaved(true)
-      setPinIsModified(true)
-    }, { populateCache: (c, p) => p, revalidate: false })
-  }
 
-  const unSaveHandler = (e) => {
-    e.stopPropagation()
-    e.target.classList.add('loading')
-    mutate('api/feeds', async () => {
-      const pin_uuid = pin?.uuid
-      const board_uuid = selectedBoard?.uuid
-      await supabase
-        .from('boards_pins')
-        .delete()
-        .eq('pin_uuid', pin_uuid)
-        .eq('board_uuid', board_uuid)
-      setPinIsSaved(false)
-      setPinIsModified(true)
-    }, { populateCache: (c, p) => p, revalidate: false })
-  }
   const hoverHandler = (e) => {
     e.stopPropagation()
     if (!pin?.uuid || !selectedBoard || pinIsModified) return
@@ -141,18 +112,7 @@ export const PinComponent = ({ props }) => {
                   })
                 }
               </select>
-              <div >
-                {!pinIsSaved &&
-                  <button className='btn btn-primary' onClick={saveHandler}>
-                    Save
-                  </button>
-                }
-                {pinIsSaved &&
-                  <button className='btn btn-primary' onClick={unSaveHandler}>
-                    Saved
-                  </button>
-                }
-              </div>
+              {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid, pinIsModified, setPinIsModified }} />}
             </div>}
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
