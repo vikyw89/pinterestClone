@@ -31,6 +31,10 @@ const requestCounter = (useSWRNext) => {
   }
 }
 
+if (typeof window !== 'undefined') {
+  document.querySelector('html').setAttribute('data-theme', 'luxury')
+}
+
 export default function App({ Component, pageProps }) {
   const auth = useAuth()
   const user = useUser()
@@ -45,7 +49,7 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (!activeTheme) return
-    document.querySelector('html').setAttribute('data-theme', activeTheme ?? 'dark')
+    document.querySelector('html').setAttribute('data-theme', activeTheme)
   }, [activeTheme])
 
   return (
