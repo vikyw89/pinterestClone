@@ -54,13 +54,11 @@ export const PinComponent = ({ props }) => {
 
   const user = useUser()
   const boards = user?.data?.boards
-  useEffect(()=>{
+  useEffect(() => {
     setSelectedBoard(boards?.[0])
-  },[boards])
+  }, [boards])
   const [selectedBoard, setSelectedBoard] = useState()
-  const [pinIsSaved, setPinIsSaved] = useState(true)
-  const [pinIsModified, setPinIsModified] = useState(false)
-
+  const [hover, setHover] = useState(false)
   const boardSelectHandler = (e) => {
     e.stopPropagation()
     const selectedBoardData = JSON.parse(e.target.value)
@@ -77,19 +75,22 @@ export const PinComponent = ({ props }) => {
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
 
-
   const hoverHandler = (e) => {
     e.stopPropagation()
-    if (!pin?.uuid || !selectedBoard || pinIsModified) return
-    setPinIsSaved(selectedBoard.boards_pins.filter(e => {
-      return e.pin_uuid === pin.uuid
-    }))
+    setHover(true)
+  }
+
+  const unHoverHandler = (e) => {
+    e.stopPropagation()
+    setHover(false)
   }
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
       {pin &&
         <>
-          <div className='w-72 h-auto relative'>
+          <div className='w-72 h-auto relative'
+            onPointerEnter={hoverHandler}
+            onPointerLeave={unHoverHandler}>
             <Image
               src={pin.image_url}
               alt="pinImage"
@@ -102,18 +103,17 @@ export const PinComponent = ({ props }) => {
               className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
               onLoadingComplete={loadingCompleteHandler}
             />
-            {auth && <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100  hover:backdrop-brightness-50 flex justify-between'
-              onPointerEnter={hoverHandler}
-            >
-              <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
-                {boards &&
-                  boards.map((p, i) => {
-                    return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
-                  })
-                }
-              </select>
-              {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid, pinIsModified, setPinIsModified }} />}
-            </div>}
+            {auth && hover &&
+              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 hover:backdrop-brightness-50 flex justify-between'>
+                <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
+                  {boards &&
+                    boards.map((p, i) => {
+                      return <option key={i} value={JSON.stringify(p)}>{p.title}</option>
+                    })
+                  }
+                </select>
+                {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid}} />}
+              </div>}
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
             {pin.title}

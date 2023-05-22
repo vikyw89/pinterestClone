@@ -1,49 +1,65 @@
-import { supabase } from "@/lib/supabase"
-import { useState } from "react"
-import { mutate } from "swr"
+import { useUser } from '@/lib/hooks/useUser'
+import { supabase } from '@/lib/supabase'
+import { useEffect, useState } from 'react'
+import { mutate } from 'swr'
 
 export const SaveButtonComponent = ({ props }) => {
-    const { pin_uuid, board_uuid, setPinIsModified } = props
-    const [pinIsSaved, setPinIsSaved] = useState(true)
+    const { pin_uuid, board_uuid } = props
+    const user = useUser()
+    const boards = user?.data?.boards
+    const [selectedBoard, setSelectedBoard] = useState()
+    const [pinIsSaved, setPinIsSaved] = useState()
+
+    useEffect(() => {
+        setSelectedBoard(boards?.[0])
+    }, [boards])
+
+    useEffect(() => {
+        if (!selectedBoard) return
+        setPinIsSaved(selectedBoard.boards_pins.filter(e => {
+            return e.pin_uuid === pin_uuid
+        }).length !== 0)
+    }, [selectedBoard, pin_uuid])
 
     const saveHandler = async (e) => {
         e.stopPropagation()
         e.target.classList.add('loading')
-        mutate('api/feeds', async () => {
+        await mutate(`api/user/${user.data.uuid}`, async () => {
             await supabase
                 .rpc('save_pin', {
                     board_uuid: board_uuid,
                     pin_uuid: pin_uuid
                 })
                 .throwOnError()
-            setPinIsSaved(true)
-            setPinIsModified(true)
-        }, { populateCache: (c, p) => p, revalidate: false })
+        }, { populateCache: false })
     }
 
-    const unSaveHandler = (e) => {
+    const unSaveHandler = async (e) => {
         e.stopPropagation()
         e.target.classList.add('loading')
-        mutate('api/feeds', async () => {
+        await mutate(`api/user/${user.data.uuid}`, async () => {
             await supabase
                 .from('boards_pins')
                 .delete()
                 .eq('pin_uuid', pin_uuid)
                 .eq('board_uuid', board_uuid)
-            setPinIsSaved(false)
-            setPinIsModified(true)
-        }, { populateCache: (c, p) => p, revalidate: false })
+        }, { populateCache: false })
     }
     return (
         <div >
-            {!pinIsSaved &&
-                <button className='btn btn-primary' onClick={saveHandler}>
-                    Save
+            {typeof pinIsSaved === 'undefined' &&
+                <button className='btn btn-info loading'>
+                    Loading
                 </button>
             }
-            {pinIsSaved &&
-                <button className='btn btn-primary' onClick={unSaveHandler}>
+            {pinIsSaved === true &&
+                <button className='btn btn-secondary' onClick={unSaveHandler}>
                     Saved
+                </button>
+            }
+            {pinIsSaved === false &&
+                <button className='btn btn-primary' onClick={saveHandler}>
+                    Save
                 </button>
             }
         </div>

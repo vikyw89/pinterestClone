@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react'
 import { PinCommentsComponent } from './pinComments'
 import { PinCreatorComponent } from './pinCreator'
 import { SaveButtonComponent } from '@/components/feed/pinColumn/pin/saveButton'
-import { useBoard } from '@/lib/hooks/useBoard'
 import { useUser } from '@/lib/hooks/useUser'
 
 export const DetailCardComponent = () => {
