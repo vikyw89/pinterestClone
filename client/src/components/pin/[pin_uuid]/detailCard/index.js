@@ -24,12 +24,18 @@ export const DetailCardComponent = () => {
     setSelectedBoard(JSON.parse(e.target.value))
   }
 
+  const loadingCompleteHandler = (e) => {
+    e.classList.remove('animate-pulse')
+    e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
+  }
+
   return (
     <div className="flex justify-center p-5">
       <div className="flex flex-wrap text-neutral-content items-start justify-center">
         {/* left half */}
         <div className="max-w-lg relative rounded-l-3xl bg-neutral-focus">
-          {pinData.data &&
+          {pinData.data
+            ?
             <Image
               src={pinData.data.image_url}
               alt="pinDataImage"
@@ -40,8 +46,12 @@ export const DetailCardComponent = () => {
               style={{
                 height: 'auto'
               }}
-              className='rounded-l-3xl w-screen'
+              className='rounded-l-3xl w-screen animate-pulse'
+              onLoadingComplete={loadingCompleteHandler}
             />
+            :
+            <div className='w-screen aspect-square animate-pulse bg-neutral-focus rounded-l-3xl flex justify-center items-center'>
+            </div>
           }
         </div>
         {/* right half */}

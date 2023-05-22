@@ -101,11 +101,11 @@ export const Header = () => {
           </button>
           <ul
             tabIndex={0}
-            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral"
+            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral z-50"
           >
             {theme && theme.map((el, index) => {
               return (
-                <li key={index} className='text-neutral-content bg-neutral'>
+                <li key={index} className='text-neutral-content bg-neutral z-50'>
                   <a
                     onClick={themeHandler}
                   >
@@ -135,21 +135,24 @@ export const Header = () => {
             </div>
           </button>
         )}
-        <button className='btn btn-ghost rounded-btn'
+        <button className='btn btn-ghost rounded-btn flex items-center justify-center'
           onClick={navigateToProfile}>
           <div className="avatar aspect-square">
-            <div className="w-8 rounded-full flex items-center">
-              {avatarURL ? <Image src={avatarURL}
-                alt="avatar"
-                width="0"
-                height="0"
-                className="w-auto h-auto"
-                id="user_avatar"
-              />
-                :
-                <AccountCircleIcon className='text-3xl' />
-              }
-            </div>
+            {avatarURL
+              ?
+              <div className="rounded-full flex items-center w-7">
+                <Image src={avatarURL}
+                  alt="avatar"
+                  width="6"
+                  height="6"
+                  className="aspect-square w-2"
+                  id="user_avatar"
+                />
+
+              </div>
+              :
+              <AccountCircleIcon className='text-2xl' />
+            }
           </div>
 
         </button>

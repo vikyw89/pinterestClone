@@ -1,8 +1,7 @@
-import Image from 'next/image'
-import { useState } from 'react'
-import ClearIcon from '@mui/icons-material/Clear'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { supabase } from '@/lib/supabase'
+import ClearIcon from '@mui/icons-material/Clear'
+import Image from 'next/image'
 import { mutate } from 'swr'
 
 export const CommentComponent = ({ props }) => {
@@ -10,15 +9,6 @@ export const CommentComponent = ({ props }) => {
   const auth = useAuth()
   const user_uuid = auth?.data?.user?.id
   const isCommentCreator = user_uuid === users.uuid
-  const [isHovering, setIsHovering] = useState(false)
-
-  const hoverHandler = () => {
-    setIsHovering(true)
-  }
-
-  const unHoverHandler = () => {
-    setIsHovering(false)
-  }
 
   const deleteComment = async () => {
     await mutate(`api/pin/${pin_uuid}`, async () => {
@@ -32,9 +22,7 @@ export const CommentComponent = ({ props }) => {
     }, { populateCache: false })
   }
   return (
-    <div className="flex gap-2 p-2 w-full max-w-lg relative"
-      onPointerEnter={hoverHandler}
-      onPointerLeave={unHoverHandler}>
+    <div className="flex gap-2 p-2 w-full max-w-lg relative">
       <Image
         src={users.profile_picture_url}
         alt="profile_picture"
@@ -47,13 +35,13 @@ export const CommentComponent = ({ props }) => {
         <span className="font-bold">{users.username} :&nbsp;&nbsp;</span>
         <p className="break-all">{comment}</p>
       </div>
-      {isHovering && isCommentCreator &&
-                <button className='btn btn-circle btn-ghost absolute top-0 right-0 animate-pulse h-fit'
-                  onClick={deleteComment}>
-                  <div>
-                    <ClearIcon className='text-3xl font-bold' />
-                  </div>
-                </button>
+      {isCommentCreator &&
+        <button className='btn btn-circle btn-ghost absolute top-0 right-0'
+          onClick={deleteComment}>
+          <div>
+            <ClearIcon className='text-3xl font-bold text-info'/>
+          </div>
+        </button>
       }
     </div>
   )

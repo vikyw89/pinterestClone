@@ -31,6 +31,10 @@ const requestCounter = (useSWRNext) => {
   }
 }
 
+if (typeof window !== 'undefined') {
+  document.querySelector('html').setAttribute('data-theme', 'synthwave')
+}
+
 export default function App({ Component, pageProps }) {
   const auth = useAuth()
   const user = useUser()
@@ -45,17 +49,17 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     if (!activeTheme) return
-    document.querySelector('html').setAttribute('data-theme', activeTheme ?? 'dark')
+    document.querySelector('html').setAttribute('data-theme', activeTheme)
   }, [activeTheme])
 
   return (
     <>
       <SWRConfig value={{
         onError: (error) => {
-          setSyncSWR('error', error)
+          setSyncSWR('error', p => [...p, error])
           setTimeout(() => {
-            setSyncSWR('error')
-          }, 1000)
+            setSyncSWR('error', p => [...(p.slice(1))])
+          }, 10000)
         },
         use: [requestCounter]
       }}>

@@ -6,7 +6,6 @@ if (typeof window !== 'undefined' && window.innerWidth <= 500) {
   PIN_WIDTH = window.innerWidth / 2
 }
 
-
 export const FeedsComponent = ({ props }) => {
   const { feeds } = props
   const index = useRef(-1)

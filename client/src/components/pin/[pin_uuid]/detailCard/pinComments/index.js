@@ -9,17 +9,16 @@ import { useState } from 'react'
 import { mutate } from 'swr'
 import { CommentComponent } from './comment'
 
-
 export const PinCommentsComponent = () => {
   const user = useUser()
   const router = useRouter()
   const { pin_uuid } = router.query
   const pinDetail = usePin(pin_uuid)
-  const { isLoading, isValidating } = pinDetail
   const [commentInput, setCommentInput] = useState('')
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
   const user_uuid = user?.data?.uuid
+  const [isSending, setIsSending] = useState(false)
 
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
@@ -28,7 +27,8 @@ export const PinCommentsComponent = () => {
   const sendCommentHandler = async () => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
-    mutate(`api/pin/${pin_uuid}`, async () => {
+    setIsSending(true)
+    await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
         .insert({
@@ -38,8 +38,8 @@ export const PinCommentsComponent = () => {
         })
         .throwOnError()
     }, { populateCache: false })
+    setIsSending(false)
   }
-
 
   return (
     <>
@@ -74,7 +74,7 @@ export const PinCommentsComponent = () => {
           className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
           onChange={commentInputHandler}
           value={commentInput} />
-        {(isLoading || isValidating)
+        {(isSending)
           ?
           <button className="btn btn-primary rounded-btn btn-circle loading">
           </button>
