@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { PinColumnComponent } from './pinColumn'
 
-const PIN_WIDTH = 300
+let PIN_WIDTH = 300
+if (typeof window !== 'undefined' && window.innerWidth <= 500) {
+  console.log("🚀 ~ file: index.js:5 ~ PIN_WIDTH:", PIN_WIDTH)
+  PIN_WIDTH = window.innerWidth / 2
+}
+
 
 export const FeedsComponent = ({ props }) => {
   const { feeds } = props
@@ -38,7 +43,7 @@ export const FeedsComponent = ({ props }) => {
   return (
     <div>
       {feeds &&
-        <div className='flex gap-5 justify-center p-5 max-'>
+        <div className='flex gap-1 md:gap-5 justify-center p-1 md:p-5'>
           {feeds.length !== 0 && columns &&
             columns.map((e, i) => {
               return (

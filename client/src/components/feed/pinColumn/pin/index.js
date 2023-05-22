@@ -104,7 +104,7 @@ export const PinComponent = ({ props }) => {
               onLoadingComplete={loadingCompleteHandler}
             />
             {auth && hover &&
-              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 hover:backdrop-brightness-50 flex justify-between'>
+              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 hover:backdrop-brightness-50 flex justify-between rounded-3xl'>
                 <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                   {boards &&
                     boards.map((p, i) => {
@@ -115,10 +115,10 @@ export const PinComponent = ({ props }) => {
                 {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid }} />}
               </div>}
           </div>
-          <div className='pl-3 pr-3 font-bold overflow-clip'>
+          <div className='pl-3 pr-3 font-bold overflow-clip overflow-ellipsis'>
             {pin.title}
           </div>
-          <div className="flex max-w-full items-center gap-2 pl-3 pr-3">
+          <div className="flex max-w-full items-center gap-2 pl-3 pr-3 overflow-clip overflow-ellipsis">
             <div className="avatar aspect-square">
               <div className="w-8 rounded-full flex items-center">
                 {pin.users.profile_picture_url
@@ -134,7 +134,7 @@ export const PinComponent = ({ props }) => {
                 }
               </div>
             </div>
-            <div>
+            <div className="overflow-ellipsis overflow-clip">
               {pin.users.username}
             </div>
           </div>
