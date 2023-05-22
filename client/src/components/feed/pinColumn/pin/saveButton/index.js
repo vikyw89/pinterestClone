@@ -48,19 +48,19 @@ export const SaveButtonComponent = ({ props }) => {
   return (
     <div >
       {typeof pinIsSaved === 'undefined' &&
-                <button className='btn btn-info loading'>
-                    Loading
-                </button>
+        <button className='btn btn-info loading'>
+          Loading
+        </button>
       }
       {pinIsSaved === true &&
-                <button className='btn btn-secondary' onClick={unSaveHandler}>
-                    Saved
-                </button>
+        <button className='btn btn-info' onClick={unSaveHandler}>
+          Saved
+        </button>
       }
       {pinIsSaved === false &&
-                <button className='btn btn-primary' onClick={saveHandler}>
-                    Save
-                </button>
+        <button className='btn btn-accent' onClick={saveHandler}>
+          Save
+        </button>
       }
     </div>
   )
