@@ -57,10 +57,7 @@ export const PinComponent = ({ props }) => {
   const boards = user?.data?.boards
   const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
   const [pinIsSaved, setPinIsSaved] = useState(true)
-
-  // useEffect(() => {
-
-  // }, [selectedBoard, pin])
+  const [pinIsModified, setPinIsModified] = useState(false)
 
   const boardSelectHandler = (e) => {
     e.stopPropagation()
@@ -91,6 +88,7 @@ export const PinComponent = ({ props }) => {
         })
         .throwOnError()
       setPinIsSaved(true)
+      setPinIsModified(true)
     }, { populateCache: (c, p) => p, revalidate: false })
   }
 
@@ -106,15 +104,15 @@ export const PinComponent = ({ props }) => {
         .eq('pin_uuid', pin_uuid)
         .eq('board_uuid', board_uuid)
       setPinIsSaved(false)
+      setPinIsModified(true)
     }, { populateCache: (c, p) => p, revalidate: false })
   }
   const hoverHandler = (e) => {
     e.stopPropagation()
-    if (!pin?.uuid || !selectedBoard) return
+    if (!pin?.uuid || !selectedBoard || pinIsModified) return
     setPinIsSaved(selectedBoard.boards_pins.filter(e => {
       return e.pin_uuid === pin.uuid
     }))
-
   }
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
