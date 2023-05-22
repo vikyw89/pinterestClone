@@ -47,14 +47,16 @@ export const PinCreatorComponent = () => {
     return data
   })
 
-  const followHandler = async () => {
+  const followHandler = async (e) => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
+    e.target.classList.add('loading')
     await followAPI.trigger()
     await pinDetail.mutate()
   }
 
-  const unfollowHandler = async () => {
+  const unfollowHandler = async (e) => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
+    e.target.classList.add('loading')
     await unfollowAPI.trigger()
     await pinDetail.mutate()
   }
@@ -81,23 +83,22 @@ export const PinCreatorComponent = () => {
         </div>
       }
       <div className="flex-1 text-right">
-        {typeof isFollower.data === 'undefined'
-          ?
+        {typeof isFollower.data === 'undefined' &&
           <button className="btn btn-primary loading text-primary-content rounded-btn max-sm:w-full">
             Loading
           </button>
-          : isFollower.data
-            ?
-            <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
-              Following
-            </button>
-            :
-            <button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
-              Follow
-            </button>
-
         }
-      </div>
-    </div>
+        {isFollower.data === true &&
+          < button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
+            Following
+          </button>
+        }
+        {isFollower.data === false &&
+          < button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
+            Follow
+          </button>
+        }
+      </div >
+    </div >
   )
 }
