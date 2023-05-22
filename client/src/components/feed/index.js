@@ -3,7 +3,6 @@ import { PinColumnComponent } from './pinColumn'
 
 let PIN_WIDTH = 300
 if (typeof window !== 'undefined' && window.innerWidth <= 500) {
-  console.log("🚀 ~ file: index.js:5 ~ PIN_WIDTH:", PIN_WIDTH)
   PIN_WIDTH = window.innerWidth / 2
 }
 
