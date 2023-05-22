@@ -8,13 +8,25 @@ Dev live preview: https://vikyw89.github.io/pinterestClone
   - BAAS is faster to deploy and prototype than writing backend from scratch
   - downside is subscribe function in supabase / postgres aren't that good
   - rpc is stored in the cloud supabase site
-- nextJS
+- CLoudinary
+  - for storage of image and assets
+  - it has cloud / edge function to resize assets and convert it to filetype that we want
+  - we mostly use webp and webp animated for image because browser support above 95% and file size is small
+- nextJS SSG
   - filesystem routing is intuitive
   - it's the new recomended way to scafold react app as per react.dev
+  - SSG has faster initial load to client
+  - we use nextImage as a way to efficiently show blurhas or placeholder to prevent big layout shift in feeds
+  - some improvement to be made, store the image size in database because next image needs size to enable the blur placeholder (right now we use square, so there will be minimal layout shift)
 - SWR for fetching and state management
   - it scales better than local state
   - the idea of rebuilding model for front end using redux and copying normalized database to front end, and doing JOIN operation in front end isn't appealing
   - single source of truth is in the backend / db
+  - added additional useSyncSWR for global state using swr
+- Browser image compressor
+  - To compress image before storing in backend
+  - it's lightweight and fast for images under 1MB
+  - no need to recreate and host backend
 - TailwindCSS and daisyUI
   - trying out new css framework aside from css module, bootstrap and mui
   - nextJS offers it
