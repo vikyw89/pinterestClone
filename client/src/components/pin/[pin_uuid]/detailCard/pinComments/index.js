@@ -43,7 +43,6 @@ export const PinCommentsComponent = () => {
     setIsSending(false)
   }
 
-
   return (
     <>
       <div className="flex-1">

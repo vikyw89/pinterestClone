@@ -29,7 +29,8 @@ export const DetailCardComponent = () => {
       <div className="flex flex-wrap text-neutral-content items-start justify-center">
         {/* left half */}
         <div className="max-w-lg relative rounded-l-3xl bg-neutral-focus">
-          {pinData.data &&
+          {pinData.data
+            ?
             <Image
               src={pinData.data.image_url}
               alt="pinDataImage"
@@ -42,6 +43,9 @@ export const DetailCardComponent = () => {
               }}
               className='rounded-l-3xl w-screen'
             />
+            :
+            <div className='w-[500px] aspect-square'>
+            </div>
           }
         </div>
         {/* right half */}
