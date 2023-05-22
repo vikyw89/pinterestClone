@@ -50,7 +50,7 @@ export const DetailCardComponent = () => {
               onLoadingComplete={loadingCompleteHandler}
             />
             :
-            <div className='w-screen aspect-square animate-pulse bg-neutral-focus rounded-l-3xl flex justify-center items-center'>
+            <div className='w-screen max-w-lg aspect-square animate-pulse bg-neutral-focus rounded-l-3xl flex justify-center items-center'>
             </div>
           }
         </div>
