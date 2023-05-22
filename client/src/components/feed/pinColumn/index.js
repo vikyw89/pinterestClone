@@ -4,7 +4,7 @@ import { PinComponent } from './pin'
 export const PinColumnComponent = ({ props }) => {
   const [pinsToDisplay, setPinsToDisplay] = useState(['dummy'])
   return (
-    <div className="h-max flex flex-col gap-5 max-w-full overflow-hidden">
+    <div className="h-max flex flex-col gap-5 w-72 max-w-full overflow-hidden">
       {pinsToDisplay &&
         pinsToDisplay.map((e, i) => {
           return (
