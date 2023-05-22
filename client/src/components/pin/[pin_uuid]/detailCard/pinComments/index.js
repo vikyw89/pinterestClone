@@ -23,7 +23,7 @@ export const PinCommentsComponent = () => {
     setCommentInput(e.target.value)
   }
 
-  const sendCommentHandler = async (e) => {
+  const sendCommentHandler = async () => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
     mutate(`api/pin/${pin_uuid}`, async () => {
