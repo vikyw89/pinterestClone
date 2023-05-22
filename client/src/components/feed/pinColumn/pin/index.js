@@ -1,14 +1,18 @@
+import { useAuth } from '@/lib/hooks/useAuth'
 import { useUser } from '@/lib/hooks/useUser'
+import { supabase } from '@/lib/supabase'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { mutate } from 'swr'
 
 const QUEUE_LOWER_LIMIT = 10
 
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
+  const { data: auth } = useAuth()
 
   // increment index on every new component
   useEffect(() => {
@@ -52,8 +56,17 @@ export const PinComponent = ({ props }) => {
   const user = useUser()
   const boards = user?.data?.boards
   const [selectedBoard, setSelectedBoard] = useState(boards?.[0])
+  const [pinIsSaved, setPinIsSaved] = useState(true)
+
+  // useEffect(() => {
+
+  // }, [selectedBoard, pin])
+
   const boardSelectHandler = (e) => {
-    setSelectedBoard(JSON.parse(e.target.value))
+    e.stopPropagation()
+    const selectedBoardData = JSON.parse(e.target.value)
+    setSelectedBoard(selectedBoardData)
+    // check if pin uuid exists inside the selected board
   }
 
   const pinClickHandler = () => {
@@ -65,7 +78,43 @@ export const PinComponent = ({ props }) => {
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
 
-  const saveHandler = (e) => {
+  const saveHandler = async (e) => {
+    e.stopPropagation()
+    e.target.classList.add('loading')
+    mutate('api/feeds', async () => {
+      const pin_uuid = pin?.uuid
+      const board_uuid = selectedBoard?.uuid
+      await supabase
+        .rpc('save_pin', {
+          board_uuid: board_uuid,
+          pin_uuid: pin_uuid
+        })
+        .throwOnError()
+        setPinIsSaved(true)
+    }, { populateCache: (c, p) => p, revalidate: false })
+  }
+
+  const unSaveHandler = (e) => {
+    e.stopPropagation()
+    e.target.classList.add('loading')
+    mutate('api/feeds', async () => {
+      const pin_uuid = pin?.uuid
+      const board_uuid = selectedBoard?.uuid
+      await supabase
+        .from('boards_pins')
+        .delete()
+        .eq('pin_uuid', pin_uuid)
+        .eq('board_uuid', board_uuid)
+        setPinIsSaved(false)
+    }, { populateCache: (c, p) => p, revalidate: false })
+  }
+  const hoverHandler = (e) => {
+    e.stopPropagation()
+    console.log("🚀 ~ file: index.js:115 ~ hoverHandler ~ e:", e)
+      if (!pin?.uuid || !selectedBoard) return
+      setPinIsSaved(selectedBoard.boards_pins.filter(e => {
+        return e.pin_uuid === pin.uuid
+      }))
 
   }
   return (
@@ -85,7 +134,9 @@ export const PinComponent = ({ props }) => {
               className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
               onLoadingComplete={loadingCompleteHandler}
             />
-            <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100  hover:backdrop-brightness-50 flex justify-between'>
+            {auth && <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 opacity-0 hover:opacity-100  hover:backdrop-brightness-50 flex justify-between'
+              onPointerEnter={hoverHandler}
+            >
               <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                 {boards &&
                   boards.map((p, i) => {
@@ -94,11 +145,18 @@ export const PinComponent = ({ props }) => {
                 }
               </select>
               <div >
-                <button className='btn btn-primary'>
-                  Save
-                </button>
+                {!pinIsSaved &&
+                  <button className='btn btn-primary' onClick={saveHandler}>
+                    Save
+                  </button>
+                }
+                {pinIsSaved &&
+                  <button className='btn btn-primary' onClick={unSaveHandler}>
+                    Saved
+                  </button>
+                }
               </div>
-            </div>
+            </div>}
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
             {pin.title}
