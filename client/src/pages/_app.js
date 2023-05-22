@@ -55,7 +55,7 @@ export default function App({ Component, pageProps }) {
           setSyncSWR('error', error)
           setTimeout(() => {
             setSyncSWR('error')
-          }, 1000)
+          }, 10000)
         },
         use: [requestCounter]
       }}>
