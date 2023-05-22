@@ -2,7 +2,7 @@
 
 Dev live preview: https://vikyw89.github.io/pinterestClone
 
-## Dependencies:
+## Dependencies and Libraries and some tech choices:
 - supabase (for BAAS)
   - because pinterest data is mostly relational
   - BAAS is faster to deploy and prototype than writing backend from scratch
@@ -31,6 +31,9 @@ Dev live preview: https://vikyw89.github.io/pinterestClone
   - trying out new css framework aside from css module, bootstrap and mui
   - nextJS offers it
   - it has a lot of theme
+- GH action
+  - enabled CI CD for deployment
+  - in the future we can have different branch for dev purpose / alpha, beta, and latest/stable automatic release and versioning.
 
 ## Database model:
 outdated, but the idea holds
