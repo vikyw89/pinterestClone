@@ -104,7 +104,7 @@ export const PinComponent = ({ props }) => {
               onLoadingComplete={loadingCompleteHandler}
             />
             {auth && hover &&
-              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-50 hover:backdrop-brightness-50 flex justify-between rounded-3xl'>
+              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-20 hover:backdrop-brightness-50 flex justify-between rounded-3xl'>
                 <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                   {boards &&
                     boards.map((p, i) => {

@@ -11,6 +11,7 @@ export const CommentComponent = ({ props }) => {
   const user_uuid = auth?.data?.user?.id
   const isCommentCreator = user_uuid === users.uuid
   const [isHovering, setIsHovering] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
 
   const hoverHandler = () => {
     setIsHovering(true)
@@ -20,6 +21,9 @@ export const CommentComponent = ({ props }) => {
     setIsHovering(false)
   }
 
+  const clickHandler = () => {
+    setIsClicked(p => !p)
+  }
   const deleteComment = async () => {
     await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
@@ -33,8 +37,10 @@ export const CommentComponent = ({ props }) => {
   }
   return (
     <div className="flex gap-2 p-2 w-full max-w-lg relative"
-      onPointerEnter={hoverHandler}
-      onPointerLeave={unHoverHandler}>
+      onMouseEnter={hoverHandler}
+      onMouseLeave={unHoverHandler}
+      onClick={clickHandler}
+      >
       <Image
         src={users.profile_picture_url}
         alt="profile_picture"
@@ -47,13 +53,13 @@ export const CommentComponent = ({ props }) => {
         <span className="font-bold">{users.username} :&nbsp;&nbsp;</span>
         <p className="break-all">{comment}</p>
       </div>
-      {isHovering && isCommentCreator &&
-                <button className='btn btn-circle btn-ghost absolute top-0 right-0 animate-pulse h-fit'
-                  onClick={deleteComment}>
-                  <div>
-                    <ClearIcon className='text-3xl font-bold' />
-                  </div>
-                </button>
+      {(isHovering || isClicked) && isCommentCreator &&
+        <button className='btn btn-circle btn-ghost absolute top-0 right-0 animate-pulse h-fit'
+          onClick={deleteComment}>
+          <div>
+            <ClearIcon className='text-3xl font-bold' />
+          </div>
+        </button>
       }
     </div>
   )

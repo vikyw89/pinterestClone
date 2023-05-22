@@ -101,11 +101,11 @@ export const Header = () => {
           </button>
           <ul
             tabIndex={0}
-            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral"
+            className="menu dropdown-content p-2 shadow rounded-box w-52 mt-4 grid grid-cols-1 overflow-y-scroll max-h-screen bg-neutral z-50"
           >
             {theme && theme.map((el, index) => {
               return (
-                <li key={index} className='text-neutral-content bg-neutral'>
+                <li key={index} className='text-neutral-content bg-neutral z-50'>
                   <a
                     onClick={themeHandler}
                   >
