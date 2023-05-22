@@ -20,15 +20,17 @@ export const PinCommentsComponent = () => {
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
   const user_uuid = user?.data?.uuid
+  const [isSending, setIsSending] = useState(false)
 
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
   }
 
-  const sendCommentHandler = async () => {
+  const sendCommentHandler = async (e) => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
-    mutate(`api/pin/${pin_uuid}`, async () => {
+    setIsSending(true)
+    await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
         .insert({
@@ -38,6 +40,7 @@ export const PinCommentsComponent = () => {
         })
         .throwOnError()
     }, { populateCache: false })
+    setIsSending(false)
   }
 
 
@@ -74,7 +77,7 @@ export const PinCommentsComponent = () => {
           className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
           onChange={commentInputHandler}
           value={commentInput} />
-        {(isLoading || isValidating)
+        {(isLoading || isValidating || isSending)
           ?
           <button className="btn btn-primary rounded-btn btn-circle loading">
           </button>
