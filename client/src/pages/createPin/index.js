@@ -96,14 +96,7 @@ const CreatePin = () => {
   }
 
   const pinHandler = (e) => {
-    const PIN_KEY_MAP = {
-      pinTitle: 'title',
-      pinDescription: 'description',
-      pinLink: 'link_url',
-      pinImageURL: 'image_url',
-      pinLoadingURL: 'loading_image_url'
-    }
-    const key = PIN_KEY_MAP[e.target.id]
+    const key = e.target.id
     const value = e.target.value
     setPin(p => ({
       ...p,
@@ -189,22 +182,22 @@ const CreatePin = () => {
                 id="createPinInput"
                 className="text-base-content flex flex-col justify-between flex-1 min-w-[300px] gap-1">
                 <input
-                  id="pinTitle"
+                  id="title"
                   value={pin.title}
                   onChange={pinHandler}
                   type="text"
                   placeholder="Type your title"
                   className="input input-bordered w-full bg-neutral-focus text-neutral-content rounded-box p-5" />
                 <textarea
-                  id="pinDescription"
+                  id="description"
                   value={pin.description}
                   onChange={pinHandler}
                   type="text"
                   placeholder="Tell everyone what your pin is about"
                   className="input input-bordered w-full bg-neutral-focus text-neutral-content break-words placeholder:break-words h-full rounded-box p-5" />
                 <input
-                  id="pinLink"
-                  value={pin.link}
+                  id="link_url"
+                  value={pin.link_url}
                   onChange={pinHandler}
                   type="text"
                   placeholder="Add destination link"

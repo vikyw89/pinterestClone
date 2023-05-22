@@ -7,6 +7,8 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { mutate } from 'swr'
+import { CommentComponent } from './comment'
+
 
 export const PinCommentsComponent = () => {
   const user = useUser()
@@ -38,6 +40,7 @@ export const PinCommentsComponent = () => {
     }, { populateCache: false })
   }
 
+
   return (
     <>
       <div className="flex-1">
@@ -48,21 +51,7 @@ export const PinCommentsComponent = () => {
           <div>
             {pin_comments.map((e, i) => {
               return (
-                <div key={i} className="flex gap-2 p-2 w-full max-w-lg">
-                  <Image
-                    src={e.users.profile_picture_url}
-                    alt="profile_picture"
-                    height={0}
-                    width={0}
-                    sizes="100vw"
-                    className="w-8 h-8 aspect-square rounded-full"
-                  />
-                  <div className="flex w-full max-w-lg flex-wrap">
-                    <span className="font-bold">{e.users.username} :&nbsp;&nbsp;</span>
-                    <p className="break-all">{e.comment}</p>
-                  </div>
-                </div>
-
+                <CommentComponent key={i} props={e}/>
               )
             })}
           </div>

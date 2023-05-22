@@ -12,7 +12,16 @@ const QUEUE_LOWER_LIMIT = 10
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
   const { data: auth } = useAuth()
-
+  const fetchedPinsQty = feeds?.length
+  const [displayIndex, setDisplayIndex] = useState()
+  const pin = feeds?.[displayIndex]
+  const router = useRouter()
+  const [skip, setSkip] = useState(false)
+  const { entry, ref } = useInView({ skip })
+  const user = useUser()
+  const boards = user?.data?.boards
+  const [selectedBoard, setSelectedBoard] = useState()
+  const [hover, setHover] = useState(false)
   // increment index on every new component
   useEffect(() => {
     index.current++
@@ -21,16 +30,10 @@ export const PinComponent = ({ props }) => {
     }
   }, [index])
 
-  const fetchedPinsQty = feeds?.length
-  const [displayIndex, setDisplayIndex] = useState()
   useEffect(() => {
     setDisplayIndex(index.current)
   }, [])
-  const pin = feeds?.[displayIndex]
-  const router = useRouter()
 
-  const [skip, setSkip] = useState(false)
-  const { entry, ref } = useInView({ skip })
   useEffect(() => {
     if (entry?.isIntersecting) {
       setPinsToDisplay(p => {
@@ -52,18 +55,15 @@ export const PinComponent = ({ props }) => {
     }
   }, [displayIndex, fetchedPinsQty, infinite, refetchFn])
 
-  const user = useUser()
-  const boards = user?.data?.boards
   useEffect(() => {
     setSelectedBoard(boards?.[0])
   }, [boards])
-  const [selectedBoard, setSelectedBoard] = useState()
-  const [hover, setHover] = useState(false)
+
+
   const boardSelectHandler = (e) => {
     e.stopPropagation()
     const selectedBoardData = JSON.parse(e.target.value)
     setSelectedBoard(selectedBoardData)
-    // check if pin uuid exists inside the selected board
   }
 
   const pinClickHandler = () => {
@@ -89,8 +89,8 @@ export const PinComponent = ({ props }) => {
       {pin &&
         <>
           <div className='w-72 h-auto relative'
-            onPointerEnter={hoverHandler}
-            onPointerLeave={unHoverHandler}>
+            onMouseEnter={hoverHandler}
+            onMouseLeave={unHoverHandler}>
             <Image
               src={pin.image_url}
               alt="pinImage"
@@ -112,7 +112,7 @@ export const PinComponent = ({ props }) => {
                     })
                   }
                 </select>
-                {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid}} />}
+                {selectedBoard && <SaveButtonComponent props={{ pin_uuid: pin.uuid, board_uuid: selectedBoard.uuid }} />}
               </div>}
           </div>
           <div className='pl-3 pr-3 font-bold overflow-clip'>
