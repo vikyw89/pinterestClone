@@ -90,7 +90,7 @@ export const PinComponent = ({ props }) => {
           pin_uuid: pin_uuid
         })
         .throwOnError()
-        setPinIsSaved(true)
+      setPinIsSaved(true)
     }, { populateCache: (c, p) => p, revalidate: false })
   }
 
@@ -105,16 +105,15 @@ export const PinComponent = ({ props }) => {
         .delete()
         .eq('pin_uuid', pin_uuid)
         .eq('board_uuid', board_uuid)
-        setPinIsSaved(false)
+      setPinIsSaved(false)
     }, { populateCache: (c, p) => p, revalidate: false })
   }
   const hoverHandler = (e) => {
     e.stopPropagation()
-    console.log("🚀 ~ file: index.js:115 ~ hoverHandler ~ e:", e)
-      if (!pin?.uuid || !selectedBoard) return
-      setPinIsSaved(selectedBoard.boards_pins.filter(e => {
-        return e.pin_uuid === pin.uuid
-      }))
+    if (!pin?.uuid || !selectedBoard) return
+    setPinIsSaved(selectedBoard.boards_pins.filter(e => {
+      return e.pin_uuid === pin.uuid
+    }))
 
   }
   return (
