@@ -38,7 +38,7 @@ export const FeedsComponent = ({ props }) => {
   return (
     <div>
       {feeds &&
-        <div className='flex gap-5 justify-center p-5'>
+        <div className='flex gap-5 justify-center p-5 max-'>
           {feeds.length !== 0 && columns &&
             columns.map((e, i) => {
               return (

@@ -88,7 +88,7 @@ export const PinComponent = ({ props }) => {
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
       {pin &&
         <>
-          <div className='w-72 h-auto relative'
+          <div className='w-72 max-w-full h-auto relative'
             onMouseEnter={hoverHandler}
             onMouseLeave={unHoverHandler}>
             <Image
