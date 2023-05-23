@@ -48,13 +48,17 @@ export const Header = () => {
 
   const themeHandler = (e) => {
     const updatedValue = e.target.textContent
-    const options = {
-      optimisticData: {
-        ...user.data,
-        theme: updatedValue
-      },
+    if (themeAPI.data) {
+      const options = {
+        optimisticData: {
+          ...user.data,
+          theme: updatedValue
+        },
+      }
+      themeAPI.trigger(updatedValue, options)
+    } else {
+      document.querySelector('html').setAttribute('data-theme', updatedValue)
     }
-    themeAPI.trigger(updatedValue, options)
   }
 
   const navigateToProfile = () => {
