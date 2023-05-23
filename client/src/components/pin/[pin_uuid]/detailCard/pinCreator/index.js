@@ -49,14 +49,14 @@ export const PinCreatorComponent = () => {
 
   const followHandler = async (e) => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    e.target.classList.add('loading')
+    e.currentTarget.classList.add('loading', 'animate-pulse')
     await followAPI.trigger()
     await pinDetail.mutate()
   }
 
   const unfollowHandler = async (e) => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    e.target.classList.add('loading')
+    e.currentTarget.classList.add('loading','animate-pulse')
     await unfollowAPI.trigger()
     await pinDetail.mutate()
   }
