@@ -22,9 +22,19 @@ const requestCounter = (useSWRNext) => {
           }
           return p + 1
         })
-        const result = await fetcher(...args).finally(()=>{
-          setSyncSWR('loadingCounter', p => p - 1)
-        })
+        const result = await fetcher(...args)
+          .catch(error => {
+            setSyncSWR('notif/error', p => {
+              if (!p) {
+                p = []
+              }
+              setTimeout('notif/error', p => p.slice(1),10000)
+              return [...p, error]
+            })
+          })
+          .finally(() => {
+            setSyncSWR('loadingCounter', p => p - 1)
+          })
         return result
       }
       return useSWRNext(key, extendedFetcher, config)
@@ -45,6 +55,16 @@ export default function App({ Component, pageProps }) {
   // handle protected route
   useEffect(() => {
     if (!auth.data && !auth.isLoading && !auth.isValidating && router.route !== '/') {
+      setSyncSWR('notif/warning', p => {
+        if (!p) {
+          p = []
+        }
+        setTimeout(() => {
+          setSyncSWR('notif/warning', p => p.slice(1))
+        }, 10000)
+        return [...p, 'unauthorized access, please sign in']
+      })
+      setSyncSWR('show/signInComponent', true)
       router.push('/')
     }
   }, [auth.data, auth.isLoading, auth.isValidating, router])
@@ -57,17 +77,6 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <SWRConfig value={{
-        onError: (error) => {
-          setSyncSWR('error', p => {
-            if (!p) {
-              p = []
-            }
-            return [...p, error]
-          })
-          setTimeout(() => {
-            setSyncSWR('error', p => [...(p.slice(1))])
-          }, 10000)
-        },
         use: [requestCounter]
       }}>
         <Component {...pageProps} />
