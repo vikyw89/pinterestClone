@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { SaveButtonComponent } from './saveButton'
 
-const QUEUE_LOWER_LIMIT = 10
+const QUEUE_LOWER_LIMIT = 30
 
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
