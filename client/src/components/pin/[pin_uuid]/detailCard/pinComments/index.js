@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { mutate } from 'swr'
 import { CommentComponent } from './comment'
 
@@ -18,7 +18,7 @@ export const PinCommentsComponent = () => {
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
   const user_uuid = user?.data?.uuid
-  const [isSending, setIsSending] = useState(false)
+  const sendButton = useRef(null)
 
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
@@ -27,7 +27,7 @@ export const PinCommentsComponent = () => {
   const sendCommentHandler = async () => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
-    setIsSending(true)
+    sendButton.current.classList.add('animate-ping', 'btn-disabled')
     await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
@@ -38,7 +38,7 @@ export const PinCommentsComponent = () => {
         })
         .throwOnError()
     }, { populateCache: false })
-    setIsSending(false)
+    sendButton.current.classList.remove('animate-ping', 'btn-disabled')
   }
 
   return (
@@ -49,16 +49,18 @@ export const PinCommentsComponent = () => {
         </div>
         {pin_comments &&
           <div>
-            {pin_comments.map((e, i) => {
+            {pin_comments.map((e) => {
               return (
-                <CommentComponent key={i} props={e}/>
+                <CommentComponent key={e.uuid} props={e} />
               )
             })}
+            {pin_comments.length === 0 &&
+              <div>
+                No comments yet! Add one to start the conversation.
+              </div>
+            }
           </div>
         }
-        {!pin_comments && <div>
-          No comments yet! Add one to start the conversation.
-        </div>}
       </div>
       <Divider />
       <div className="flex gap-2 justify-between">
@@ -74,15 +76,11 @@ export const PinCommentsComponent = () => {
           className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
           onChange={commentInputHandler}
           value={commentInput} />
-        {(isSending)
-          ?
-          <button className="btn btn-primary rounded-btn btn-circle loading">
-          </button>
-          :
-          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler}>
-            <SendIcon />
-          </button>
-        }
+
+        <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler} ref={sendButton}>
+          <SendIcon />
+        </button>
+
       </div>
     </>
   )

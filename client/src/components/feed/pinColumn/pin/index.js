@@ -66,7 +66,8 @@ export const PinComponent = ({ props }) => {
     setSelectedBoard(selectedBoardData)
   }
 
-  const pinClickHandler = () => {
+  const pinClickHandler = (e) => {
+    e.currentTarget.classList.add('animate-ping')
     router.push(`/pin/${pin.uuid}`)
   }
 
