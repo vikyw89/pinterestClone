@@ -10,7 +10,8 @@ export const CommentComponent = ({ props }) => {
   const user_uuid = auth?.data?.user?.id
   const isCommentCreator = user_uuid === users.uuid
 
-  const deleteComment = async () => {
+  const deleteComment = async (e) => {
+    e.currentTarget.classList.add('btn-disabled', 'animate-spin')
     await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
@@ -39,7 +40,7 @@ export const CommentComponent = ({ props }) => {
         <button className='btn btn-circle btn-ghost absolute top-0 right-0'
           onClick={deleteComment}>
           <div>
-            <ClearIcon className='text-3xl font-bold text-info'/>
+            <ClearIcon className='text-3xl font-bold text-info' />
           </div>
         </button>
       }
