@@ -23,7 +23,7 @@ export const SaveButtonComponent = ({ props }) => {
 
   const saveHandler = async (e) => {
     e.stopPropagation()
-    e.target.classList.add('loading')
+    e.currentTarget.classList.add('loading', 'animate-pulse')
     await mutate(`api/user/${user.data.uuid}`, async () => {
       await supabase
         .rpc('save_pin', {
@@ -36,7 +36,7 @@ export const SaveButtonComponent = ({ props }) => {
 
   const unSaveHandler = async (e) => {
     e.stopPropagation()
-    e.target.classList.add('loading')
+    e.currentTarget.classList.add('loading', 'animate-pulse')
     await mutate(`api/user/${user.data.uuid}`, async () => {
       await supabase
         .from('boards_pins')
