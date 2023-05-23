@@ -79,13 +79,11 @@ export const PinComponent = ({ props }) => {
   const hoverHandler = (e) => {
     e.stopPropagation()
     setHover(true)
-    e.currentTarget.classList.add('animate-pulse')
   }
 
   const unHoverHandler = (e) => {
     e.stopPropagation()
     setHover(false)
-    e.currentTarget.classList.remove('animate-pulse')
   }
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
