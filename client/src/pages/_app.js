@@ -64,6 +64,7 @@ export default function App({ Component, pageProps }) {
         }, 10000)
         return [...p, 'unauthorized access, please sign in']
       })
+      setSyncSWR('show/signInComponent', true)
       router.push('/')
     }
   }, [auth.data, auth.isLoading, auth.isValidating, router])

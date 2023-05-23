@@ -11,7 +11,7 @@ export const Notif = () => {
     // e.currentTarget.classList.add('hidden')
   }
   return (
-    <div className='fixed bottom-0 left-0 right-0 w-full flex flex-col justify-center items-center cursor-pointer gap-2'>
+    <div className='fixed bottom-0 left-0 right-0 w-full flex flex-col cursor-pointer gap-2'>
       {error &&
         error.map((e) => {
           return (
