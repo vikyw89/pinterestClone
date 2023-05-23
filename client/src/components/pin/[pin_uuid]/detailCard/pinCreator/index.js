@@ -56,45 +56,47 @@ export const PinCreatorComponent = () => {
 
   const unfollowHandler = async (e) => {
     if (!pinDetail.data || !creator_uuid || !user_uuid) return
-    e.currentTarget.classList.add('loading','animate-pulse')
+    e.currentTarget.classList.add('loading', 'animate-pulse')
     await unfollowAPI.trigger()
     await pinDetail.mutate()
   }
 
   return (
-    <div className="flex gap-3 w-full flex-wrap">
-      {pinDetail.data &&
-        <Image
-          src={pinDetail.data.users.profile_picture_url}
-          alt="pfp"
-          height={0}
-          width={0}
-          sizes="100vw"
-          className="w-12 aspect-square rounded-full"
-        />}
-      {pinDetail.data &&
-        <div>
-          <div className="font-bold">
-            {pinDetail.data.users.username}
-          </div>
+    <div className="flex w-full flex-wrap items-center gap-2">
+      <div className='flex-[999] flex items-center min-w-fit gap-2'>
+        {pinDetail.data &&
+          <Image
+            src={pinDetail.data.users.profile_picture_url}
+            alt="pfp"
+            height={0}
+            width={0}
+            sizes="100vw"
+            className="w-12 aspect-square rounded-full"
+          />}
+        {pinDetail.data &&
           <div>
-            {pinDetail.data.users.users_followers[0].count} followers
+            <div className="font-bold">
+              {pinDetail.data.users.username}
+            </div>
+            <div>
+              {pinDetail.data.users.users_followers[0].count} followers
+            </div>
           </div>
-        </div>
-      }
-      <div className="flex-1 text-right">
+        }
+      </div>
+      <div className="flex-grow-[1] flex justify-end">
         {typeof isFollower.data === 'undefined' &&
-          <button className="btn btn-primary loading text-primary-content rounded-btn max-sm:w-full">
+          <button className="btn btn-primary loading text-primary-content rounded-btn w-full">
             Loading
           </button>
         }
         {isFollower.data === true &&
-          < button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={unfollowHandler}>
+          < button className="btn btn-primary text-primary-content rounded-btn w-full" onClick={unfollowHandler}>
             Following
           </button>
         }
         {isFollower.data === false &&
-          < button className="btn btn-primary text-primary-content rounded-btn max-sm:w-full" onClick={followHandler}>
+          < button className="btn btn-primary text-primary-content rounded-btn w-full" onClick={followHandler}>
             Follow
           </button>
         }
