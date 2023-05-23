@@ -10,8 +10,7 @@ export const SignInComponent = () => {
   // const emailSignInHandler = () => { }
 
   const gmailSignInHandler = (e) => {
-    e.currentTarget.classList.add('loading')
-    e.currentTarget.classList.add('disabled')
+    e.currentTarget.classList.add('loading', 'animate-pulse')
     mutate('api/auth', async () => {
       const response = await supabase.auth.signInWithOAuth({
         provider: 'google',
