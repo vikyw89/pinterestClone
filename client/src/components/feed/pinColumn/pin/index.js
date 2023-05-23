@@ -89,7 +89,7 @@ export const PinComponent = ({ props }) => {
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
       {!pin &&
-        <div className='w-72 max-w-full aspect-square bg-neutral-content animate-fade animate-infinite animate-ease-in-out animate-alternate animate-fill-both rounded-3xl'>
+        <div className='w-72 max-w-full aspect-square bg-base-300 animate-jump animate-infinite animate-duration-[2000ms] animate-delay-500 animate-ease-in-out animate-normal rounded-3xl'>
         </div>
       }
       {pin &&
