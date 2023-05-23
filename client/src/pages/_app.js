@@ -56,7 +56,12 @@ export default function App({ Component, pageProps }) {
     <>
       <SWRConfig value={{
         onError: (error) => {
-          setSyncSWR('error', p => [...p, error])
+          setSyncSWR('error', p => {
+            if (!p) {
+              p = []
+            }
+            return [...p, error]
+          })
           setTimeout(() => {
             setSyncSWR('error', p => [...(p.slice(1))])
           }, 10000)
