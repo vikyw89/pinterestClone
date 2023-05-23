@@ -1,10 +1,8 @@
-import { setSyncSWR, useSyncSWR } from 'swr-sync-state'
+import { useSyncSWR } from 'swr-sync-state'
 import { v4 } from 'uuid'
 
-setSyncSWR('error', [])
-
 export const Notif = () => {
-  const error = useSyncSWR('error')
+  const error = useSyncSWR('error') ?? []
   return (
     <div className='fixed bottom-0 left-0'>
       {error &&

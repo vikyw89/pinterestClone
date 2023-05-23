@@ -22,8 +22,9 @@ const requestCounter = (useSWRNext) => {
           }
           return p + 1
         })
-        const result = await fetcher(...args)
-        setSyncSWR('loadingCounter', p => p - 1)
+        const result = await fetcher(...args).finally(()=>{
+          setSyncSWR('loadingCounter', p => p - 1)
+        })
         return result
       }
       return useSWRNext(key, extendedFetcher, config)
@@ -41,11 +42,12 @@ export default function App({ Component, pageProps }) {
   const router = useRouter()
   const activeTheme = user?.data?.theme
 
+  // handle protected route
   useEffect(() => {
-    if (!auth.data && router.route !== '/') {
+    if (!auth.data && !auth.isLoading && !auth.isValidating && router.route !== '/') {
       router.push('/')
     }
-  }, [auth.data, router])
+  }, [auth.data, auth.isLoading, auth.isValidating, router])
 
   useEffect(() => {
     if (!activeTheme) return
