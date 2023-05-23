@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { SaveButtonComponent } from './saveButton'
 
-const QUEUE_LOWER_LIMIT = 10
+const QUEUE_LOWER_LIMIT = 30
 
 export const PinComponent = ({ props }) => {
   const { index, feeds, setPinsToDisplay, refetchFn, infinite } = props
@@ -87,6 +87,10 @@ export const PinComponent = ({ props }) => {
   }
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
+      {!pin &&
+        <div className='w-72 max-w-full aspect-square bg-neutral animate-pulse rounded-3xl'>
+        </div>
+      }
       {pin &&
         <>
           <div className='w-72 max-w-full h-auto relative'
@@ -140,9 +144,6 @@ export const PinComponent = ({ props }) => {
             </div>
           </div>
         </>
-      }
-      {!pin &&
-        <div className='aspect-square w-full animate-ping'></div>
       }
     </div>
   )
