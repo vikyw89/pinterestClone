@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { mutate } from 'swr'
 import { CommentComponent } from './comment'
+import Skeleton from 'react-loading-skeleton'
 
 export const PinCommentsComponent = () => {
   const user = useUser()
@@ -51,14 +52,16 @@ export const PinCommentsComponent = () => {
           <div>
             {pin_comments.map((e, i) => {
               return (
-                <CommentComponent key={i} props={e}/>
+                <CommentComponent key={i} props={e} />
               )
             })}
+            {pin_comments.length === 0 &&
+              <div>
+                No comments yet! Add one to start the conversation.
+              </div>
+            }
           </div>
         }
-        {!pin_comments && <div>
-          No comments yet! Add one to start the conversation.
-        </div>}
       </div>
       <Divider />
       <div className="flex gap-2 justify-between">
