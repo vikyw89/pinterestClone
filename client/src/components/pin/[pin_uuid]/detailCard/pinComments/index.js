@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send'
 import { Divider } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { mutate } from 'swr'
 import { CommentComponent } from './comment'
 
@@ -18,16 +18,16 @@ export const PinCommentsComponent = () => {
   const pin_comments = pinDetail?.data?.pins_comments
   const avatarURL = user?.data?.profile_picture_url
   const user_uuid = user?.data?.uuid
-  const [isSending, setIsSending] = useState(false)
+  const sendButton = useRef(null)
 
   const commentInputHandler = (e) => {
     setCommentInput(e.target.value)
   }
 
-  const sendCommentHandler = async () => {
+  const sendCommentHandler = async (e) => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
-    setIsSending(true)
+    sendButton.current.classList.add('animate-ping', 'btn-disabled')
     await mutate(`api/pin/${pin_uuid}`, async () => {
       await supabase
         .from('pins_comments')
@@ -38,7 +38,7 @@ export const PinCommentsComponent = () => {
         })
         .throwOnError()
     }, { populateCache: false })
-    setIsSending(false)
+    sendButton.current.classList.remove('animate-ping', 'btn-disabled')
   }
 
   return (
@@ -76,15 +76,11 @@ export const PinCommentsComponent = () => {
           className="input input-bordered input-primary rounded-box bg-neutral-focus w-full"
           onChange={commentInputHandler}
           value={commentInput} />
-        {(isSending)
-          ?
-          <button className="btn btn-primary rounded-btn btn-circle loading">
-          </button>
-          :
-          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler}>
+
+          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler} ref={sendButton}>
             <SendIcon />
           </button>
-        }
+
       </div>
     </>
   )
