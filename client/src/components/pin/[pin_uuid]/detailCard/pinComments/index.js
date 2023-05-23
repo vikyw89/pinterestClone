@@ -24,7 +24,7 @@ export const PinCommentsComponent = () => {
     setCommentInput(e.target.value)
   }
 
-  const sendCommentHandler = async (e) => {
+  const sendCommentHandler = async () => {
     if (!commentInput || !user_uuid || !pin_uuid) return
     setCommentInput('')
     sendButton.current.classList.add('animate-ping', 'btn-disabled')
@@ -77,9 +77,9 @@ export const PinCommentsComponent = () => {
           onChange={commentInputHandler}
           value={commentInput} />
 
-          <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler} ref={sendButton}>
-            <SendIcon />
-          </button>
+        <button className="btn btn-primary rounded-btn btn-circle" onClick={sendCommentHandler} ref={sendButton}>
+          <SendIcon />
+        </button>
 
       </div>
     </>
