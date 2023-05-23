@@ -73,6 +73,7 @@ export const PinComponent = ({ props }) => {
 
   const loadingCompleteHandler = (e) => {
     e.classList.remove('animate-pulse')
+    e.classList.add('animate-fade-up', 'animate-once', 'animate-ease-in-out', 'animate-normal')
     e.removeEventListener('onLoadingComplete', loadingCompleteHandler)
   }
 
@@ -88,7 +89,7 @@ export const PinComponent = ({ props }) => {
   return (
     <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
       {!pin &&
-        <div className='w-72 max-w-full aspect-square bg-neutral animate-pulse rounded-3xl'>
+        <div className='w-72 max-w-full aspect-square bg-base-300 animate-jump animate-infinite animate-duration-[2000ms] animate-delay-500 animate-ease-in-out animate-normal rounded-3xl'>
         </div>
       }
       {pin &&
@@ -109,7 +110,7 @@ export const PinComponent = ({ props }) => {
               onLoadingComplete={loadingCompleteHandler}
             />
             {auth && hover &&
-              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-20 hover:backdrop-brightness-50 flex justify-between rounded-3xl'>
+              <div className='absolute p-2 top-0 right-0 left-0 bottom-0 z-20 hover:backdrop-brightness-50 flex justify-between rounded-3xl animate-fade animate-once animate-duration-300 animate-ease-in-out'>
                 <select className="select max-w-xs bg-neutral text-neutral-content" onChange={boardSelectHandler}>
                   {boards &&
                     boards.map((p, i) => {
