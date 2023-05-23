@@ -39,7 +39,7 @@ export const FeedsComponent = ({ props }) => {
   }, [])
 
   return (
-    <div>
+    <div className='w-full'>
       {feeds &&
         <div className='flex gap-1 md:gap-5 justify-center p-1 md:p-5'>
           {feeds.length !== 0 && columns &&
