@@ -94,7 +94,7 @@ export const PinComponent = ({ props }) => {
       }
       {pin &&
         <>
-          <div className='w-full h-auto relative shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
+          <div className='w-full h-auto relative '
             onMouseEnter={hoverHandler}
             onMouseLeave={unHoverHandler}>
             <Image
@@ -106,7 +106,7 @@ export const PinComponent = ({ props }) => {
               priority={true}
               placeholder='blur'
               blurDataURL={pin.loading_image_url}
-              className="h-auto w-full rounded-3xl bg-neutral animate-pulse"
+              className="h-auto w-full rounded-3xl bg-neutral animate-pulse shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
               onLoadingComplete={loadingCompleteHandler}
             />
             {auth && hover &&
