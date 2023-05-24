@@ -30,7 +30,7 @@ export const DetailCardComponent = () => {
   }
 
   return (
-    <div className="flex justify-center p-5">
+    <div className="flex justify-center p-5 overflow-x-hidden">
       <div className="flex flex-wrap text-neutral-content items-start justify-center">
         {/* left half */}
         <div className="max-w-lg relative rounded-l-3xl bg-neutral-focus">
