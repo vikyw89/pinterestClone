@@ -1,38 +1,83 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Design
 
-## Getting Started
+Pages:
 
-First, run the development server:
+- Landing page and login and register in /signIn
+  - header
+  - footer
+  - sidebar
+  - tagline
+- User account page /account
+  - header
+  - profile
+  - change password
+  - log out
+  - footer
+- Collection page in /user_id
+  - header
+  - board folder with thumbnail
+  - footer
+- Inside board /board/[board_name]
+  - pin cards
+- PinFeed in /
+  - pin cards in infinite scroll
+- Zoomed in pin /pin/[pin_uid]
+  - comment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Components:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- header
+  - search
+- footer
+-
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Data Model
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+A user has many boards, created many pins, liked many pins, has many comments
+- users
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - username text
+  - profile_picture_url string
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+A board has a single user, has many pins
+- boards
 
-## Learn More
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - name text
+  - board_owner_id bigint notnull references users
 
-To learn more about Next.js, take a look at the following resources:
+A pin has a single creator / user, is in many boards, has many comments
+- pins
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - title text
+  - description text
+  - url_link text
+  - image_url text
+  - pin_creator_id bigint notnull references users
+  - original_board_id bigint notnull references boards
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+A like has a single pin, and a single creator, and has a single board
+- likes
 
-## Deploy on Vercel
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - pin bigint notnull references pins
+  - user bigint notnull references users
+  - saved_in bigint notnull references boards
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+A comment has a single pin, a single creator
+- comments
+  - id bigint increment primary
+  - created_at time
+  - updated_at time
+  - commented_pin bigint notnull references pins
+  - comment_creator bigint notnull references users

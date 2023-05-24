@@ -25,3 +25,13 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+*{
+  /* outline: 1px solid gray; */
+  margin: 0;
+  padding: 0;
+}
+/* 
+#createPinInput > *::-webkit-scrollbar {
+  display: none;
+} */

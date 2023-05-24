@@ -1,5 +1,69 @@
-# javaScriptFinalProject
+## This is an attempt to clone Pinterest, with a slight twist
 
+Dev live preview: https://vikyw89.github.io/pinterestClone
+
+## Dependencies and Libraries and some tech choices:
+- supabase (for BAAS)
+  - because pinterest data is mostly relational
+  - BAAS is faster to deploy and prototype than writing backend from scratch
+  - downside is subscribe function in supabase / postgres aren't that good
+  - rpc is stored in the cloud supabase site
+- CLoudinary
+  - for storage of image and assets
+  - it has cloud / edge function to resize assets and convert it to filetype that we want
+  - we mostly use webp and webp animated for image because browser support above 95% and file size is small
+- nextJS SSG
+  - filesystem routing is intuitive
+  - it's the new recomended way to scafold react app as per react.dev
+  - SSG has faster initial load to client
+  - we use nextImage as a way to efficiently show blurhas or placeholder to prevent big layout shift in feeds
+  - some improvement to be made, store the image size in database because next image needs size to enable the blur placeholder (right now we use square, so there will be minimal layout shift)
+- SWR for fetching and state management
+  - it scales better than local state
+  - the idea of rebuilding model for front end using redux and copying normalized database to front end, and doing JOIN operation in front end isn't appealing
+  - single source of truth is in the backend / db
+  - added additional useSyncSWR for global state using swr
+- Browser image compressor
+  - To compress image before storing in backend
+  - it's lightweight and fast for images under 1MB
+  - no need to recreate and host backend
+- TailwindCSS and daisyUI
+  - trying out new css framework aside from css module, bootstrap and mui
+  - nextJS offers it
+  - it has a lot of theme
+- GH action
+  - enabled CI CD for deployment
+  - in the future we can have different branch for dev purpose / alpha, beta, and latest/stable automatic release and versioning.
+
+## Database model:
+outdated, but the idea holds
+some improvements can be made, using only insert operation, and no delete therefore maintaining log etc
+![Untitled Diagram](https://user-images.githubusercontent.com/112059651/236874824-c1aec858-89e1-470c-9272-f88961ab3abc.jpg)
+
+## Page Routing:
+
+```
+'/'
+// home shows all pins in the background
+// for unsigned user, no search button
+
+'/pin/[pin_id]'
+// pin page, show title, description, comment, pin creator stats, follow button etc
+
+'/[user_id]'
+// profile page, show user's board, unorganized board, and user stats
+
+'/[user_id]/[board_title]'
+// board page, show board's stats, members, content and recomendation
+
+'/createPin'
+// show a page to create a pin
+
+sign in and signup will be handled in the '/' route using popup or modal
+
+```
+
+## Original assignment
 <section id="assignment">
   <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
 
