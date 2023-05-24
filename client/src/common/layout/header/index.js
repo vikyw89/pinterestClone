@@ -48,7 +48,7 @@ export const Header = () => {
 
   const themeHandler = (e) => {
     const updatedValue = e.target.textContent
-    if (themeAPI.data) {
+    if (auth.data) {
       const options = {
         optimisticData: {
           ...user.data,
