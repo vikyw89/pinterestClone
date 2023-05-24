@@ -43,7 +43,7 @@ const requestCounter = (useSWRNext) => {
 }
 
 if (typeof window !== 'undefined') {
-  document.querySelector('html').setAttribute('data-theme', 'light')
+  document.querySelector('html').setAttribute('data-theme', 'retro')
 }
 
 export default function App({ Component, pageProps }) {
