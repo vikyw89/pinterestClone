@@ -43,7 +43,7 @@ const requestCounter = (useSWRNext) => {
 }
 
 if (typeof window !== 'undefined') {
-  document.querySelector('html').setAttribute('data-theme', 'synthwave')
+  document.querySelector('html').setAttribute('data-theme', 'retro')
 }
 
 export default function App({ Component, pageProps }) {
@@ -61,7 +61,7 @@ export default function App({ Component, pageProps }) {
         }
         setTimeout(() => {
           setSyncSWR('notif/warning', p => p.slice(1))
-        }, 10000)
+        }, 5000)
         return [...p, 'unauthorized access, please sign in']
       })
       setSyncSWR('show/signInComponent', true)
