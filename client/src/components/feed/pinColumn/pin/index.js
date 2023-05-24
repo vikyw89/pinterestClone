@@ -87,14 +87,14 @@ export const PinComponent = ({ props }) => {
     setHover(false)
   }
   return (
-    <div className="flex flex-col relative gap-1 hover:cursor-zoom-in" onClick={pinClickHandler} ref={ref}>
+    <div className="flex flex-col gap-1 hover:cursor-zoom-in w-full" onClick={pinClickHandler} ref={ref}>
       {!pin &&
-        <div className='w-72 max-w-full aspect-square bg-base-300 animate-jump animate-infinite animate-duration-[2000ms] animate-delay-500 animate-ease-in-out animate-normal rounded-3xl'>
+        <div className='w-full aspect-square bg-base-300 animate-jump animate-infinite animate-duration-[2000ms] animate-delay-500 animate-ease-in-out animate-normal rounded-3xl'>
         </div>
       }
       {pin &&
         <>
-          <div className='w-72 max-w-full h-auto relative'
+          <div className='w-full h-auto relative shadow-[0_3px_10px_rgb(0,0,0,0.2)]'
             onMouseEnter={hoverHandler}
             onMouseLeave={unHoverHandler}>
             <Image
@@ -124,7 +124,7 @@ export const PinComponent = ({ props }) => {
           <div className='pl-3 pr-3 font-bold overflow-clip overflow-ellipsis'>
             {pin.title}
           </div>
-          <div className="flex max-w-full items-center gap-2 pl-3 pr-3 overflow-clip overflow-ellipsis">
+          <div className="flex items-center gap-2 pl-3 pr-3 overflow-clip overflow-ellipsis">
             <div className="avatar aspect-square">
               <div className="w-8 rounded-full flex items-center">
                 {pin.users.profile_picture_url

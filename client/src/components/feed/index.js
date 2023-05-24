@@ -39,9 +39,13 @@ export const FeedsComponent = ({ props }) => {
   }, [])
 
   return (
-    <div className='w-full'>
+    <div className='w-full overflow-x-hidden'>
       {feeds &&
-        <div className='flex gap-1 md:gap-5 justify-center p-1 md:p-5'>
+        <div className='gap-1 md:gap-5 justify-center p-1 md:p-5' style={{
+          display:'grid',
+          gridAutoColumns: 'minmax(0,1fr)',
+          gridAutoFlow:'column'
+        }}>
           {feeds.length !== 0 && columns &&
             columns.map((e, i) => {
               return (
