@@ -1,6 +1,6 @@
 ## This is an attempt to clone Pinterest, with a slight twist
 
-Dev live preview: https://vikyw89.github.io/pinterestClone
+Dev live preview: https://pinterest-clone-lemon.vercel.app/
 
 ## Dependencies and Libraries and some tech choices:
 - supabase (for BAAS)
