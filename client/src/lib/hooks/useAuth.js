@@ -30,8 +30,9 @@ export const useAuth = () => {
             p = []
           }
           // prevent duplicate notif
+          const message = 'You\'re now signed out !'
           setTimeout(() => {
-            setSyncSWR('notif/info', [])
+            setSyncSWR('notif/info', p => p.slice(1))
           }, 5000)
           return [message]
         })
