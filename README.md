@@ -1,6 +1,8 @@
 ## This is an attempt to clone Pinterest, with a slight twist
 
-Dev live preview: https://pinterest-clone-lemon.vercel.app/
+Alpha live preview: https://vikyw89.github.io/pinterestClone/
+
+Beta live preview: https://pinterest-clone-lemon.vercel.app/
 
 ## Dependencies and Libraries and some tech choices:
 - supabase (for BAAS)
@@ -8,7 +10,7 @@ Dev live preview: https://pinterest-clone-lemon.vercel.app/
   - BAAS is faster to deploy and prototype than writing backend from scratch
   - downside is subscribe function in supabase / postgres aren't that good
   - rpc is stored in the cloud supabase site
-- CLoudinary
+- Cloudinary
   - for storage of image and assets
   - it has cloud / edge function to resize assets and convert it to filetype that we want
   - we mostly use webp and webp animated for image because browser support above 95% and file size is small
@@ -36,8 +38,10 @@ Dev live preview: https://pinterest-clone-lemon.vercel.app/
   - in the future we can have different branch for dev purpose / alpha, beta, and latest/stable automatic release and versioning.
 
 ## Database model:
+
 outdated, but the idea holds
 some improvements can be made, using only insert operation, and no delete therefore maintaining log etc
+
 ![Untitled Diagram](https://user-images.githubusercontent.com/112059651/236874824-c1aec858-89e1-470c-9272-f88961ab3abc.jpg)
 
 ## Page Routing:
@@ -63,7 +67,7 @@ sign in and signup will be handled in the '/' route using popup or modal
 
 ```
 
-## Original assignment
+## Original assignment from TOP
 <section id="assignment">
   <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
 
