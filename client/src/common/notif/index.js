@@ -36,7 +36,7 @@ export const Notif = () => {
           )
         })
       }
-      {info &&
+      {info && info.length !== 0 &&
         (
           <div key={v4()} className="alert alert-info shadow-lg animate-bounce w-fit" onClick={popNotif}>
             <div>

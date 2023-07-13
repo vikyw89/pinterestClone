@@ -3,6 +3,7 @@ import { supabase } from '../supabase'
 
 export const usePin = (uuid) => {
   const pinData = useSWR(uuid && `api/pin/${uuid}`, async () => {
+    console.log("🚀 ~ file: usePin.js:7 ~ pinData ~ uuid:", uuid)
     const response = await supabase
       .from('pins')
       .select(`
@@ -13,7 +14,7 @@ export const usePin = (uuid) => {
               `)
       .eq('uuid', uuid)
       .eq('pins_comments.pin_uuid', uuid)
-      .throwOnError()
+      // .throwOnError()
     const pinData = response.data[0]
     return pinData
   })
