@@ -19,10 +19,11 @@ export const useAuth = () => {
           }
           // prevent duplicate notif
           const message = `Welcome aboard, ${name} !`
+          if (p.slice(-1) === message) return p
           setTimeout(() => {
-            setSyncSWR('notif/info', [])
+            setSyncSWR('notif/info', p => p.slice(1))
           }, 5000)
-          return [message]
+          return [...p, message]
         })
       } else {
         setSyncSWR('notif/info', p => {
@@ -30,11 +31,12 @@ export const useAuth = () => {
             p = []
           }
           // prevent duplicate notif
-          const message = 'You\'re now signed out !'
+          const message = 'You\'re signed out !'
+          if (p.slice(-1) === message) return p
           setTimeout(() => {
             setSyncSWR('notif/info', p => p.slice(1))
           }, 5000)
-          return [message]
+          return [...p, message]
         })
       }
       next(null, session)
