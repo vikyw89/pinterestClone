@@ -13,7 +13,7 @@ export const usePin = (uuid) => {
               `)
       .eq('uuid', uuid)
       .eq('pins_comments.pin_uuid', uuid)
-      .throwOnError()
+      // .throwOnError()
     const pinData = response.data[0]
     return pinData
   })
