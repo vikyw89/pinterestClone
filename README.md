@@ -4,6 +4,13 @@ Alpha live preview: https://vikyw89.github.io/pinterestClone/
 
 Beta live preview: https://pinterest-clone-lemon.vercel.app/
 
+Lighthouse score compared to interest :
+
+![image](https://github.com/vikyw89/pinterestClone/assets/112059651/49057d9f-3883-4d4f-9034-30f3adf7b7cd)
+
+![Screenshot from 2023-07-26 13-49-32](https://github.com/vikyw89/pinterestClone/assets/112059651/5732c5ca-4a9d-4e86-9c8a-ab3309f2c9ca)
+
+
 ## Dependencies and Libraries and some tech choices:
 - supabase (for BAAS)
   - because pinterest data is mostly relational
