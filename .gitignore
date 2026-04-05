@@ -64,3 +64,5 @@ node_modules/
 
 # dotenv environment variables file
 .env
+temp_auto_push.bat
+temp_interactive_push.bat

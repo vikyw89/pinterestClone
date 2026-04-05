@@ -1,93 +1,186 @@
-## This is an attempt to clone Pinterest, with a slight twist
+# Pinterest Clone - A Pinterest-inspired Image Sharing Platform
 
-Alpha live preview: https://vikyw89.github.io/pinterestClone/
+A full-featured Pinterest clone built with Next.js, Supabase, and TailwindCSS. Share, save, and discover visual content in a beautiful masonry-style grid layout.
 
-Beta live preview: https://pinterest-clone-lemon.vercel.app/
+![Pinterest Clone Screenshot](https://github.com/vikyw89/pinterestClone/assets/112059651/5732c5ca-4a9d-4e86-9c8a-ab3309f2c9ca)
 
-Lighthouse score compared to interest :
+## Live Demo
 
-![image](https://github.com/vikyw89/pinterestClone/assets/112059651/49057d9f-3883-4d4f-9034-30f3adf7b7cd)
+- **Alpha:** https://vikyw89.github.io/pinterestClone/
+- **Beta:** https://pinterest-clone-lemon.vercel.app/
 
-![Screenshot from 2023-07-26 13-49-32](https://github.com/vikyw89/pinterestClone/assets/112059651/5732c5ca-4a9d-4e86-9c8a-ab3309f2c9ca)
+## Lighthouse Score
 
+![Lighthouse Score](https://github.com/vikyw89/pinterestClone/assets/112059651/49057d9f-3883-4d4f-9034-30f3adf7b7cd)
 
-## Dependencies and Libraries and some tech choices:
-- supabase (for BAAS)
-  - because pinterest data is mostly relational
-  - BAAS is faster to deploy and prototype than writing backend from scratch
-  - downside is subscribe function in supabase / postgres aren't that good
-  - rpc is stored in the cloud supabase site
-- Cloudinary
-  - for storage of image and assets
-  - it has cloud / edge function to resize assets and convert it to filetype that we want
-  - we mostly use webp and webp animated for image because browser support above 95% and file size is small
-- nextJS SSG
-  - filesystem routing is intuitive
-  - it's the new recomended way to scafold react app as per react.dev
-  - SSG has faster initial load to client
-  - we use nextImage as a way to efficiently show blurhas or placeholder to prevent big layout shift in feeds
-  - some improvement to be made, store the image size in database because next image needs size to enable the blur placeholder (right now we use square, so there will be minimal layout shift)
-- SWR for fetching and state management
-  - it scales better than local state
-  - the idea of rebuilding model for front end using redux and copying normalized database to front end, and doing JOIN operation in front end isn't appealing
-  - single source of truth is in the backend / db
-  - added additional useSyncSWR for global state using swr
-- Browser image compressor
-  - To compress image before storing in backend
-  - it's lightweight and fast for images under 1MB
-  - no need to recreate and host backend
-- TailwindCSS and daisyUI
-  - trying out new css framework aside from css module, bootstrap and mui
-  - nextJS offers it
-  - it has a lot of theme
-- GH action
-  - enabled CI CD for deployment
-  - in the future we can have different branch for dev purpose / alpha, beta, and latest/stable automatic release and versioning.
+## Features
 
-## Database model:
+### Core Functionality
+- **Infinite Scroll Feed** - Masonry-style grid displaying pins with automatic infinite loading
+- **User Authentication** - Sign up, sign in, and sign out via Supabase Auth
+- **Pin Creation** - Upload and share images with titles, descriptions, and links
+- **Pin Details** - View full pin information with comments and creator details
+- **Save to Boards** - Save pins to organized boards
+- **User Profiles** - View user profiles with their boards and created pins
+- **Theme Switching** - Multiple visual themes with dark mode support
 
-outdated, but the idea holds
-some improvements can be made, using only insert operation, and no delete therefore maintaining log etc
+### Technical Highlights
+- **SWR Data Fetching** - Efficient data fetching with stale-while-revalidate pattern
+- **Real-time Subscriptions** - Live auth state updates via Supabase subscriptions
+- **Image Optimization** - Cloudinary-powered image storage with WebP conversion and blur placeholders
+- **Responsive Design** - Mobile-first approach with TailwindCSS and daisyUI
+- **CI/CD Pipeline** - GitHub Actions for automated linting and deployment
 
-![Untitled Diagram](https://user-images.githubusercontent.com/112059651/236874824-c1aec858-89e1-470c-9272-f88961ab3abc.jpg)
+## Tech Stack
 
-## Page Routing:
+| Category | Technology |
+|----------|------------|
+| **Frontend Framework** | [Next.js 13](https://nextjs.org/) (SSG) |
+| **UI Library** | [React 18](https://react.dev/) |
+| **Styling** | [TailwindCSS](https://tailwindcss.com/) + [daisyUI](https://daisyui.com/) |
+| **Backend/Auth** | [Supabase](https://supabase.com/) (BAAS) |
+| **Image Storage** | [Cloudinary](https://cloudinary.com/) |
+| **Data Fetching** | [SWR](https://swr.vercel.app/) + [swr-sync-state](https://www.npmjs.com/package/swr-sync-state) |
+| **Icons** | [MUI Icons](https://mui.com/material-ui/material-icons/) |
+| **Image Compression** | [browser-image-compression](https://www.npmjs.com/package/browser-image-compression) |
+| **Deployment** | Vercel (frontend) + Firebase (legacy) |
+
+## Database Schema
 
 ```
-'/'
-// home shows all pins in the background
-// for unsigned user, no search button
-
-'/pin/[pin_id]'
-// pin page, show title, description, comment, pin creator stats, follow button etc
-
-'/[user_id]'
-// profile page, show user's board, unorganized board, and user stats
-
-'/[user_id]/[board_title]'
-// board page, show board's stats, members, content and recomendation
-
-'/createPin'
-// show a page to create a pin
-
-sign in and signup will be handled in the '/' route using popup or modal
-
+users ──────────< boards ──────────< boards_pins >──────── pins
+    │                    │                    │
+    │                    │                    │
+    └── users_followers ─┘    pins_comments ──┘
+                │
+                └── boards_comments
 ```
 
-## Original assignment from TOP
-<section id="assignment">
-  <h3><a href="#assignment" class="anchor-link">Assignment</a></h3>
+### Tables
+- **users** - User profiles and metadata
+- **boards** - User-created pin collections
+- **pins** - Image pins with titles, descriptions, and links
+- **boards_pins** - Many-to-many relationship between pins and boards
+- **pins_comments** - Comments on pins
+- **boards_comments** - Comments on boards
+- **boards_members** - Board collaboration
+- **users_followers** - User follow relationships
 
-  <div class="lesson-content__panel">
-    <p>Replicate your favorite website as close as possible - Pinterest, Facebook, Twitter, etc. Just make sure it has lots of interesting functionality. You’ll be integrating a full array of skills into this one. If you have completed a backend course, you may use that for this project, otherwise use Firebase. This should prove that you now have all the tools and knowledge needed to build a website, just like the ones you use every day.</p>
-    <p>Of course, you can’t replicate every feature, and the user interface will probably be a bit clunkier. However, if you can get yourself 80% of the way there, that’s darn impressive!</p>
-    <ol>
-      <li>Set up a GitHub Repo for this project. Follow the instructions in <a href="https://www.theodinproject.com/paths/foundations/courses/foundations/lessons/git-basics" target="_blank" rel="noopener noreferrer">Git basics</a> if you need help.</li>
-      <li>Think about what you need to do. It’s really helpful to write your plan down on paper or whiteboard ahead of time! A few hours of thought now will save you days of coding. Try to lay it ALL out. An important part of planning is <strong>scope</strong>. You obviously can’t build the entire website (which presumably took a full team of engineers years to produce), so you’ll need to identify the site’s core functionality and the “nice-to-have” stuff. <strong>Make sure you finish the core functionality BEFORE working on the rest.</strong> If you try to do everything at once, you’ll get lost and frustrated. Trust us. Everything takes longer than you expect.</li>
-      <li>Roll up your sleeves and start building!</li>
-      <li>Try to test the high-level functionality using a suitable testing library, for example, Javascript with Jest or Rails with RSpec. Don’t get too bogged down in testing, but try and save yourself time by adding high-level tests, so you don’t need to click around 100 times every time you make a change to something that seems important.</li>
-      <li>Once you finish, push to GitHub and definitely submit your project below!</li>
-    </ol>
-  </div>
+## Page Routing
 
-</section>
+| Route | Description |
+|-------|-------------|
+| `/` | Home feed with all pins (infinite scroll) |
+| `/pin/[pin_uuid]` | Pin detail page with comments |
+| `/profile` | User profile page |
+| `/profile/[board_uuid]` | Board page with pins |
+| `/createPin` | Create new pin page |
+
+## Installation
+
+### Prerequisites
+- Node.js 16+ 
+- npm or yarn
+- Supabase account
+- Cloudinary account
+
+### Setup
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/vikyw89/pinterestClone.git
+cd pinterestClone
+```
+
+2. **Install dependencies**
+```bash
+cd client
+npm install
+```
+
+3. **Configure environment variables**
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local` with your credentials:
+```env
+NEXT_PUBLIC_SUPABASE_PROJECT_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+```
+
+4. **Initialize Supabase database**
+Run the SQL schema in `client/supabase.sql` in your Supabase SQL editor.
+
+5. **Start development server**
+```bash
+npm run dev
+```
+
+6. **Open browser**
+Navigate to http://localhost:3000
+
+## Project Structure
+
+```
+pinterestClone/
+├── client/                    # Next.js frontend
+│   ├── src/
+│   │   ├── components/       # React components
+│   │   │   ├── boards/       # Board-related components
+│   │   │   ├── feed/         # Feed and pin card components
+│   │   │   ├── pin/          # Pin detail components
+│   │   │   ├── profile/      # Profile components
+│   │   │   └── signIn/       # Authentication components
+│   │   ├── common/           # Shared components
+│   │   │   ├── layout/       # Header, footer, page layout
+│   │   │   ├── loading/      # Loading states
+│   │   │   └── notif/        # Notifications
+│   │   ├── lib/              # Utilities
+│   │   │   ├── hooks/        # Custom React hooks
+│   │   │   ├── supabase/      # Supabase client
+│   │   │   ├── cloudinary/    # Cloudinary utilities
+│   │   │   └── store/         # State management
+│   │   ├── pages/            # Next.js pages
+│   │   └── styles/           # Global styles
+│   └── supabase.sql          # Database schema
+└── initSupabase.js            # Supabase initialization script
+```
+
+## Available Scripts
+
+```bash
+# Development
+npm run dev          # Start development server
+
+# Production
+npm run build        # Build for production
+npm run start        # Start production server
+npm run export        # Static export
+
+# Code Quality
+npm run lint          # Run ESLint
+npm run lint:fix      # Fix ESLint issues
+```
+
+## Contributing
+
+This project was created as part of [The Odin Project](https://www.theodinproject.com/) curriculum. Contributions welcome!
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is available under the MIT License.
+
+## Acknowledgments
+
+- Design inspired by [Pinterest](https://pinterest.com/)
+- Built as a learning project for [The Odin Project](https://www.theodinproject.com/)
+- Image storage powered by [Cloudinary](https://cloudinary.com/)
+- Backend services by [Supabase](https://supabase.com/)
